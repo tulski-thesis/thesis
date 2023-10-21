@@ -22,7 +22,7 @@ jobs:
           root_file: main.tex
           latexmk_shell_escape: true
           docker_image: ghcr.io/xu-cheng/texlive-full:20230801
-          args: -pdf -file-line-error -interaction=nonstopmode -synctex=1 -output-format=pdf -output-directory=out
+          args: "-pdf -file-line-error -interaction=nonstopmode -synctex=1 -output-format=pdf -output-directory=out"
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
