@@ -1,7 +1,9 @@
 name: Build LaTeX document
 
 on:
-  push: {}
+  push:
+    tags:
+      - '*'
 
 permissions:
   contents: write
@@ -14,29 +16,25 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v3
 
-      - name: Retrieve current version
-        shell: bash
-        run: echo "{version}={$(date +'%Y-%m-%d')}_${{ github.run_number }}" >> $GITHUB_ENV
-
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
           latexmk_shell_escape: true
           docker_image: ghcr.io/xu-cheng/texlive-full:20230801
-          args: '-pdf -file-line-error -interaction=nonstopmode -synctex=1 -output-format=pdf -output-directory=out -jobname=Michal_Tulowiecki_${{ env.version }}'
+          args: '-pdf -file-line-error -interaction=nonstopmode -synctex=1 -output-format=pdf -output-directory=out -jobname=Michal_Tulowiecki_${{ github.ref_name }}'
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: out/Michal_Tulowiecki_${{ env.version }}.pdf
+          path: out/Michal_Tulowiecki_${{ github.ref_name }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: out/Michal_Tulowiecki_${{ env.version }}.pdf
-          tag_name: ${{ github.run_number }}
+          files: out/Michal_Tulowiecki_${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
           body: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
