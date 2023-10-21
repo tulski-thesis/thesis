@@ -28,12 +28,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: out/Michal_Tulowiecki_${{ github.ref_name }}
+          path: out/Michal_Tulowiecki_${{ github.ref_name }}.pdf
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: out/Michal_Tulowiecki_${{ github.ref_name }}
+          files: out/Michal_Tulowiecki_${{ github.ref_name }}.pdf
           tag_name: ${{ github.ref_name }}
           body: ${{ github.event.head_commit.message }}
           draft: false
