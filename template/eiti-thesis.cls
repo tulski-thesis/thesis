@@ -40,9 +40,6 @@
     expansion=true
 ]{microtype}
 \RequirePackage{csquotes}
-\RequirePackage{amsmath}    % Basic mathematical typesetting
-\RequirePackage{amssymb}    % Advanced math symbols
-\RequirePackage{amsthm}     % Theorems typesetting
 \RequirePackage{array}      % Advanced table column formats
 \RequirePackage[            % Bibliography in biber
     backend=biber,
@@ -75,7 +72,7 @@
 % Produce clickable hyperlinks
 % in ToC, LoF and LoT
 %--------------------------------
-\RequirePackage[unicode,polish]{hyperref}
+\RequirePackage{hyperref}
 \hypersetup{
     colorlinks,
     citecolor=black,
