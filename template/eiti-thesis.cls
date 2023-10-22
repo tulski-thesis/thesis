@@ -245,9 +245,6 @@
 \newcommand{\kierunek}[1]{
     \newcommand{\@kierunek}{#1}
 }
-\newcommand{\specjalnosc}[1]{
-    \newcommand{\@specjalnosc}{#1}
-}
 \newcommand{\album}[1]{
     \newcommand{\@album}{#1}
 }
@@ -280,7 +277,6 @@
         \includegraphics[width=\textwidth]{template/title-inz} \\
         \hfill \break
         na~kierunku \@kierunek \\
-        w~specjalności \@specjalnosc \\
         \hfill \break
         \hfill \break
         \large
