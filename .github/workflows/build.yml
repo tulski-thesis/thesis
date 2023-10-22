@@ -20,9 +20,8 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
-          latexmk_shell_escape: true
           docker_image: ghcr.io/xu-cheng/texlive-full:20230801
-          args: '-pdf -file-line-error -interaction=nonstopmode -synctex=1 -output-format=pdf -output-directory=out -jobname=Michal_Tulowiecki_${{ github.ref_name }}'
+          args: '-pdf -file-line-error -halt-on-error -interaction=nonstopmode -output-format=pdf --shell-escape -outdir=out -jobname=Michal_Tulowiecki_${{ github.ref_name }}'
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
