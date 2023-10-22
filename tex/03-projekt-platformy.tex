@@ -243,3 +243,12 @@ microk8s join <vm_private_ip>:25000/<token>
     \item Wykonaj otrzymane w poprzednim kroku polecenie na każdej maszynie wirtualnej, która ma zostać częścią klastra, ale jeszcze w nim nie jest.
     \item Dla każdej kolejnej maszyny, która ma dołączyć do klastra, powtarzaj kroki 2 i 3.
 \end{enumerate}
+
+\subsubsection{Przestrzeń nazw}
+
+Przestrzenią nazw (ang. namespace) nazywamy zbiór znaków (nazw) należących do jednego kontekstu.
+Ich stosowanie umożliwia lepszą organizację i izolację zasobów, co przyczynia się do podniesienia bezpieczeństwa.
+W kontekście środowiska Kubernetes przestrzenie nazw często reprezentują środowiska poszczególnych klientów (tenants) lub różne środowiska np. testowe i produkcyjne działające w jednym klastrze.
+
+Przestrzeń nazw tworzymy przez zaaplikowanie następującego manifestu:
+\inputminted{yaml}{code/store-namespace.yaml}
