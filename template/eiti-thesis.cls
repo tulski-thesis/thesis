@@ -59,10 +59,11 @@
 \RequirePackage{fourier}    % Adobe Utopia font
 \RequirePackage{graphicx}   % Enhanced images support
 \RequirePackage{pdfpages}
+\RequirePackage{float}      % Improved float support
 \RequirePackage{lipsum}     % Lorem ipsum
 \RequirePackage[outputdir=out]{minted}   % Code listings
+\RequirePackage{multicol}   % Multiple columns
 \RequirePackage{longtable}  % Multi-page tables
-\RequirePackage{multirow}   % Advanced table cells
 \RequirePackage{setspace}   % Set space between lines
 \RequirePackage{scrextend}  % Allows \addmargin environment
 \RequirePackage{tocloft}    % Custom ToC/LoF/LoT
@@ -74,7 +75,7 @@
 % Produce clickable hyperlinks
 % in ToC, LoF and LoT
 %--------------------------------
-\RequirePackage{hyperref}
+\RequirePackage[unicode,polish]{hyperref}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -82,6 +83,8 @@
     linkcolor=black,
     urlcolor=black
 }
+
+\renewcommand{\figureautorefname}{Rysunek}
 
 %--------------------------------------
 % Default margin is 2.5 cm
