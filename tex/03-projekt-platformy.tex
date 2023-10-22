@@ -106,9 +106,9 @@ Eliminuje to potrzebę tworzenia osobnych wpisów dla każdego węzła, co by ko
 Z powodu zapewnienia wysokiej dostępności, równomiernego rozłożenia ruchu, skalowalności i uproszczeniu konfiguracji DNS, jak i wielu innych niewspomnianych korzyści, LB jest kluczowym elementem wielu rozbudowanych systemów opartych na klastrach.
 
 Na potrzeby pracy został stworzony Network Load Balancer (NLB), czyli rodzaj Load Balancera, który działa na warstwie 3 i 4 modelu OSI (TCP/UDP/ICMP).
-NLB przekazuje pakiety do i z serwera nadrzędnego na podstawie informacji na poziomie IP, protu i protokołu bez sprawdzania pakietów.
+NLB przekazuje pakiety do i z serwera nadrzędnego na podstawie informacji na poziomie IP, portu i protokołu bez sprawdzania pakietów.
 
-Utworzony Network Load Balancer o nazwie \texttt{k8s} jest w jednej podsieci \texttt{subnet-20230313-1902} z wcześniej uruchomionymi maszynami wirtualnymi \texttt{c1}, \texttt{c2}, \texttt{c3} i \texttt{c4}.
+Utworzony Network Load Balancer \url{k8s} jest w jednej podsieci \url{subnet-20230313-1902} z wcześniej uruchomionymi maszynami wirtualnymi \url{c1}, \url{c2}, \url{c3} i \url{c4}.
 
 \begin{figure}[H]
     \centering
@@ -118,7 +118,7 @@ Utworzony Network Load Balancer o nazwie \texttt{k8s} jest w jednej podsieci \te
 \end{figure}
 
 Został skonfigurowany tak aby działał dla ruchu HTTP (port 80), HTTPS (port 443) oraz Kubernetes API (port 16443).
-Dla każdego z rodzajów ruchu został utworzony {Backend Set}\autoref{fig:oci-network-load-balancer-k8s-backend-sets} oraz {Listener}\autoref{fig:oci-network-load-balancer-k8s-listeners}.
+Dla każdego z rodzajów ruchu został utworzony Backend Set (\autoref{fig:oci-network-load-balancer-k8s-backend-sets}) oraz Listener (\autoref{fig:oci-network-load-balancer-k8s-listeners}).
 
 \begin{figure}[H]
     \centering
@@ -135,7 +135,7 @@ Dla każdego z rodzajów ruchu został utworzony {Backend Set}\autoref{fig:oci-n
 \end{figure}
 
 Load Balancer regularnie monitoruje stan zdrowia każdego węzła za pomocą zdefiniowanego testu Health Check.
-Dla pierwszych dwóch Backend Sets - \("\)ingress-http\("\) oraz \("\)ingress-https\("\) - test polega na wysłaniu zapytania z użyciem kolejno protokołu HTTP i HTTPS na ścieżkę \texttt{/}.
+Dla pierwszych dwóch Backend Sets - \("\)ingress-http\("\) oraz \("\)ingress-https\("\) - test polega na wysłaniu zapytania z użyciem kolejno protokołu HTTP i HTTPS na ścieżkę \url{/}.
 Oczekiwaną odpowiedzią serwera jest status 404.
 
 \begin{multicols}{2}
@@ -153,7 +153,7 @@ Oczekiwaną odpowiedzią serwera jest status 404.
     \end{figure}
 \end{multicols}
 
-Natomiast dla ostatniego Backend Set k8s-api, zapytanie wysyłane jest protokołem HTTPS na port 16443 do ścieżki \texttt{/healthz}, gdzie oczekiwaną odpowiedzią serwera jest status 200.
+Natomiast dla ostatniego Backend Set k8s-api, zapytanie wysyłane jest protokołem HTTPS na port 16443 do ścieżki \url{/healthz}, gdzie oczekiwaną odpowiedzią serwera jest status 200.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img/oci-network-load-balancer-k8s-api-health-check}
@@ -169,7 +169,7 @@ Chociaż wszystkie one mają wspólny fundament, będący oryginalnym Kubernetes
 Dla przykładu mamy takie dystrybucje Kubernetes jak Amazon Elastic Kubernetes Service (Amazon EKS), Google Kubernetes Engine (GKE) czy Azure Kubernetes Service (AKS), które zostały specjalnie dostosowane pod specyficzne środowisko chmury danego dostawcy.
 
 \begin{samepage}
-    Dla konfigurowanej platformy wybór padł na dystrybucję MicroK8s.
+    Dla konfigurowanej platformy wybór padł na dystrybucję MicroK8s\cite{microk8s-docs-home}.
     Decydującymi czynnikami były:
     \begin{enumerate}
         \item Łatwość instalacji i uruchomienia.
