@@ -1,5 +1,6 @@
 \newpage
 
+
 \section{Projekt platformy}
 
 \subsection{Wprowadzenie}
@@ -9,10 +10,97 @@ Potwierdza to fakt, że sklepy internetowe stanowią najczęstszy kontekst i prz
 Nie inaczej jest w przypadku niniejszej pracy.
 W tym rozdziale omówię projekt platformy oraz narzędzia, które składają się na kompletne środowisko sklepu internetowego \href{https://store.tulski.com}{tulski store}.
 
+\subsection{Aplikacje serwerowe}
+
+Handel, w tym ten internetowy, jest obecny w naszym życiu od dekad.
+Przez swoją bogatą historię stał się jedną z najlepiej opisanych i najbardziej dojrzałych domen.
+Większość wyzwań i problemów, które mogą się pojawić prze przy implementacji sklepu internetowego zostało już świetnie udokumentowanych, chociażby w książkach z archetypami.
+W obliczu tego, obecnie niewiele sklepów internetowych jest tworzone od zera, bez podparcia gotowymi rozwiązaniami.
+
+Przedstawiony sklep internetowy korzysta między innymi z ekosystemu Medusa.
+
+\textquote[Strona Medusa{\cite{medusajs-homepage}}]{
+    Tysiące programistów korzysta z otwartoźródłowych modułów i narzędzi handlowych Medusa, aby tworzyć bogate, niezawodne i wydajne aplikacje handlowe, nie wynajdując od nowa podstawowej logiki handlu.
+}
+
+Wykorzystanie tego typu rozwiązania znacząco przyśpiesza proces wdrożenia projektu.
+Modularna architektura Software Development Kit (SDK) Medusa zawiera moduły dla każdej niezbędnej funkcjonalności sklepu internetowego, chociażby moduł odpowiedzialny za obsługę katalogu produktów, logistykę czy płatności.
+To wszystko umożliwia nam skoncentrowanie się na elementach specyficznych dla tematu pracy.
+
+\subsubsection{Backend}
+
+\todo{Jak się tłumaczy backend? Czy tekst niżej jest potrzebny? Chyba każdy rozumie czym jest backend. Czy użyty język nie jest zbyt luźny?}
+
+Backend, w rozumieniu architektury wielowarstwowej, pełni kluczowy element systemu informatycznego.
+To warstwa stanowiąca całe zaplecze technologiczne, która w oparciu o zdefiniowane reguły biznesowe, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
+
+
+Serwer Medusa nie wymaga żadnych modyfikacji w kontekście prezentowanej pracy.
+Istotne jest jednak dołączenie odpowiednich wtyczek odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
+W tym celu zastosowano \mintinline{text}{medusa-fulfillment-manual}  i \mintinline{text}{medusa-payment-manual}.
+Na potrzeby tej pracy można je postrzegać jako atrapy (ang. mocks), które umożliwiają funkcjonowanie serwera bez konieczności integracji z rzeczywistymi systemami, takimi jak Stripe czy PayPal.
+
+\begin{figure}[H]
+    \begin{minted}{js}
+const plugins = [
+    `medusa-fulfillment-manual`,
+    `medusa-payment-manual`,
+    // ...
+];
+    \end{minted}
+    \label{fig:medusa-config-fulfillment-payment}
+\end{figure}
+
+Dla zapewnienia łatwości wdrożenia aplikacji, konieczne było jej skonteneryzowanie.
+W tym celu stworzono plik \mintinline{text}{Dockerfile}, który opisuje jak definiuje sposób budowania oraz uruchomienia aplikacji.
+
+\begin{figure}[H]
+    \inputminted{docker}{code/Dockerfile.backend}
+\end{figure}
+
+\subsubsection{Panel administracyjny}
+
+\todo{Zastanawiam się czy ta sekcja jest potrzebna. W sumie to ten admin panel zrobiłem tylko dlatego, że to było mega proste. Nie musiałem tego robić}
+
+Jednym z elementów rozbudowanego ekosystemu Medusa jest wtyczka panelu administracyjnego, która stanowi graficzny interfejs dla Admin REST API.
+Jej użycie umożliwia łatwe zarządzanie produktami, zamówieniami oraz ustawieniami sklepu.
+
+\begin{figure}[H]
+    \begin{minted}{js}
+const plugins = [
+    {
+        resolve: "@medusajs/admin",
+        options: { /* ... */ },
+    },
+    // ...
+];
+    \end{minted}
+\end{figure}
+
+Mimo że opisywana wtyczka jest integralnym elementem serwera, to stanowi ona osobną jednostkę wdrożeniową.
+Jest budowana do postaci statycznych plików html, css oraz javascript, które są umieszczane w plikach serwera Ngnix.
+
+
+\begin{figure}[H]
+    \inputminted{docker}{code/Dockerfile.admin}
+\end{figure}
+
+\subsubsection{Storefront}
+
+Storefront, podobnie do panelu administracyjnego, stanowi graficzny interfejs dla Medusa Store API.
+Jego podstawową funkcją jest prezentacja oferowanych produktów oraz umożliwienie użytkownikom przeprowadzenia procesu zakupowego.
+Storefront Medusa jest dostarczany jako osobny projekt w technologi Next.js.
+
+Analogicznie do serwera backend i panelu administracyjnego, serwer witryny internetowej jest osobną jednostką wdrożeniową.
+
+\begin{figure}[H]
+    \inputminted{docker}{code/Dockerfile.storefront}
+\end{figure}
+
 \subsection{Klaster Kubernetes}
 
 Platformą wdrożeniową dla serwisu jest klaster Kubernetes\cite{what-is-kubernetes}, składający się z czterech węzłów uruchomionych w chmurze obliczeniowej Oracle Cloud Infrastructure.
-Każdy węzeł posiada 1 procesor (OCPU) oraz 6 GB pamięci RAM. Większa liczba węzłów pozwala naszemu rozwiązaniowi na wysoką dostępność (ang\. high availability).
+Każdy węzeł posiada 1 procesor (OCPU) oraz 6 GB pamięci RAM. Większa liczba węzłów pozwala naszemu rozwiązaniowi na wysoką dostępność (ang. high availability).
 W przypadku awarii lub zakłóceń na jednym z węzłów, pozostałe przejmują jego obowiązki, tym samym zapewniając minimalizację przestojów w działaniu aplikacji.
 
 Warto dodać, że cała przedstawiona infrastruktura działa w ramach planu Always Free.
@@ -29,23 +117,21 @@ Każdy z węzłów został uruchomiony na osobnej maszynie wirtualnej (ang. virt
     \label{fig:oci-compute-instances}
 \end{figure}
 
-\begin{samepage}
-    Specyfikacja każdej z maszyn wirtualnych:
-    \begin{itemize}
-        \item Kształt: VM.Standard.A1.Flex (Procesor Arm od Ampere)
-        \item Liczba OCPU: 1
-        \item Przepustowość sieci: 1 Gbps
-        \item Pamięć RAM: 6 GB
-        \item Obraz: Canonical Ubuntu 22.04 aarch64 2023.02.15-0
-    \end{itemize}
+Specyfikacja każdej z maszyn wirtualnych:
+\begin{itemize}
+    \item Kształt: VM.Standard.A1.Flex (Procesor Arm od Ampere)
+    \item Liczba OCPU: 1
+    \item Przepustowość sieci: 1 Gbps
+    \item Pamięć RAM: 6 GB
+    \item Obraz: Canonical Ubuntu 22.04 aarch64 2023.02.15-0
+\end{itemize}
 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=\textwidth]{img/oci-instance-details}
-        \caption{Specyfikacja maszyny wirtualnej}
-        \label{fig:oci-instance-details}
-    \end{figure}
-\end{samepage}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/oci-instance-details}
+    \caption{Specyfikacja maszyny wirtualnej c1}
+    \label{fig:oci-instance-details}
+\end{figure}
 
 \subsubsection{Konfiguracja podsieci}
 
@@ -179,11 +265,14 @@ Dla przykładu mamy takie dystrybucje Kubernetes jak Amazon Elastic Kubernetes S
 \end{samepage}
 
 MicrokK8s zostało zainstalowane na każdej z maszyn wirtualnych następującym poleceniem:
-\begin{minted}{bash}
+\begin{figure}[H]
+    \begin{minted}{bash}
     apt update && \
         apt install docker.io -y && \
         snap install microk8s --classic --channel=1.23/stable
-\end{minted}
+    \end{minted}
+    \label{fig:install-microk8s}
+\end{figure}
 
 \subsubsection{Konfiguracja certyfikatów Kubernetes API}
 
@@ -203,7 +292,7 @@ DNS.5 = kubernetes.default.svc.cluster.local
 IP.1 = 127.0.0.1
 IP.2 = 10.152.183.1
     \end{minted}
-    \caption{Domyślna sekcja alt\_names na maszynie wirtualnej c1}
+    \caption{Domyślna sekcja alt\_names maszyny wirtualnej c1}
     \label{fig:domyslna-konfiguracja-alt-names}
 \end{figure}
 
@@ -237,12 +326,21 @@ Formowanie klastra w Kubernetes polega na zintegrowaniu węzłów uruchomionych 
 \begin{enumerate}
     \item Określ, która z maszyn wirtualnych będzie pełnić rolę głównego węzła (master node). To on będzie koordynować dodawanie kolejnych maszyn do klastra.
     \item Na wyznaczonym głównym węźle wykonaj polecenie \mintinline{bash}{microk8s add-node}. Jako odpowiedź uzyskasz polecenie do dołączenia do klastra, które będzie miało postać:
-    \begin{minted}{bash}
+    \begin{figure}[H]
+        \begin{minted}{bash}
 microk8s join <vm_private_ip>:25000/<token>
-    \end{minted}
+        \end{minted}
+        \label{fig:join-cluster-command}
+    \end{figure}
     \item Wykonaj otrzymane w poprzednim kroku polecenie na każdej maszynie wirtualnej, która ma zostać częścią klastra, ale jeszcze w nim nie jest.
     \item Dla każdej kolejnej maszyny, która ma dołączyć do klastra, powtarzaj kroki 2 i 3.
 \end{enumerate}
+
+\subsection{Baza danych}
+
+\todo{Baza PostgreSQL z helm charta}
+
+\subsection{Wdrożenie aplikacji}
 
 \subsubsection{Przestrzeń nazw}
 
@@ -251,4 +349,7 @@ Ich stosowanie umożliwia lepszą organizację i izolację zasobów, co przyczyn
 W kontekście środowiska Kubernetes przestrzenie nazw często reprezentują środowiska poszczególnych klientów (tenants) lub różne środowiska np. testowe i produkcyjne działające w jednym klastrze.
 
 Przestrzeń nazw tworzymy przez zaaplikowanie następującego manifestu:
-\inputminted{yaml}{code/store-namespace.yaml}
+\begin{figure}[H]
+    \inputminted{yaml}{code/store-namespace.yaml}
+    \label{fig:store-namespace}
+\end{figure}

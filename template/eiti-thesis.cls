@@ -67,6 +67,7 @@
 \RequirePackage{url}        % URL-sensitive line breaks
 \RequirePackage{xkeyval}    % Keys and class parameters
 \RequirePackage{xspace}     % Remove duplicated spaces
+\RequirePackage{xcolor}     % Colorful text
 
 %--------------------------------
 % Produce clickable hyperlinks
@@ -197,6 +198,8 @@
     \renewcommand{\listtablename}{Spis tabel}
     \renewcommand{\tablename}{Tabela}
 }
+
+\newcommand\todo[1]{\textcolor{red}{\textbf{TODO}: #1}}
 
 %--------------------------------
 % Streszczenie po polsku
