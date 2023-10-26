@@ -1,0 +1,20 @@
+# Install dependencies only when needed
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN yarn --frozen-lockfile
+
+# Rebuild the source code only when needed
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV ADMIN_BACKEND_URL "https://api.tulski.com/"
+RUN yarn build:admin -- --backend $ADMIN_BACKEND_URL
+
+# Production image, copy all the files and run ngnix
+FROM nginx:1.25.2-alpine AS runner
+COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

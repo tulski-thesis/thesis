@@ -1,0 +1,31 @@
+FROM node:18-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN yarn --frozen-lockfile
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN yarn build
+
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV production
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 webapp
+COPY --from=builder /app/public ./public
+RUN mkdir .next
+RUN chown webapp:nodejs .next
+COPY --from=builder --chown=webapp:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=webapp:nodejs /app/.next/static ./.next/static
+USER webapp
+EXPOSE 3000
+ENV PORT 3000
+ENTRYPOINT ["node", "server.js"]
