@@ -37,7 +37,7 @@ To warstwa stanowiąca całe zaplecze technologiczne, która w oparciu o zdefini
 
 Serwer Medusa nie wymaga żadnych modyfikacji w kontekście prezentowanej pracy.
 Istotne jest jednak dołączenie odpowiednich wtyczek odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
-W tym celu zastosowano \mintinline{text}{medusa-fulfillment-manual}  i \mintinline{text}{medusa-payment-manual}.
+W tym celu zastosowano \url{medusa-fulfillment-manual}  i \url{medusa-payment-manual}.
 Na potrzeby tej pracy można je postrzegać jako atrapy (ang. mocks), które umożliwiają funkcjonowanie serwera bez konieczności integracji z rzeczywistymi systemami, takimi jak Stripe czy PayPal.
 
 \begin{figure}[H]
@@ -52,7 +52,7 @@ const plugins = [
 \end{figure}
 
 Dla zapewnienia łatwości wdrożenia aplikacji, konieczne było jej skonteneryzowanie.
-W tym celu stworzono plik \mintinline{text}{Dockerfile}, który opisuje jak definiuje sposób budowania oraz uruchomienia aplikacji.
+W tym celu stworzono plik \url{Dockerfile}, który opisuje jak definiuje sposób budowania oraz uruchomienia aplikacji.
 
 \begin{figure}[H]
     \inputminted{docker}{code/Dockerfile.backend}
@@ -109,6 +109,8 @@ Kolejne podrozdziały mogą stanowić instrukcję stworzenia darmowego klastra K
 \subsubsection{Maszyny wirtualne}
 
 Każdy z węzłów został uruchomiony na osobnej maszynie wirtualnej (ang. virtual machine, VM).
+
+\todo{Nie za dużo screenshotów? Pozmiejszać je?}
 
 \begin{figure}[H]
     \centering
@@ -336,12 +338,6 @@ microk8s join <vm_private_ip>:25000/<token>
     \item Dla każdej kolejnej maszyny, która ma dołączyć do klastra, powtarzaj kroki 2 i 3.
 \end{enumerate}
 
-\subsection{Baza danych}
-
-\todo{Baza PostgreSQL z helm charta}
-
-\subsection{Wdrożenie aplikacji}
-
 \subsubsection{Przestrzeń nazw}
 
 Przestrzenią nazw (ang. namespace) nazywamy zbiór znaków (nazw) należących do jednego kontekstu.
@@ -353,3 +349,41 @@ Przestrzeń nazw tworzymy przez zaaplikowanie następującego manifestu:
     \inputminted{yaml}{code/store-namespace.yaml}
     \label{fig:store-namespace}
 \end{figure}
+
+\subsection{Baza danych}
+
+Dane są fizycznie przechowywane w pamięci trwałej maszyn wirtualnych.
+W klastrze MicroK8s aktywowano dodatek Hostpath-Storage, który udostępnia katalog hosta woluminom PersistentVolumes.
+Dodatek został uruchomiony poleceniem:
+\begin{figure}[H]
+    \begin{minted}{bash}
+microk8s enable hostpath-storage
+    \end{minted}
+    \label{fig:enable-hostpath-storage}
+\end{figure}
+
+Baza danych została zainstalowana przy użyciu narzędzia Helm, menadżera pakietów dla Kubernetes.
+Wykorzystano pakiet \mintinline{text}{bitnamicharts/postgresql}. Polecenie instalacyjne:
+
+\begin{figure}[H]
+    \begin{minted}{bash}
+helm install store-db \
+        --set auth.postgresPassword="<postgres-password>" \
+        --set auth.username="store-db-admin" \
+        --set auth.password="<password>" \
+        -f db/values.yaml \
+        -n store \
+        --create-namespace \
+        oci://registry-1.docker.io/bitnamicharts/postgresql
+    \end{minted}
+    \label{fig:helm-install-store-db}
+\end{figure}
+
+Zawartość pliku \mintinline{text}{db/values.yaml}:
+\begin{figure}[H]
+    \inputminted{yaml}{code/db-values.yaml}
+    \label{fig:db-values}
+\end{figure}
+
+\subsection{Wdrożenie aplikacji}
+
