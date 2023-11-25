@@ -6,7 +6,7 @@
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=\textwidth]{img/main}
+    \includegraphics[width=\textwidth]{img/main-infra-model}
     \caption{Projekt platformy}
     \label{fig:platform-model}
 \end{figure}
@@ -109,7 +109,7 @@ Przestrzeń \url{store} została stworzona poprzez zaaplikowanie manifestu (zob.
     \label{lst:store-namespace}
 \end{listing}
 
-\subsubsection{Baza danych}
+\subsubsection{Baza danych}\label{subsubsec:baza-danych}
 
 Dane sklepu internetowego są fizycznie przechowywane na dyskach maszyn wirtualnych.
 W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. listing~\ref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
@@ -176,6 +176,21 @@ Następnie, w kolejnych etapach \url{deps}, \url{builder} i \url{runner}, są ko
     \caption{Plik Dockerfile.backend}
     \label{lst:code-dockerfile-backend}
 \end{listing}
+
+Backend został zainstalowany i skonfigurowany w środowisku Kubernetes.
+Wszystkie komponenty i mechanizmy, które składają się na to wdrożenie, zostały przedstawione na rysunku~\ref{fig:kubernetes-backend}.
+Wdrożenie odbywa się przez Deployment, co umożliwia automatyzację i skalowanie aplikacji.
+Komunikacja z serwisem odbywa się poprzez NGINX Virtual Server, który szyfruje dane za pomocą certyfikatu TLS wygenerowanego przez Cert-Manager.
+Backend korzysta z bazy danych PostgresSQL (zob. \autoref{subsubsec:baza-danych}).
+Obserwowalność działania aplikacji zapewnia Prometheus Service Monitor.
+Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes Secrets.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/kubernetes-backend}
+    \caption{Backend w środowisku Kubernetes}
+    \label{fig:kubernetes-backend}
+\end{figure}
 
 \subsubsection{Panel administracyjny}
 
