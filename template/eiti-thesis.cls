@@ -59,6 +59,9 @@
 \RequirePackage{float}      % Improved float support
 \RequirePackage{lipsum}     % Lorem ipsum
 \RequirePackage[outputdir=out]{minted}   % Code listings
+\RequirePackage{tcolorbox}
+\RequirePackage{etoolbox}
+\RequirePackage{xpatch}
 \RequirePackage{multicol}   % Multiple columns
 \RequirePackage{longtable}  % Multi-page tables
 \RequirePackage{setspace}   % Set space between lines
@@ -68,6 +71,9 @@
 \RequirePackage{xkeyval}    % Keys and class parameters
 \RequirePackage{xspace}     % Remove duplicated spaces
 \RequirePackage{xcolor}     % Colorful text
+\RequirePackage[page,header]{appendix}
+\RequirePackage{titletoc}  % Custom table of contents ex. appendices
+
 
 %--------------------------------
 % Produce clickable hyperlinks
@@ -81,8 +87,6 @@
     linkcolor=black,
     urlcolor=black
 }
-
-\renewcommand{\figureautorefname}{Rysunek}
 
 %--------------------------------------
 % Default margin is 2.5 cm
@@ -112,6 +116,7 @@
 \setstretch{1.2}
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
+\raggedbottom
 
 %--------------------------------
 % Table of Contents setup
@@ -192,6 +197,17 @@
 \newtheorem{definition}{Definicja}
 \newtheorem{axiom}{Aksjomat}
 \newtheorem{assumption}{Założenie}
+\renewcommand{\figureautorefname}{Rysunek}
+\renewcommand{\tableautorefname}{Tabela}
+\renewcommand{\equationautorefname}{Równanie}
+\renewcommand{\chapterautorefname}{Rozdział}
+\renewcommand{\appendixautorefname}{Załącznik}
+\renewcommand{\sectionautorefname}{Rozdział}
+\renewcommand{\subsectionautorefname}{Podrozdział}
+\renewcommand{\subsubsectionautorefname}{Podrozdział}
+\providecommand*{\listingautorefname}{Listing}
+\renewcommand{\appendixtocname}{Spis załączników}
+\renewcommand{\appendixpagename}{Spis załączników}
 
 \AtBeginDocument{
     \renewcommand{\listfigurename}{Spis rysunków}
@@ -231,12 +247,6 @@
         clip,
         pagecommand={\thispagestyle{plain}}
     ]{template/oswiadczenie_autora_pracy}
-%
-%    \begin{figure}[ht]
-%        \vspace{-55pt}
-
-%        \makebox[\textwidth]{}
-%    \end{figure}
 }
 
 %--------------------------------
@@ -321,26 +331,4 @@
 \newcommand{\acronym}[2]{
     \par\noindent\hspace{0.4em}
     {\textbf{#1} -- #2}
-}
-
-%--------------------------------
-% Spis załączników - makra
-%--------------------------------
-\newcommand{\nocontentsline}[3]{}
-\newcommand{\tocless}[2]{%
-    \bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup
-}
-
-\newcommand{\@appendixtitle}{Załącznik}
-
-\let\standardappendix\appendix
-\renewcommand\appendix[1]{%
-    \tocless\section{\hspace*{1.5em} #1}
-    \addcontentsline{app}{subsection}{\hspace*{-1.1em}\arabic{section}.\hspace*{0.5em} #1}
-}
-
-\newcommand\listofappendicestoc{
-    \section*{Spis załączników}\@starttoc{app}
-    \standardappendix
-    \renewcommand{\thesection}{\@appendixtitle~\arabic{section}}
 }

@@ -49,22 +49,25 @@
 % Oświadczenie o autorstwie
 %--------------------------------------
 \newpage %\cleardoublepage  % Zaczynamy od nieparzystej strony
-\pagestyle{plain}
 \makeauthorship
 
 %--------------------------------------
 % Spis treści
 %--------------------------------------
 \newpage %\cleardoublepage % Zaczynamy od nieparzystej strony
-\tableofcontents
+
+\section*{\contentsname}
+
+\startcontents[mainsections]
+\printcontents[mainsections]{l}{1}{\setcounter{tocdepth}{3}}
 
 %--------------------------------------
 % Rozdziały
 %--------------------------------------
 %\cleardoublepage % Zaczynamy od nieparzystej strony
 \pagestyle{headings}
-
-\input{tex/03-projekt-platformy}
+\input{tex/wykorzystane-narzedzia}
+\input{tex/projekt-platformy}
 
 %--------------------------------------------
 % Literatura
@@ -82,9 +85,20 @@
 % Pamiętaj, żeby posortować symbole alfabetycznie
 \vspace{0.8cm}
 \acronymlist
-\acronym{OCPU}{ang. The Oracle CPU, jednostka obliczeniowa wykorzystywana w chmurze Oracle Cloud Infrastructure}
-\acronym{OCI}{Oracle Cloud Infrastructure, chmura obliczeniowa Oracle}
+\acronym{OCPU}{ang. \emph{The Oracle CPU}}
+\acronym{OCI}{Oracle Cloud Infrastructure}
 \acronym{LB}{Load Balancer}
 \acronym{NLB}{Network Load Balancer}
 
-\end{document} % Dobranoc.
+\newpage
+\appendix
+\appendixpage
+\addappheadtotoc
+
+\stopcontents[mainsections]
+\startcontents[appendices]
+\printcontents[appendices]{l}{1}{\setcounter{tocdepth}{3}}
+
+\include{tex/instrukcja-kubernetes}
+
+\end{document}
