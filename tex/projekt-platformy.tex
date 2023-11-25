@@ -1,0 +1,190 @@
+\newpage
+
+\section{Projekt platformy}\label{sec:projekt-platformy}
+
+\todo{Wprowadzenie}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\textwidth]{img/main}
+    \caption{Projekt platformy}
+    \label{fig:platform-model}
+\end{figure}
+
+\subsection{Platforma wdrożeniowa Kubernetes}\label{subsec:platforma-wdrozeniowa-kubernetes}
+
+\todo{Platforma wdrożeniowa Kubernetes}
+
+\subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
+
+\todo{Konfiguracja DNS}
+
+\subsection{Ingress Controller}\label{subsec:ingress-controller}
+
+\begin{listing}[H]
+    \begin{minted}{bash}
+helm install ingress-nginx \
+    --version 1.0.2 \
+    --set controller.kind="daemonset" \
+    --set controller.hostNetwork=true \
+    --set controller.ingressClass.name="public" \
+    --set controller.service.create=false \
+    --set controller.enableCertManager=true \
+    -n ingress-nginx \
+    --create-namespace \
+    oci://ghcr.io/nginxinc/charts/nginx-ingress
+    \end{minted}
+    \caption{Polecenie instalujące pakiet oci://ghcr.io/nginxinc/charts/nginx-ingress}
+    \label{lst:helm-install-ingress-controller}
+\end{listing}
+
+
+\subsection{Monitoring}\label{subsec:monitoring}
+
+\todo{Observability Plane}
+
+\begin{listing}[H]
+    \begin{minted}{bash}
+helm install observability \
+    -f observability/values.yaml \
+    --set "grafana.adminPassword=<adminPassword>" \
+    -n observability \
+    --create-namespace \
+    prometheus-community/kube-prometheus-stack
+    \end{minted}
+    \caption{Polecenie instalujące pakiet prometheus-community/kube-prometheus-stack}
+    \label{lst:helm-install-observability}
+\end{listing}
+
+\begin{figure}[p]
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{img/grafana-kubernetes-networking-cluster-dashboard}
+        \caption{Dashboard Kubernetes / Networking / Cluster}
+        \label{fig:grafana-kubernetes-networking-cluster-dashboard}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{img/grafana-node-explorer-dashboard}
+        \caption{Dashboard Node Exporter / Nodes}
+        \label{fig:grafana-node-exlorer-dashboard}
+    \end{figure}
+\end{figure}
+
+\subsection{Cert Manager}\label{subsec:cert-manager}
+
+\begin{listing}[H]
+    \begin{minted}{bash}
+helm install cert-manager \
+    --version v1.13.1 \
+    --set installCRDs=true \
+    --namespace cert-manager \
+    --create-namespace \
+    jetstack/cert-manager
+    \end{minted}
+    \caption{Polecenie instalujące pakiet jetstack/cert-manager}
+    \label{lst:helm-install-cert-manager}
+\end{listing}
+
+\subsection{Docker Registry}\label{subsec:docker-registry}
+
+\todo{Docker Registry}
+
+\subsection{Store}\label{subsec:store}
+
+\subsubsection{Przestrzeń nazw}
+
+Przestrzenią nazw (ang. \emph{namespace}) nazywamy zbiór znaków (nazw) należących do jednego kontekstu.
+Ich stosowanie umożliwia lepszą organizację i izolację zasobów, co przyczynia się do podniesienia bezpieczeństwa.
+W środowisku Kubernetes przestrzenie nazw umożliwiają segmentację jednego klastra na mniejsze, logicznie wyizolowane jednostki.
+Przestrzenie nazw mogą reprezentować środowiska różnych klientów (\emph{tenants}) lub środowiska na różnych poziomach (np. testowe i produkcyjne).
+
+Opisywana platforma posiada przestrzeń nazw o nazwie \url{store}, która zawiera wszystkie elementy niezbędne do działania sklepu internetowego \url{store.tulski.com}.
+Przestrzeń \url{store} została stworzona poprzez zaaplikowanie manifestu (zob. listing~\ref{lst:store-namespace}).
+
+\begin{listing}[H]
+    \inputminted[xleftmargin=20pt,linenos]{yaml}{code/store-namespace.yaml}
+    \caption{Manifest tworzący przestrzeń nazw store}
+    \label{lst:store-namespace}
+\end{listing}
+
+\subsubsection{Baza danych}
+
+Dane sklepu internetowego są fizycznie przechowywane na dyskach maszyn wirtualnych.
+W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. listing~\ref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
+
+\begin{listing}[H]
+    \begin{minted}{bash}
+microk8s enable hostpath-storage
+    \end{minted}
+    \caption{Polecenie aktywujące dodatek Hostpath-Storage}
+    \label{lst:enable-hostpath-storage}
+\end{listing}
+
+\noindent Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm (zob. rozdział~\ref{subsec:helm}).
+Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \url{bitnamicharts/postgresql} w przestrzeni \url{store}.
+
+\begin{listing}[H]
+    \begin{minted}{bash}
+helm install store-db \
+    --set auth.postgresPassword="<postgres-password>" \
+    --set auth.username="store-db-admin" \
+    --set auth.password="<password>" \
+    --set auth.database="store" \
+    --set metrics.enabled=true \
+    --set metrics.serviceMonitor.enabled=true \
+    --set metrics.serviceMonitor.namespace="observability" \
+    --set metrics.serviceMonitor.labels.release="observability" \
+    -n store \
+    oci://registry-1.docker.io/bitnamicharts/postgresql
+    \end{minted}
+    \caption{Polecenie instalujące pakiet bitnamicharts/postgresql}
+    \label{lst:helm-install-store-db}
+\end{listing}
+
+\subsubsection{Backend}
+
+Backend, w rozumieniu architektury wielowarstwowej, pełni kluczowy element systemu informatycznego.
+To warstwa stanowiąca zaplecze technologiczne, która w oparciu na zdefiniowanych regułach biznesowych, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
+
+Serwer dostarczany przez projekt Medusa nie wymagał żadnych modyfikacji.
+Jedynym wymogiem do jego uruchomienia było wybranie i dołączenie odpowiednich wtyczek (ang. \emph{plugins}) odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
+W tym celu zastosowano odpowiednio medusa-fulfillment-manual  i medusa-payment-manual (zob. \autoref{lst:medusa-config-fulfillment-payment}).
+Obie te wtyczki można postrzegać jako atrapy (ang. \emph{mocks}), które umożliwiają funkcjonowanie serwera bez konieczności integracji z rzeczywistymi serwisami, takimi jak Stripe czy PayPal.
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=20pt,linenos]{js}
+const plugins = [
+    `medusa-fulfillment-manual`,
+    `medusa-payment-manual`,
+    // ...
+];
+    \end{minted}
+    \caption{Konfiguracja pluginów medusa-fulfillment-manual i medusa-payment-manual}
+    \label{lst:medusa-config-fulfillment-payment}
+\end{listing}
+
+Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie było jego skonteneryzowania.
+Proces ten został zrealizowany przy użyciu narzędzia Docker (zob. podrozdział~\ref{subsec:docker}).
+W tym celu stworzono plik Dockerfile (zob. listing~\ref{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
+Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \url{node:18-alpine}.
+Następnie, w kolejnych etapach \url{deps}, \url{builder} i \url{runner}, są kolejno instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
+
+\begin{listing}[H]
+    \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.backend}
+    \caption{Plik Dockerfile.backend}
+    \label{lst:code-dockerfile-backend}
+\end{listing}
+
+\subsubsection{Panel administracyjny}
+
+\todo{Panel administracyjny}
+
+\subsubsection{Witryna internetowa}
+
+\todo{Witryna internetowa}
+
+\subsubsection{Populacja danych}
+
+\todo{Populacja danych}

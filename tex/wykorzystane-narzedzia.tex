@@ -1,0 +1,45 @@
+\newpage
+
+\section{Wykorzystane narzędzia}\label{sec:wykorzystane-narzedzia}
+
+\todo{Ten rodział jest o narzędziach - o czym innym miałby być?}
+
+\subsection{Docker}\label{subsec:docker}
+
+Docker \todo{to narzędzie do... konteneryzacji?}
+Opisywana w pracy platforma wykorzystuje technologię konteneryzacji oferowaną przez Docker.
+
+\subsection{Kubernetes}\label{subsec:kubernetes}
+
+\todo{Kubernetes to narzędzie do...}
+
+\subsection{Helm}\label{subsec:helm}
+
+Helm to narzędzie będące menadżerem pakietów w środowisku Kubernetes.
+Narzędzie znacznie ułatwia proces wdrażania i utrzymywania aplikacji, szczególnie jeśli są one skomplikowane i złożone z kilku elementów.
+
+\subsection{MicroK8s}\label{subsec:microk8s}
+
+Kubernetes stał się niejako standardem w branży IT\@.
+Wraz z wzrostem jego popularności, kolejne osoby oraz firmy zaczęły dostosowywać oryginalny projekt do swoich potrzeb, tym samym tworząc jego własne dystrybucje.
+Chociaż wszystkie te dystrybucje mają wspólny fundament, jakim jest oryginalny projekt Kubernetes, każda z nich wnosi unikalne funkcje, narzędzia i optymalizacje.
+Przykładowo, dystrybucje takie jak Amazon Elastic Kubernetes Service (Amazon EKS), Google Kubernetes Engine (GKE) czy Azure Kubernetes Service (AKS) zostały specjalnie dostosowane pod specyficzne środowisko chmury poszczególnych dostawcy.
+
+Niniejsza praca wykorzystuje dystrybucję MicroK8s\cite{microk8s-docs-home} ze względu na:
+\begin{enumerate}
+    \item łatwość instalacji i uruchomienia,
+    \item fakt, że jest to lekka dystrybucja K8s, co przekłada się na mniejsze wymagania sprzętowe oraz mniejsze zużycie zasobów,
+    \item stabilność - dystrybucja jest przygotowania do produkcyjnego uruchomienia,
+    \item prostotę zarządzania - MicroK8s udostępnia rozbudowany interfejs wiersza poleceń (ang. \emph{command line interface, CLI}) ułatwiający konfigurację i utrzymanie środowiska.
+\end{enumerate}
+
+\subsection{Medusa}\label{subsec:medusa}
+
+Handel, w tym ten internetowy, jest obecny w naszym życiu od dekad.
+Przez swoją bogatą historię stał się jedną z najlepiej opisanych i najbardziej dojrzałych domen.
+Większość wyzwań i problemów, które mogą się pojawić przy implementacji sklepu internetowego zostało już świetnie udokumentowanych, chociażby w książkach z archetypami (pierwowzorami projektowymi).
+W obliczu tego, obecnie niewiele sklepów internetowych jest tworzone od zera, bez podparcia gotowymi rozwiązaniami.
+
+Część praktyczna niniejszej pracy korzysta z rozbudowanego ekosystemu Medusa\cite{medusajs-homepage}.
+Wykorzystanie tego typu rozwiązania znacząco przyśpieszyło proces wdrożenia platformy i pozwoliło skupić się na elementach specyficznych dla tematu pracy.
+Modularna architektura \emph{Software Development Kit (SDK)} projektu Medusa zawiera moduły dla każdej niezbędnej funkcji sklepu internetowego, chociażby moduł odpowiedzialny za obsługę katalogu produktów, logistykę czy płatności.
