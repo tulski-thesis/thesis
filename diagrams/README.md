@@ -7,5 +7,5 @@ It uses Graphviz to render the diagram, so you need to install Graphviz to use d
 macOS users can download the Graphviz via brew install graphviz if you're using Homebrew.
 
 ```bash
-pip install diagrams
+pip3 install diagrams
 ```
