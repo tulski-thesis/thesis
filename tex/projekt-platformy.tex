@@ -2,18 +2,26 @@
 
 \section{Projekt platformy}\label{sec:projekt-platformy}
 
-\todo{Wprowadzenie}
+Niniejszy rozdział poświęcony jest platformie sklepu internetowego tulski.com.
+Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne, które razem tworzą kompletny system e-commerce.
+
+Jak przedstawiono na rysunku~\ref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \url{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
+
+Szczegółowy opis i konfiguracja poszczególnych komponentów została przedstawiona w dalszej części rozdziału.
 
 \begin{figure}[p]
     \centering
     \includegraphics[width=\textwidth]{img/main-infra-model}
-    \caption{Projekt platformy}
+    \caption{Model platformy sklepu internetowego tulski}
     \label{fig:platform-model}
 \end{figure}
 
-\subsection{Platforma wdrożeniowa Kubernetes}\label{subsec:platforma-wdrozeniowa-kubernetes}
+\subsection{Platforma wdrożeniowa}\label{subsec:platforma-wdrozeniowa-kubernetes}
 
-\todo{Platforma wdrożeniowa Kubernetes}
+Platformą wdrożeniową dla projektu jest infrastruktura w postaci klastra Kubernetes uruchomionego w chmurze Oracle Cloud Infrastructure.
+Klaster składa się z czterech węzłów, każdy wyposażony w 1 procesor Oracle CPU oraz 6 GB pamięci RAM\@.
+W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowego pomiędzy węzłami klastra.
+Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w załączniku~\ref{sec:instrukcja-stworzenia-klastra-kubernetes}.
 
 \subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
 
