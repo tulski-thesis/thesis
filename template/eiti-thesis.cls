@@ -115,6 +115,7 @@
 %--------------------------------
 \setstretch{1.2}
 \counterwithin{figure}{section}
+\counterwithin{listing}{section}
 \counterwithin{table}{section}
 \raggedbottom
 
