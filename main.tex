@@ -14,7 +14,7 @@
     nohyphenation=false % You may turn off hyphenation, if don't like.
 ]{template/eiti-thesis}
 
-\bibliography{ref} % Plik .bib z bibliografią
+\addbibresource{ref.bib} % Plik .bib z bibliografią
 
 \begin{document}
 
@@ -100,6 +100,6 @@
 \startcontents[appendices]
 \printcontents[appendices]{l}{1}{\setcounter{tocdepth}{3}}
 
-\include{tex/instrukcja-kubernetes}
+\input{tex/instrukcja-kubernetes}
 
 \end{document}

@@ -39,7 +39,6 @@
     protrusion=true,
     expansion=true
 ]{microtype}
-\RequirePackage{csquotes}
 \RequirePackage{array}      % Advanced table column formats
 \RequirePackage[            % Bibliography in biber
     backend=biber,
@@ -59,6 +58,7 @@
 \RequirePackage{float}      % Improved float support
 \RequirePackage{lipsum}     % Lorem ipsum
 \RequirePackage[outputdir=out]{minted}   % Code listings
+\RequirePackage{csquotes}
 \RequirePackage{tcolorbox}
 \RequirePackage{etoolbox}
 \RequirePackage{xpatch}
