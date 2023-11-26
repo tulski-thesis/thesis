@@ -196,14 +196,12 @@ Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes
     \label{fig:kubernetes-backend}
 \end{figure}
 
-\subsubsection{Panel administracyjny}
+\subsubsection{Panel administratora}
 
-\todo{W tekście niżej odmieniam słowo backend (backendem, backendu itp.) - nie wiem czy to poprawne}
-
-Panel administracyjny to kolejny element rozbudowanego ekosystemu Medusa, który jest dostarczany w formie wtyczki (ang. \emph{plugin}).
+Panel administratora to kolejny element rozbudowanego ekosystemu Medusa, który jest dostarczany w formie wtyczki (ang. \emph{plugin}).
 Panel stanowi graficzny interfejs dla Admin REST API. Jego zastosowanie umożliwia łatwe zarządzanie produktami, zamówieniami oraz ustawieniami sklepu.
 
-Wtyczka panelu administracyjnego, skonfigurowana w plikach serwera backend (zob. listing~\ref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
+Wtyczka panelu administratora, skonfigurowana w plikach serwera backend (zob. listing~\ref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
 Zdecydowano się na drugą opcję, ponieważ pozwala ona na niezależne skalowanie obu aplikacji.
 
 \begin{listing}[H]
@@ -220,28 +218,60 @@ const plugins = [
     \label{lst:medusajs-admin-plugin}
 \end{listing}
 
-Panel administracyjny jest budowany do postaci statycznych plików HTML, CSS i JavaScript, które następnie są hostowane przez serwer NGINX (zob. listing~\ref{lst:medusajs-admin-dockerfile}).
+Panel administratora jest budowany do postaci statycznych plików HTML, CSS i JavaScript, które następnie są hostowane przez serwer NGINX (zob. listing~\ref{lst:medusajs-admin-dockerfile}).
 
 \begin{listing}[H]
     \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.admin}
-    \caption{Plik Dockerfile panelu administracyjnego}
+    \caption{Plik Dockerfile panelu administratora}
     \label{lst:medusajs-admin-dockerfile}
 \end{listing}
 
-Panel administracyjny w środowisku Kubernetes funkcjonuje jako osobna jednostka wdrożeniowa, niezależna od backendu.
+Panel administratora w środowisku Kubernetes funkcjonuje jako osobna jednostka wdrożeniowa, niezależna od backendu.
 Wykorzystuje NGINX Virtual Server z szyfrowaniem TLS. Certyfikat jest generowany przez Cert-Manager.
 Architektura obejmuje service oraz deployment z jednym podem, co przedstawiano na rysunku~\ref{fig:kubernetes-admin}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img/kubernetes-admin-panel}
-    \caption{Panel administracyjny w środowisku Kubernetes}
+    \caption{Panel administratora w środowisku Kubernetes}
     \label{fig:kubernetes-admin}
 \end{figure}
 
 \subsubsection{Witryna internetowa}
 
-\todo{Witryna internetowa}
+Witryna internetowa, będąca warstwą prezentacyjną systemu, odgrywa kluczową rolę w interakcji z klientem końcowym.
+Główny zadaniem tej witryny jest prezentacja oferowanych produktów oraz umożliwienie użytkownikom przeprowadzenia procesu zakupowego.
+Projekt Medusa dostarcza szablon witryny sklepu internetowego w formie osobnego projektu o nazwie Storefront.
+Storefront, jako graficzny interfejs dla Store REST API, stanowi integralną część reszty systemu Medusa.
+
+Witryna internetowa, analogicznie do części serwerowej oraz panelu administratora, została zintegrowana w strukturze całej platformy poprzez proces skonteneryzowania i wdrożenia w środowisku Kubernetes (zob. rysunek~\ref{fig:kubernetes-storefront}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/kubernetes-storefront}
+    \caption{Witryna internetowa w środowisku Kubernetes}
+    \label{fig:kubernetes-storefront}
+\end{figure}
+
+Rysunek~\ref{fig:storefront-homepage} przedstawia stronę domową sklepu, akcentując powód jego powstania, czyli niniejszą pracę dyplomową.
+Natomiast rysunek~\ref{fig:storefront-products} ilustruje stronę z produktami, ukazując sposób prezentacji asortymentu.
+Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfejsie użytkownika sklepu internetowego.
+
+\begin{figure}[p]
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{img/storefront-homepage}}
+        \caption{Strona domowa sklepu internetowego}
+        \label{fig:storefront-homepage}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{img/storefront-products}}
+        \caption{Strona z produktami sklepu internetowego}
+        \label{fig:storefront-products}
+    \end{figure}
+\end{figure}
 
 \subsubsection{Populacja danych}
 
