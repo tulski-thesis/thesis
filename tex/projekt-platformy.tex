@@ -23,13 +23,12 @@ Klaster składa się z czterech węzłów, każdy wyposażony w 1 procesor Oracl
 W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowego pomiędzy węzłami klastra.
 Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w załączniku~\ref{sec:instrukcja-stworzenia-klastra-kubernetes}.
 
-\subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
-
-\todo{Konfiguracja DNS}
-
 \subsection{Ingress Controller}\label{subsec:ingress-controller}
 
-\todo{Ingress Controller}
+Zastosowano NGNIX Ingress Controller, czyli jedną z najpopularniejszych implementacji interfejsu Ingress w środowisku Kubernetes.
+Przy użyciu polecenia Helm (zob. listing~\ref{lst:helm-install-ingress-controller}) zainstalowano pakiet \url{oci://ghcr.io/nginxinc/charts/nginx-ingress} w wersji 1.0.2.
+NGINX Ingress Controller działa jako DaemonSet, co oznacza uruchomienie jednej instancji na każdym z węzłów klastra.
+Dodano integrację z Cert-Manager do zarządzania certyfikatami TLS\@.
 
 \begin{listing}[H]
     \begin{minted}{bash}
@@ -48,6 +47,19 @@ helm install ingress-nginx \
     \label{lst:helm-install-ingress-controller}
 \end{listing}
 
+\newpage
+
+\subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
+
+W konfiguracji DNS platformy tulski zastosowano usługi Cloudflare, dodając pięć rekordów A (admin, api, monitoring, registry, store), wszystkie kierujące na publiczny adres IP Load Balancera.
+Wszystkie rekordy korzystają z Cloudflare Proxy.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/dns-tulski-com}
+    \caption{Tabela rekordów DNS dla domeny tulski.com}
+    \label{fig:dns-tulski-com}
+\end{figure}
 
 \subsection{Monitoring}\label{subsec:monitoring}
 
