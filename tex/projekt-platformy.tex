@@ -21,6 +21,8 @@
 
 \subsection{Ingress Controller}\label{subsec:ingress-controller}
 
+\todo{Ingress Controller}
+
 \begin{listing}[H]
     \begin{minted}{bash}
 helm install ingress-nginx \
@@ -56,23 +58,25 @@ helm install observability \
     \label{lst:helm-install-observability}
 \end{listing}
 
-\begin{figure}[p]
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=\textwidth]{img/grafana-kubernetes-networking-cluster-dashboard}
-        \caption{Dashboard Kubernetes / Networking / Cluster}
-        \label{fig:grafana-kubernetes-networking-cluster-dashboard}
-    \end{figure}
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=\textwidth]{img/grafana-node-explorer-dashboard}
-        \caption{Dashboard Node Exporter / Nodes}
-        \label{fig:grafana-node-exlorer-dashboard}
-    \end{figure}
-\end{figure}
+%\begin{figure}[p]
+%    \begin{figure}[H]
+%        \centering
+%        \includegraphics[width=\textwidth]{img/grafana-kubernetes-networking-cluster-dashboard}
+%        \caption{Dashboard Kubernetes / Networking / Cluster}
+%        \label{fig:grafana-kubernetes-networking-cluster-dashboard}
+%    \end{figure}
+%
+%    \begin{figure}[H]
+%        \centering
+%        \includegraphics[width=\textwidth]{img/grafana-node-explorer-dashboard}
+%        \caption{Dashboard Node Exporter / Nodes}
+%        \label{fig:grafana-node-exlorer-dashboard}
+%    \end{figure}
+%\end{figure}
 
 \subsection{Cert Manager}\label{subsec:cert-manager}
+
+\todo{Cert Manager}
 
 \begin{listing}[H]
     \begin{minted}{bash}
@@ -194,7 +198,46 @@ Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes
 
 \subsubsection{Panel administracyjny}
 
-\todo{Panel administracyjny}
+\todo{W tekście niżej odmieniam słowo backend (backendem, backendu itp.) - nie wiem czy to poprawne}
+
+Panel administracyjny to kolejny element rozbudowanego ekosystemu Medusa, który jest dostarczany w formie wtyczki (ang. \emph{plugin}).
+Panel stanowi graficzny interfejs dla Admin REST API. Jego zastosowanie umożliwia łatwe zarządzanie produktami, zamówieniami oraz ustawieniami sklepu.
+
+Wtyczka panelu administracyjnego, skonfigurowana w plikach serwera backend (zob. listing~\ref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
+Zdecydowano się na drugą opcję, ponieważ pozwala ona na niezależne skalowanie obu aplikacji.
+
+\begin{listing}[H]
+        \begin{minted}[xleftmargin=20pt,linenos]{js}
+const plugins = [
+    {
+        resolve: "@medusajs/admin",
+        options: { /* ... */ },
+    },
+    // ...
+];
+        \end{minted}
+    \caption{Dołączenie wtyczki @medusajs/admin}
+    \label{lst:medusajs-admin-plugin}
+\end{listing}
+
+Panel administracyjny jest budowany do postaci statycznych plików HTML, CSS i JavaScript, które następnie są hostowane przez serwer NGINX (zob. listing~\ref{lst:medusajs-admin-dockerfile}).
+
+\begin{listing}[H]
+    \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.admin}
+    \caption{Plik Dockerfile panelu administracyjnego}
+    \label{lst:medusajs-admin-dockerfile}
+\end{listing}
+
+Panel administracyjny w środowisku Kubernetes funkcjonuje jako osobna jednostka wdrożeniowa, niezależna od backendu.
+Wykorzystuje NGINX Virtual Server z szyfrowaniem TLS. Certyfikat jest generowany przez Cert-Manager.
+Architektura obejmuje service oraz deployment z jednym podem, co przedstawiano na rysunku~\ref{fig:kubernetes-admin}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/kubernetes-admin-panel}
+    \caption{Panel administracyjny w środowisku Kubernetes}
+    \label{fig:kubernetes-admin}
+\end{figure}
 
 \subsubsection{Witryna internetowa}
 
