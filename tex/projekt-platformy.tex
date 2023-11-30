@@ -1,6 +1,6 @@
 \newpage
 
-\section{Projekt platformy}\label{sec:projekt-platformy}
+\section{Projekt i wykonanie platformy}\label{sec:projekt-platformy}
 
 Niniejszy rozdział poświęcony jest platformie sklepu internetowego tulski.com.
 Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne, które razem tworzą kompletny system e-commerce.
@@ -28,7 +28,7 @@ Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z
 Zastosowano NGNIX Ingress Controller, czyli jedną z najpopularniejszych implementacji interfejsu Ingress w środowisku Kubernetes.
 Przy użyciu polecenia Helm (zob. listing~\ref{lst:helm-install-ingress-controller}) zainstalowano pakiet \url{oci://ghcr.io/nginxinc/charts/nginx-ingress} w wersji 1.0.2.
 NGINX Ingress Controller działa jako DaemonSet, co oznacza uruchomienie jednej instancji na każdym z węzłów klastra.
-Dodano integrację z Cert-Manager do zarządzania certyfikatami TLS\@.
+Dodano integrację z cert-manager do zarządzania certyfikatami TLS\@.
 
 \begin{listing}[H]
     \begin{minted}{bash}
@@ -51,7 +51,7 @@ helm install ingress-nginx \
 
 \subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
 
-W konfiguracji DNS platformy tulski zastosowano usługi Cloudflare, dodając pięć rekordów A (admin, api, monitoring, registry, store), wszystkie kierujące na publiczny adres IP Load Balancera.
+Do konfiguracji DNS platformy tulski zastosowano usługi Cloudflare, dodając pięć rekordów A (admin, api, monitoring, registry, store), wszystkie kierujące na publiczny adres IP Load Balancera.
 Wszystkie rekordy korzystają z Cloudflare Proxy.
 
 \begin{figure}[H]
@@ -94,9 +94,10 @@ helm install observability \
 %    \end{figure}
 %\end{figure}
 
-\subsection{Cert Manager}\label{subsec:cert-manager}
+\subsection{Cert-Manager}\label{subsec:cert-manager-impl}
 
-\todo{Cert Manager}
+Wdrożenie cert-manager zostało zrealizowane przy użyciu narzędzia Helm.
+Wykorzystano pakiet \url{jetstack/cert-manager} w wersji 1.13.1 (zob. listing~\ref{lst:helm-install-cert-manager}).
 
 \begin{listing}[H]
     \begin{minted}{bash}
@@ -146,7 +147,7 @@ microk8s enable hostpath-storage
     \label{lst:enable-hostpath-storage}
 \end{listing}
 
-\noindent Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm (zob. rozdział~\ref{subsec:helm}).
+\noindent Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm.
 Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \url{bitnamicharts/postgresql} w przestrzeni \url{store}.
 
 \begin{listing}[H]
@@ -190,7 +191,7 @@ const plugins = [
 \end{listing}
 
 Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie było jego skonteneryzowania.
-Proces ten został zrealizowany przy użyciu narzędzia Docker (zob. podrozdział~\ref{subsec:docker}).
+Proces ten został zrealizowany przy użyciu narzędzia Docker.
 W tym celu stworzono plik Dockerfile (zob. listing~\ref{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
 Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \url{node:18-alpine}.
 Następnie, w kolejnych etapach \url{deps}, \url{builder} i \url{runner}, są kolejno instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
