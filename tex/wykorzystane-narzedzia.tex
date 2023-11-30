@@ -2,23 +2,19 @@
 
 \section{Wykorzystane narzędzia}\label{sec:wykorzystane-narzedzia}
 
-W tym rozdziale zaprezentowane zostaną technologie i oprogramowanie, które stanowiły podstawę do stworzenia i zarządzania środowiska badawczego.
+W tym rozdziale zaprezentowane zostaną technologie i oprogramowanie, które stanowiły podstawę do stworzenia i zarządzaniem platformy badawczej.
 
 \subsection{Docker}\label{subsec:docker}
 
-Docker to platforma oprogramowania umożliwiająca automatyzację procesu wdrażania aplikacji w lekkich i przenośnych kontenerach, co zapewnia ich spójność działania w różnych środowiskach komputerowych.
-Zawiera funkcję izolację aplikacji, dzięki czemu ułatwia ich rozwój, testowanie i wdrażanie, wspierając zarazem skalowalność i efektywność w cyklu rozwoju oprogramowania.
-Część praktyczna pracy wykorzystuje technologię konteneryzacji oferowaną przez Docker.
-\todo{Rozwodzić się tutaj więcej? O dockerze, kubernetes i helm można pisać tomy.}
+Docker to otwarte oprogramowanie do tworzenia, dostarczania i uruchamiania aplikacji\cite{docker-overview}.
+Docker umożliwia uruchamianie aplikacji w izolowanym środowisku, które nazywane jest kontenerem.
+Kontenery zapewniają izolację, bezpieczeństwo, spójność działania w różnych środowiskach oraz ułatwiają rozwój, testowanie i wdrażanie aplikacji.
+Część praktyczna pracy wykorzystuje technologię konteneryzacji oferowaną przez platformę Docker.
 
 \subsection{Kubernetes}\label{subsec:kubernetes}
 
-Kubernetes to otwarte oprogramowanie służące do automatyzacji wdrażania, skalowania oraz zarządzania aplikacjami kontenerowymi.
-System Kubernetes dostarcza wiele funkcji, w tym zarządzanie konfiguracją, usługami sieciowymi, balansowaniem obciążenia oraz zarządzaniem cyklem życia aplikacji, co ustanawia go jako niezbędne narzędzie w ekosystemie usług chmurowych i architektury opartej na mikrousługach.
-
-\subsection{Helm}\label{subsec:helm}
-
-Helm pełni funkcję menadżera pakietów w środowisku Kubernetes, znacząco ułatwiając proces wdrażania i utrzymywania aplikacji, szczególnie jeśli są one skomplikowane i złożone z kilku elementów.
+Kubernetes to przenośna, rozszerzalna, otwartoźródłowa platforma do zarządzania skonteneryzowanymi jednostkami obciążeniowymi (ang. \emph{workloads}) i usługami, która ułatwia zarówno deklaratywne konfigurowanie, jak i automatyzację\cite{kubernetes-overview}.
+Platforma Kubernetes oferuje wiele funkcji, w tym deklaratywne zarządzanie elementami infrastruktury, usługi sieciowe, skalowanie oraz automatyzację wdrażania aplikacji, zapewniając tym samym niezbędne narzędzia potrzebne do budowy infrastruktury systemów informatycznych.
 
 \subsection{MicroK8s}\label{subsec:microk8s}
 
@@ -35,6 +31,35 @@ Niniejsza praca wykorzystuje dystrybucję MicroK8s\cite{microk8s-docs-home} ze w
     \item prostotę zarządzania - MicroK8s udostępnia rozbudowany interfejs wiersza poleceń (ang. \emph{command line interface, CLI}) ułatwiający konfigurację i utrzymanie środowiska.
 \end{enumerate}
 
+\subsection{Helm}\label{subsec:helm}
+
+Helm to menadżer pakietów w środowisku Kubernetes, który pozwala definiować, instalować i aktualizować najbardziej skomplikowane aplikacje Kubernetes~\cite{helm-home}.
+Narzędzie to jest szczególnie przydatne w przypadku aplikacji, które wymagają skomplikowanej konfiguracji i/lub składają się z wielu elementów.
+
+\subsection{PostgreSQL}\label{subsec:postgresql}
+
+PostgreSQL, nazywany także Postgres, to, według twórców, najbardziej zaawansowany otwartoźródłowy system relacyjnych baz danych\cite{postgresql-home}.
+
+\subsection{Cert-Manager}\label{subsec:cert-manager}
+
+Cert-Manager to otwartoźródłowy orkiestrator certyfikatów X.509 w środowiskach Kubernetes i OpenShift\cite{cert-manager-home}.
+Manualny proces tworzenia certyfikatów w środowisku Kubernetes, zaprezentowany w dokumentacji\cite{kubernetes-generate-certificates-manually}, jest skomplikowany i czasochłonny.
+Rozwiązaniem tego problemu jest narzędzie Cert-Manager, które go upraszcza, automatyzując proces tworzenia, zarządzania i odnawiania certyfikatów.
+
+\subsection{Registry}\label{subsec:distribution}
+
+Registry to narzędzie służące do przechowywania i dystrybucji obrazów kontenerów i innych artefaktów, oparte na specyfikacji OCI Distribution\cite{oci-distribution-specification-github}.
+Registry jest jednym z komponentów projektu distribution\cite{distribution-github}, zestawu narzędzi do pakowania, przesyłania, przechowywania i dostarczania zawartości artefaktów.
+
+
+\subsection{Prometheus}\label{subsec:prometheus}
+
+\todo{Prometheus}
+
+\subsection{Grafana}\label{subsec:grafana}
+
+\todo{Grafana}
+
 \subsection{Medusa}\label{subsec:medusa}
 
 Handel, w tym ten internetowy, jest obecny w naszym życiu od dekad.
@@ -42,6 +67,6 @@ Przez swoją bogatą historię stał się jedną z najlepiej opisanych i najbard
 Większość wyzwań i problemów, które mogą się pojawić przy implementacji sklepu internetowego zostało już świetnie udokumentowanych, chociażby w książkach z archetypami (pierwowzorami projektowymi).
 W obliczu tego, obecnie niewiele sklepów internetowych jest tworzone od zera, bez podparcia gotowymi rozwiązaniami.
 
-Część praktyczna niniejszej pracy korzysta z rozbudowanego ekosystemu Medusa\cite{medusajs-homepage}.
+Część praktyczna niniejszej pracy korzysta z rozbudowanego ekosystemu Medusa\cite{medusajs-home}.
 Wykorzystanie tego typu rozwiązania znacząco przyśpieszyło proces wdrożenia platformy i pozwoliło skupić się na elementach specyficznych dla tematu pracy.
 Modularna architektura \emph{Software Development Kit (SDK)} projektu Medusa zawiera moduły dla każdej niezbędnej funkcji sklepu internetowego, chociażby moduł odpowiedzialny za obsługę katalogu produktów, logistykę czy płatności.
