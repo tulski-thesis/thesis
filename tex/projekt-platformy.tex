@@ -51,8 +51,9 @@ helm install ingress-nginx \
 
 \subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
 
-Do konfiguracji DNS platformy tulski zastosowano usługi Cloudflare, dodając pięć rekordów A (admin, api, monitoring, registry, store), wszystkie kierujące na publiczny adres IP Load Balancera.
-Wszystkie rekordy korzystają z Cloudflare Proxy.
+Do konfiguracji DNS domeny tulski.com użyto usług Cloudflare.
+Dodano pięć rekordów typu A: admin, api, monitoring, registry i store (zob. rysunek~\ref{fig:dns-tulski-com}).
+Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i korzysta z funkcji Cloudflare Proxy.
 
 \begin{figure}[H]
     \centering
@@ -294,6 +295,18 @@ Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfej
     \end{figure}
 \end{figure}
 
-\subsubsection{Populacja danych}
+\subsubsection{Import produktów}
 
-\todo{Populacja danych}
+Sklep internetowy uzupełniono 11440 przykładowymi produktami (zob. listing~\ref{lst:store-count-products}), które pozyskano z zbioru danych~\citetitle*{fashion-dataset}\cite{fashion-dataset} udostępnionego przez~\citeauthor*{fashion-dataset} na platformie Kaggle.
+
+\begin{listing}[H]
+    \begin{minted}{sql}
+store=> select count(*) from product;
+ count
+-------
+ 11440
+(1 row)
+    \end{minted}
+    \caption{Zapytanie zwracające liczbę wszystkich produktów}
+    \label{lst:store-count-products}
+\end{listing}
