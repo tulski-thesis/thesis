@@ -4,7 +4,7 @@
 
 \subsection{Web Scraping}\label{subsec:web-scraping}
 
-Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów internetu\cite{Zhao2017}.
+Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów WWW (World Wide Web)\cite{Zhao2017}.
 Choć niektóre źródła dopuszczają stosowanie metod manualnych\cite{applications-and-tools}, to proces web scrapingu jest najczęściej zautomatyzowany za pomocą specjalistycznego oprogramowania.
 Takie podejście umożliwia efektywne pozyskanie setek, milionów a nawet miliardów rekordów danych.
 
@@ -34,10 +34,24 @@ Dane te wykorzystywane są w różnych celach, od automatycznego rozpoznawania o
 
 \subsection{Proces Web Scrapingu}\label{subsec:web-scraping-process}
 
-Proces web scrapingu można podzielić na kilka kluczowych etapów.
+Proces Web Scrapingu można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i/lub prezentacja informacji\cite{persson}.
 
-\subsubsection{Pobieranie}
+\subsubsection{Pobieranie danych}
+
+Pierwszy etapem procesu jest pobranie danych zawierających interesujące nas treści.
+Zazwyczaj realizuje się to poprzez wysłanie zapytań HTTP (ang. \emph{Hypertext Transfer Protocol}) do jednego lub wielu serwerów WWW\@.
+Pobrane, surowe dane zwykle są w formacie HTML (ang. \emph{Hypertext Markup Language}), XML (ang. \emph{Extensible Markup Language}) lub JSON (ang. \emph{JavaScript Object Notation}).
+To kluczowy etap z perspektywy cyberbezpieczeństwa, ponieważ to właśnie w nim scraper wchodzi w bezpośrednią interakcję z scrapowaną infrastrukturą.
+W związku z zabezpieczeniami stosowanymi przez serwery, ich dostępnością, wydajnością oraz ograniczeniami sieciowymi, etap ten jest zwykle najdłuższym w całym procesie.
 
 \subsubsection{Konwersja i przetwarzanie}
 
-\subsubsection{Zapis i/lub prezentacja}
+\todo{Konwersja i przetwarzanie}
+
+\subsubsection{Zapis i/lub prezentacja informacji}
+
+\todo{Zapis i/lub prezentacja informacji}
+
+Głównym celem tego etapu jest przekształcenie zebranych informacji w łatwo przetwarzalne i analizowalne formaty\cite{iee-state-of-the-art}.
+
+\subsection{Metody Web Scrapingu}\label{subsec:web-scraping-methods}
