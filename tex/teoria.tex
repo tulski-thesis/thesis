@@ -22,7 +22,7 @@ Podczas przeglądania internetu i literatury, można zauważyć, że rynek e-com
 
 \subsubsection{Marketing i PR}
 
-Web Scraping odgrywa kluczową rolę w monitorowaniu treści internetowych i mediów społecznościowych, takich jak Twitter, Facebook, Instagram, LinkedIn czy YouTube.
+Web Scraping odgrywa istotną rolę w monitorowaniu treści internetowych i mediów społecznościowych, takich jak Twitter, Facebook, Instagram, LinkedIn czy YouTube.
 Jest stosowany do śledzenia opinii publicznej, obserwowania trendów oraz monitorowania wzmianek o marce.
 Automatyzacja tego procesu umożliwia szybką reakcję, co jest niezwykle ważne w efektywnym zarządzaniu reputacją marki\cite{monitoring-social-media}.
 
@@ -34,24 +34,52 @@ Dane te wykorzystywane są w różnych celach, od automatycznego rozpoznawania o
 
 \subsection{Proces Web Scrapingu}\label{subsec:web-scraping-process}
 
-Proces Web Scrapingu można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i/lub prezentacja informacji\cite{persson}.
+Proces Web Scrapingu, jak przedstawiono na rysunku \ref{fig:scraping-process}, można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i prezentacja informacji\cite{persson}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/scraping-process}
+    \caption{Proces Web Scrapingu}
+    \label{fig:scraping-process}
+\end{figure}
 
 \subsubsection{Pobieranie danych}
 
 Pierwszy etapem procesu jest pobranie danych zawierających interesujące nas treści.
 Zazwyczaj realizuje się to poprzez wysłanie zapytań HTTP (ang. \emph{Hypertext Transfer Protocol}) do jednego lub wielu serwerów WWW\@.
 Pobrane, surowe dane zwykle są w formacie HTML (ang. \emph{Hypertext Markup Language}), XML (ang. \emph{Extensible Markup Language}) lub JSON (ang. \emph{JavaScript Object Notation}).
+
 To kluczowy etap z perspektywy cyberbezpieczeństwa, ponieważ to właśnie w nim scraper wchodzi w bezpośrednią interakcję z scrapowaną infrastrukturą.
 W związku z zabezpieczeniami stosowanymi przez serwery, ich dostępnością, wydajnością oraz ograniczeniami sieciowymi, etap ten jest zwykle najdłuższym w całym procesie.
 
 \subsubsection{Konwersja i przetwarzanie}
 
-\todo{Konwersja i przetwarzanie}
+Drugi etap procesu, konwersja i przetwarzanie, obejmuje operacje przekształcenia wcześniej pobranych danych, takie jak:
+\begin{enumerate}
+    \item Parsowanie - przekształcenie danych w strukturalną reprezentację łatwiejszą do dalszego przetwarzania
+    \item Ekstrakcja - wyodrębnienie interesujących treści
+    \item Filtracja - usunięcie niepożądanych i błędnych danych
+    \item Mapowanie - przekształcenie danych do pożądanego, jednolitego formatu
+\end{enumerate}
 
-\subsubsection{Zapis i/lub prezentacja informacji}
+\noindent W przypadku scrapowania danych z wielu różnych źródeł, kluczowe jest ich dopasowanie do jednego wspólnego interfejsu, co ułatwia połączenie ich w spójny zbiór danych.
 
-\todo{Zapis i/lub prezentacja informacji}
+\subsubsection{Zapis i prezentacja informacji}
 
-Głównym celem tego etapu jest przekształcenie zebranych informacji w łatwo przetwarzalne i analizowalne formaty\cite{iee-state-of-the-art}.
+Ostatni etap Web Scrapingu, obejmujący zapis i prezentację informacji, odgrywa kluczową rolę w udostępnianiu zebranych danych użytkownikom końcowym w przystępnej i zrozumiałej formie\cite{iee-state-of-the-art}.
+
+Dane mogą zostać zapisane w różny sposób, w zależności od potrzeb i preferencji użytkowników docelowych.
+Najczęściej stosuje się bazy danych, pliki tekstowe lub arkusze kalkulacyjne, takie jak CSV (ang. \emph{Comma-Separated Values}) czy XLSX (ang. \emph{Microsoft Excel Open XML Spreadsheet}).
+Kluczowe jest, aby dane były zapisywane w formatach umożliwiających łatwą przetwarzalność i analizę, co znacznie ułatwia ich dalsze wykorzystanie i analizę\cite{iee-state-of-the-art}.
+
+Prezentacja danych to proces konwersji zebranych informacji na formę wizualną lub tekstową, dostosowaną do łatwego zrozumienia i interpretacji przez użytkowników.
+Ten krok może obejmować tworzenie wykresów, tabel, raportów, interfejsów użytkownika oraz innych form wizualizacji, które umożliwiają szybką analizę i wnioskowanie na podstawie dostępnych danych.
+Celem jest przedstawienie informacji w klarowny, przystępny sposób, który odpowiada na pytania odbiorców.
 
 \subsection{Metody Web Scrapingu}\label{subsec:web-scraping-methods}
+
+\subsubsection{Kopiuj-Wklej}
+
+\subsubsection{Z wykorzystaniem przeglądarki internetowej}
+
+\subsubsection{Za pomocą żądań HTTP}
