@@ -31,7 +31,7 @@ NGINX Ingress Controller działa jako DaemonSet, co oznacza uruchomienie jednej 
 Dodano integrację z cert-manager do zarządzania certyfikatami TLS\@.
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
 helm install ingress-nginx \
     --version 1.0.2 \
     --set controller.kind="daemonset" \
@@ -67,7 +67,7 @@ Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i 
 \todo{Observability Plane}
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
 helm install observability \
     -f observability/values.yaml \
     --set "grafana.adminPassword=<adminPassword>" \
@@ -101,7 +101,7 @@ Wdrożenie cert-manager zostało zrealizowane przy użyciu narzędzia Helm.
 Wykorzystano pakiet \url{jetstack/cert-manager} w wersji 1.13.1 (zob. listing~\ref{lst:helm-install-cert-manager}).
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
 helm install cert-manager \
     --version v1.13.1 \
     --set installCRDs=true \
@@ -141,7 +141,7 @@ Dane sklepu internetowego są fizycznie przechowywane na dyskach maszyn wirtualn
 W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. listing~\ref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
 microk8s enable hostpath-storage
     \end{minted}
     \caption{Polecenie aktywujące dodatek Hostpath-Storage}
@@ -152,7 +152,7 @@ microk8s enable hostpath-storage
 Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \url{bitnamicharts/postgresql} w przestrzeni \url{store}.
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
 helm install store-db \
     --set auth.postgresPassword="<postgres-password>" \
     --set auth.username="store-db-admin" \
@@ -300,7 +300,7 @@ Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfej
 Sklep internetowy uzupełniono 11440 przykładowymi produktami (zob. listing~\ref{lst:store-count-products}), które pozyskano z zbioru danych~\citetitle*{fashion-dataset}\cite{fashion-dataset} udostępnionego przez~\citeauthor*{fashion-dataset} na platformie Kaggle.
 
 \begin{listing}[H]
-    \begin{minted}{sql}
+    \begin{minted}[xleftmargin=10pt,linenos]{sql}
 store=> select count(*) from product;
  count
 -------

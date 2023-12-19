@@ -175,7 +175,7 @@ Klaster wykorzystuje dystrybucję MicroK8s (zob. \autoref{subsec:microk8s}) w we
 Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem~\autoref{lst:microk8s-install}.
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
     apt update && \
         apt install docker.io -y && \
         snap install microk8s --classic --channel=1.23/stable
@@ -202,7 +202,7 @@ Modyfikacja musi zostać wykonana na każdej z maszyn wirtualnych.
 \noindent\autoref{lst:domyslna-konfiguracja-alt-names} przedstawia domyślną, niezmienioną sekcję alt\_names.
 
 \begin{listing}[H]
-    \begin{minted}{text}
+    \begin{minted}[xleftmargin=10pt,linenos]{text}
 [ alt_names ]
 DNS.1 = kubernetes
 DNS.2 = kubernetes.default
@@ -219,7 +219,7 @@ IP.2 = 10.152.183.1
 \noindent\autoref{lst:zmodyfikowana-konfiguracja-alt-names} przedstawia odpowiednio zmodyfikowaną sekcję alt\_names.
 
 \begin{listing}[H]
-    \begin{minted}{text}
+    \begin{minted}[xleftmargin=10pt,linenos]{text}
 [ alt_names ]
 DNS.1 = kubernetes
 DNS.2 = kubernetes.default
@@ -239,7 +239,7 @@ IP.120 = 130.61.217.255 # Publiczny adres IP load balancera
 \noindent Po modyfikacji pliku konieczne jest uruchomienie polecenia odświeżającego certyfikaty MicroK8s (zob. \autoref{lst:polecenie-odswiezajace-certyfikaty}) i ponowne uruchomienie maszyny (reboot).
 
 \begin{listing}[H]
-    \begin{minted}{bash}
+    \begin{minted}[xleftmargin=10pt,linenos]{bash}
     sudo microk8s refresh-certs
     \end{minted}
     \caption{Polecenie odświeżające certyfikaty MicroK8s}
@@ -256,7 +256,7 @@ Poniżej przedstawione są kroki niezbędne do uformowania klastra.
     \item Na wyznaczonym głównym węźle wykonaj polecenie \mintinline{bash}{microk8s add-node}.
           Wynikiem będzie polecenie do dołączenia do klastra mające postać:
     \begin{figure}[H]
-        \begin{minted}{bash}
+        \begin{minted}[xleftmargin=10pt,linenos]{bash}
     microk8s join <vm_private_ip>:25000/<token>
         \end{minted}
         \label{fig:join-cluster-command}
