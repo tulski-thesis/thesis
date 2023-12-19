@@ -19,27 +19,21 @@ Przykładowo, jeśli podczas rekonesansu uda się znaleźć żądania API, któr
 Wynika to z faktu, że kontakt API zmienia się z reguły rzadziej niż interfejs graniczny użytkownika.
 
 Kluczowym elementem rekonesansu była analiza ruchu sieciowego za pomocą narzędzi programistycznych wbudowanych w przeglądarkę internetową Firefox.
-Po pierwsze, ustalono, że strona korzysta korzysta z proxy Cloudflare, co wskazuje nagłówek \emph{server} (patrz listing~\ref{lst:rekonesans-get-homepage}).
+Po pierwsze, ustalono, że strona korzysta korzysta z proxy Cloudflare, co wskazuje nagłówek \emph{server} (patrz Listing~\ref{lst:rekonesans-get-homepage}).
 Po drugie, odkryto, że strona została zbudowana z wykorzystaniem frameworka Next, co wskazuje nagłówek \emph{x-powered-by} (patrz listing~\ref{lst:rekonesans-get-homepage}).
 Wykorzystanie Next oznacza wykorzystanie React, co może sugerować dynamiczne renderowanie treści.
 
 \begin{listing}[H]
-    \begin{minted}[xleftmargin=10pt,linenos]{text}
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{bash}
 $ curl -I https://store.tulski.com
 HTTP/2 200
 date: Sun, 17 Dec 2023 17:09:05 GMT
 content-type: text/html; charset=utf-8
-cache-control: private, no-cache, no-store, max-age=0,
-    must-revalidate
-vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch,
-    Next-Url, Accept-Encoding
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url, Accept-Encoding
 x-powered-by: Next.js
 cf-cache-status: DYNAMIC
-report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\
-    /report\/v3?s=l8mwfqVrt2h%2BXJYVshGNiHz%2FIRwSCEqIgVqxZ8kBhW
-    WqkIGQaAuYiOy9sv4JmNEGP1%2B53j1pVTVnm%2BpX2sID4%2BRDooubYk4t
-    ibHwMUz8sjuDxll1NrjXEffI6gReu1VJV7JI"}],"group":"cf-nel",
-    "max_age":604800}
+report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3 ?s=l8mwfqVrt2h%2BXJYVshGNiHz%2FIRwSCEqIgVqxZ8kBhWWqkIGQaAuYiOy9 sv4JmNEGP1%2B53j1pVTVnm%2BpX2sID4%2BRDooubYk4tibHwMUz8sjuDxll1N rjXEffI6gReu1VJV7JI"}], "group":"cf-nel", "max_age":604800}
 nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
 server: cloudflare
 cf-ray: 8370c5927feb666e-AMS
@@ -51,7 +45,7 @@ alt-svc: h3=":443"; ma=86400
 
 Po trzecie, w trakcie rekonesansu zauważono żądania do serwera API \emph{api.tulski.com}.
 Odkrycie potwierdza hipotezę o dynamicznym renderowaniu treści na stronie.
-Serwer API, podobnie jak witryna internetowa, korzysta z usług Cloudflare.
+Serwer API, podobnie jak witryna internetowa, korzysta z proxy Cloudflare.
 Zidentyfikowano dwa żądania, które zwracają dane o produktach w formacie JSON\@.
 Jednym z zidentyfikowanych żądań jest to, które zwraca listę produktów (zob. \autoref{fig:store-get-products-list}), wykorzystując paginację.
 W żądaniu rozmiar strony jest określany parametrem \emph{limit}, a pozycję startową strony - parametrem \emph{offset}.
@@ -96,11 +90,27 @@ Time Total: 60.223100s
     \end{listing}
 \end{figure}
 
+\newpage
 
+Następne żądanie API, które zwróciło uwagę podczas rekonesansu, dotyczyło pobierania szczegółowych danych o produkcie (zob. \autoref{fig:store-get-product-details}).
+Odpowiedź serwera na to żądanie zawiera bogaty zestaw danych o produkcie, w tym nazwę, opis, zdjęcia, linki do obrazów, metadane oraz szczegóły dotyczące rozmiarów i wariantów z ich dostępności.
+Struktura danych w formacie JSON, wykorzystana w odpowiedzi (zob. Listing ~\autoref{lst:store-get-product-details-request}), jest przejrzysta i dobrze zorganizowana.
+Zwracane dane wyczerpują wymagania postawione przed scraperem.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{img/store-get-product-details}
-    \caption{Żądanie zwracające szczegóły produktu}
+    \caption{Żądanie po szczegóły produktu}
     \label{fig:store-get-product-details}
 \end{figure}
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{bash}
+$ curl -G -d "id=prod_01HDFP2PJHJHZ6N1S2W0E3RXP9" \
+        "https://api.tulski.com/store/products"
+{"products": [{"id": "prod_01HDFP2PJHJHZ6N1S2W0E3RXP9", "title": "Rocia Women Gold Toned & Beige Heels", "subtitle": null, "status": "published", "external_id": null, "description": "Style Note\n\n\nCreate\n\n", "handle": "rocia-women-gold-toned-and-beige-heels-50168", "is_giftcard": false, "discountable": true, "thumbnail": ...
+    \end{minted}
+    \caption{Struktura JSON odpowiedzi na żądanie po szczegóły produktu}
+    \label{lst:store-get-product-details-request}
+\end{listing}
+
+
