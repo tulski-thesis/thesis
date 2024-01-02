@@ -1,8 +1,29 @@
 \newpage
 
+
 \section{Przegląd istniejących rozwiązań}\label{sec:przeglad-rozwiazan}
 
 \subsection{Rate Limiting}\label{subsec:rate-limiting}
+
+Jak wskazuje \emph{OWASP API Security Top 10} w punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}:
+\begin{displayquote}[\citetitle*{owasp-api-security-top-10}~\cite{owasp-api-security-top-10}, tłum. własne]
+    Żądania API zużywają zasoby takie jak sieć, CPU, pamięć i miejsce na dysku.
+    Ilość zasobów potrzebnych do zaspokojenia żądania w dużej mierze zależy od danych wejściowych użytkownika i logiki biznesowej koncówki.
+    Należy również wziąć pod uwagę fakt, że żądania od wielu klientów API konkurują o te same zasoby.
+    API jest podatne na problemy, jeśli brakuje przynajmniej jednego z następujących limitów lub są one ustawione nieodpowiednio (np. zbyt niskie/wysokie):
+
+    \begin{itemize}
+        \item Limit czasu wykonania
+        \item Maksymalna alokowalna pamięć
+        \item Liczba deskryptorów plików
+        \item Liczba procesów
+        \item Rozmiar ładunku żądania (np. przesyłane pliki)
+        \item Liczba żądań na klienta/zasób
+        \item Liczba rekordów na stronę zwracanych w pojedynczej odpowiedzi na żądanie
+    \end{itemize}
+\end{displayquote}
+
+\noindent
 
 \todo{Rate Limiting}
 

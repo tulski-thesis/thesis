@@ -1,41 +1,31 @@
 \newpage
 
-\section{Teoria związana z tematem pracy}\label{sec:teoria}
 
-\subsection{Web Scraping}\label{subsec:web-scraping}
+\section{Web Scraping}\label{sec:teoria}
 
 Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów WWW (World Wide Web)\cite{Zhao2017}.
-Choć niektóre źródła dopuszczają stosowanie metod manualnych\cite{applications-and-tools}, to proces web scrapingu jest najczęściej zautomatyzowany za pomocą specjalistycznego oprogramowania.
-Takie podejście umożliwia efektywne pozyskanie setek, milionów a nawet miliardów rekordów danych.
+Proces ten, choć niektóre źródła dopuszczają stosowanie metod manualnych\cite{applications-and-tools}, najczęściej wykorzystuje automatyzację za pomocą dedykowanego oprogramowania.
+Zautomatyzowanie web scrapingu, z wykorzystaniem takich narzędzi, umożliwia efektywne i szybkie pozyskiwanie ogromnych ilości danych, liczących setki tysięcy, miliony, a nawet miliardy rekordów.
 
-\subsection{Zastosowania Web Scrapingu}\label{subsec:web-scraping-applications}
+Sieć WWW jest największym źródłem wiedzy i danych w historii ludzkości.
+W swoim pierwotnym założeniu została zaprojektowana z myślą o odczycie przez ludzi.
+Od momentu powstania gwałtownie się rozrastała i tendencja ta wciąż się utrzymuje (zob. \autoref{fig:statista-data-volume-in-exabytes-per-month}).
+Zważając na jej obecnie ogromny wolumen danych, ograniczone zasoby ludzkie pozwalają na przetworzenie jedynie niewielkiego ich ułamka.
+Zatem, w obliczu powyższych wyzwań, niezbędna stała się technika web scrapingu polegająca na zbieraniu, ustrukturyzowaniu i przetworzeniu danych, tak aby umożliwić maszynom ich analizę.
 
-Web scraping to jedno z najcenniejszych narzędzi w obszarze pracy z danymi, umożliwiając pozyskanie ogromnych ilości danych z niemal nieograniczonych zasobów internetu\cite{Zhao2017}.
-Dzięki automatyzacji i łatwemu dostępowi do niemal nieograniczonych zasobów, metoda ta zapewnia efektywne zbieranie danych przy relatywnie niskich kosztach.
-Poniżej opisano przykładowe obszary, w których stosuje się web scraping.
-
-\subsubsection{Business Intelligence}
-Web Scraping może służyć za narzędzie, które pomaga firmom w podejmowaniu świadomych decyzji biznesowych i budowaniu przewagi konkurencyjnej.
-Najczęściej zbieranymi informacjami są informacje o asortymencie konkurencji, cenach, promocjach, dostępności produktów, opinie klientów oraz dane kontaktowe.
-Na rynku istnieją firmy, takie jak Doubledata\cite{doubledata}, które sprzedają web scraping konkurencji w formie usługi.
-Podczas przeglądania internetu i literatury, można zauważyć, że rynek e-commerce jest jednym z najczęstszych kontekstów, w którym omawiane jest zastosowanie web scrapingu.
-
-\subsubsection{Marketing i PR}
-
-Web Scraping odgrywa istotną rolę w monitorowaniu treści internetowych i mediów społecznościowych, takich jak Twitter, Facebook, Instagram, LinkedIn czy YouTube.
-Jest stosowany do śledzenia opinii publicznej, obserwowania trendów oraz monitorowania wzmianek o marce.
-Automatyzacja tego procesu umożliwia szybką reakcję, co jest niezwykle ważne w efektywnym zarządzaniu reputacją marki\cite{monitoring-social-media}.
-
-\subsubsection{Machine Learning i Artificial Intelligence}
-
-Naukowcy i inżynierowie wykorzystują web scraping do pozyskiwania danych, które są niezbędne do trenowania i modeli sztucznej inteligencji\cite{openai-data-collection}.
-Dane te wykorzystywane są w różnych celach, od automatycznego rozpoznawania obrazu po analizę języka naturalnego.
-
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.8\linewidth}
+    \includegraphics[width=\textwidth]{img/statista-data-volume-in-exabytes-per-month}
+    \caption{Wolumen danych w globalnym konsumenckim ruchu IP\newline w latach 2017–2022 (w eksabajtach na miesiąc)\newlineŹródło: \citetitle*{statista-data-volume}~\cite{statista-data-volume}}
+    \label{fig:statista-data-volume-in-exabytes-per-month}
+\end{figure}
 
 \subsection{Proces Web Scrapingu}\label{subsec:web-scraping-process}
 
-Proces Web Scrapingu, jak przedstawiono na rysunku \ref{fig:scraping-process}, można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i prezentacja informacji\cite{persson}.
+Proces Web Scrapingu, jak przedstawiono na rysunku~\ref{fig:scraping-process}, można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i prezentacja informacji\cite{persson}.
 
+\todo{Popraw ten rysunek}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{img/scraping-process}
@@ -50,11 +40,12 @@ Zazwyczaj realizuje się to poprzez wysłanie zapytań HTTP (ang. \emph{Hypertex
 Pobrane, surowe dane zwykle są w formacie HTML (ang. \emph{Hypertext Markup Language}), XML (ang. \emph{Extensible Markup Language}) lub JSON (ang. \emph{JavaScript Object Notation}).
 
 To kluczowy etap z perspektywy cyberbezpieczeństwa, ponieważ to właśnie w nim scraper wchodzi w bezpośrednią interakcję z scrapowaną infrastrukturą.
+
 W związku z zabezpieczeniami stosowanymi przez serwery, ich dostępnością, wydajnością oraz ograniczeniami sieciowymi, etap ten jest zwykle najdłuższym w całym procesie.
 
-\subsubsection{Konwersja i przetwarzanie}
+\subsubsection{Parsowanie, estrakcja i przetwarzanie danych}
 
-Drugi etap procesu, konwersja i przetwarzanie, obejmuje operacje przekształcenia wcześniej pobranych danych, takie jak:
+Drugi etap procesu obejmuje operacje przekształcenia wcześniej pobranych danych, takie jak:
 \begin{enumerate}
     \item Parsowanie - przekształcenie danych w strukturalną reprezentację łatwiejszą do dalszego przetwarzania
     \item Ekstrakcja - wyodrębnienie interesujących treści
@@ -80,40 +71,95 @@ Celem jest przedstawienie informacji w klarowny, przystępny sposób, który odp
 
 \subsubsection{Kopiuj-Wklej}
 
-\subsubsection{Z wykorzystaniem przeglądarki internetowej}
+Pierwsza i najbardziej podstawowa metoda web scrapingu to kopiuj-wklej.
+Jest to proces manualny, polegający na wybieraniu i kopiowaniu danych bezpośrednio z witryn internetowych, a następnie wklejaniu ich do pliku lub bazy danych.
+Metoda ta jest czasochłonna i nieefektywna dla dużych ilości danych, ale może być skuteczna w przypadku małych i prostych zadań\cite{state-of-art}.
+Nie wymaga specjalistycznych umiejętności programistycznych, co czyni ją dostępną dla szerszej grupy użytkowników.
 
-\subsubsection{Za pomocą żądań HTTP}
+\subsubsection{Żądania HTTP i parsowanie HTML}
 
-%state of art:
-%Traditional copy and paste technique: The most effective and practical web
-%scraping technique is usually a copy-and-paste and manual analysis technique.
-%However, when users need to scrap a large number of datasets, this is a mistake,
-%tedious, and unpleasant procedure. (Sirisuriya, 2015).
+Kolejną metodą scrapowania jest wykonywanie żądań HTTP w celu uzyskania struktury HTML danej strony internetowej.
+Po pobraniu, struktura HTML jest poddawana analizie w celu identyfikacji oraz ekstrakcji żądanych elementów, takich jak tekst, obrazy, hiperłącza i inne.
+Często wykorzystuje się specjalistyczne biblioteki programistyczne, które umożliwiają wydobywanie poszczególnych elementów, m.in. poprzez zastosowanie wyrażeń XPath.
+Metoda ta jest niezbędna w przypadku stron renderowanych statycznie, kiedy to dostęp do uporządkowanych danych z serwera API jest ograniczony lub niemożliwy.
 
-\subsubsection{Wyrażenia regularne}
+\subsubsection{Żądania HTTP do serwerów API}
 
-%state of art:
-%Grabbing text and using regular expressions: This is a significant and simple
-%method for extracting data from web pages. This strategy is based on the UNIX
-%command or the computer language's regular expression-matching capabilities.
-%(Sirisuriya, 2015)
+Obecnie, w dobie ogromnej popularności frameworków takich jak Angular oraz bibliotek jak React, duża część aplikacji internetowych jest renderowana dynamicznie.
+Aplikacje te komunikują się z zapleczem technicznym (backendem) poprzez API (ang. \emph{Application Programming Interface}) wymieniając dane w uporządkowanej formie np. JSON lub XML.
+Fakt ten wykorzystuje kolejna metoda scrapowania polegająca na wykonywaniu żądań bezpośrednio do tych interfejsów z ominięciem warstwy wizualnej aplikacji.
+Jest to preferowana metoda, ponieważ znacząco redukuje trudności związane z ekstrakcją danych.
+Proces ten jest zwykle szybszy i mniej podatny na błędy, które mogą wynikać ze zmian w strukturze HTML@\.
+Należy zauważyć, że struktura HTML ulega częstszym zmianom niż kontakt API, co dodatkowo podkreśla efektywność tej metody w stabilnym pozyskiwaniu danych.
 
-\subsubsection{HTTP}
+\subsubsection{Wykorzystanie przeglądarki internetowej}
 
-%state of art:
-%Programming with the HTTP: Users can access data in both static and dynamic
-%webpages applying this method. Data may be retrieved using socket programming
-%via making HTTP requests to a remote web server. (Sirisuriya, 2015)
+Wśród metod web scrapingu wyróżnia się także tę z wykorzystaniem przeglądarki internetowej.
+Podstawę jej działania stanowią biblioteki programistyczne udostępniające wysokopoziomowe API przeglądarek internetowych.
+W środowisku JavaScript za przykład posłużyć mogą Puppeteer bazujący na Chrome, Chromium i protokole DevTools
+oraz Playwright wspierający silniki Chromium, WebKib i Firefox.
+Pierwotnym zastosowaniem wspomnianych wyżej narzędzi było testowanie end-to-end, jednak z czasem rozszerzono ich wykorzystanie i funkcje wspierające web scraping.
 
-\subsubsection{HTML/DOM Parsing}
+Metoda ta sprawdzi się szczególnie w scrapowaniu aplikacji internetowych intensywnie wykorzystujących renderowanie JavaScript
+lub kiedy wymagane jest środowisko przeglądarki np. w przypadku zapezpieczenia przez Browser Fingerprinting.
+Opisywane biblioteki dysponują rozbudowanym wachlarzem funkcji dających pełną kontrolę nad przeglądarką.
+Posiadają klasy takie jak strona, myszka, klawiatura i ekran dotykowy z zachowaniami umożliwiającymi nawigowanie po stronach,
+ruchy kursorem i pisanie na klawiaturze.
 
-%state of art:
-%HTML parsing: semi-structured data query languages is used for parsing
-%webpages HTML code and retrieving and transforming page content
+Ponadto specjaliści w dziedzinie web scrapingu tworzą i rozwijają otwarto-źródłowe rozszerzenia wychodzące na przeciw zabezpieczeniom przeciwko scraperom.
+Ukrywają ślad (ang. \emph{fingerprint}) wykorzystanych przeglądarek oraz maksymalnie upodobniają ich zachowanie do człowieka e.g. przez powolniejsze i płyniejsze ruchy kursorem.
 
-%state of art:
-%DOM parsing: embedding a full-featured web browser, like: Mozilla browser or
-%Internet Explorer control, programs may access dynamic material created by
-%client-side scripts. These browser controls also parse webpages into a Document
-%Object Model tree, from which applications may get some pages contents.
-%(Saurkar et al, 2018)
+To wszystko sprawia, że takie scrapery są relatywnie łatwe do stworzenia.
+Natomiast, w związku z wykorzystaniem przez nie rozbudowanego kontekstu przeglądarki, wymagają więcej zasobów i są mniej efektywne.
+
+\subsection{Zastosowania Web Scrapingu}\label{subsec:web-scraping-applications}
+
+Web scraping to jedno z najcenniejszych narzędzi w obszarze pracy z danymi, umożliwiając pozyskanie ogromnych ilości danych z niemal nieograniczonych zasobów internetu\cite{Zhao2017}.
+Dzięki automatyzacji i łatwemu dostępowi do niemal nieograniczonych zasobów, metoda ta zapewnia efektywne zbieranie danych przy relatywnie niskich kosztach.
+Poniżej opisano przykładowe obszary, w których stosuje się web scraping.
+
+\subsubsection{Business Intelligence}
+Web Scraping może służyć za narzędzie, które pomaga firmom w podejmowaniu świadomych decyzji biznesowych i budowaniu przewagi konkurencyjnej.
+Najczęściej zbieranymi informacjami są informacje o asortymencie konkurencji, cenach, promocjach, dostępności produktów, opinie klientów oraz dane kontaktowe.
+Na rynku istnieją firmy, takie jak Doubledata\cite{doubledata}, które sprzedają web scraping konkurencji w formie usługi.
+Podczas przeglądania internetu i literatury, można zauważyć, że rynek e-commerce jest jednym z najczęstszych kontekstów, w którym omawiane jest zastosowanie web scrapingu.
+
+\subsubsection{Marketing i PR}
+
+Web Scraping odgrywa istotną rolę w monitorowaniu treści internetowych i mediów społecznościowych, takich jak Twitter, Facebook, Instagram, LinkedIn czy YouTube.
+Jest stosowany do śledzenia opinii publicznej, obserwowania trendów oraz monitorowania wzmianek o marce.
+Automatyzacja tego procesu umożliwia szybką reakcję, co jest niezwykle ważne w efektywnym zarządzaniu reputacją marki\cite{monitoring-social-media}.
+
+\subsubsection{Machine Learning i Artificial Intelligence}
+
+Naukowcy i inżynierowie wykorzystują web scraping do pozyskiwania danych, które są niezbędne do trenowania i modeli sztucznej inteligencji\cite{openai-data-collection}.
+Dane te wykorzystywane są w różnych celach, od automatycznego rozpoznawania obrazu po analizę języka naturalnego.
+
+\subsection{Scraper}
+
+Web Scraper, w uproszczeniu scraper, to specjalny rodzaj bota przeprowadzający zautomatyzowany proces web scrapingu.
+
+Jak wspomniano w \autoref{subsec:web-scraping-process}, pobieranie danych, czyli etap bezpośredniej interakcji scrapera ze scrapowaną infrastrukturą,
+jest jedynym momentem w którym możliwa jest jego identyfikacja i zablokowanie.
+Wybrane cechy ruchu sieciowego wykonywanego przez tego typu boty kluczowe w ich detekcji to:
+
+\begin{itemize}
+    \item nagłówek \mintinline{text}{User-Agent} wskazuje na narzędzie programistyczne - wget, curl, Postman, Axios itd.
+%    \item declares its user-agent as being wget, curl, webcopier etc - it's probably a bot.
+    \item nie posiadają nagłówka \mintinline{text}{User-Agent},
+%    \item no user-agent (or matching a pattern of known bad ones) - it's probably a bot.
+    \item nie posiadają ciasteczek ignorując je,
+%    \item no cookie, and wont honor a set cookie - it's probably a bot.
+    \item rekurencyjne zapytania o coraz bardziej szczegółowe dane,
+%    \item requests details -> details -> details -> details ad nauseum - it's probably a bot.
+    \item zapytania jedynie zawartość HTML z ominięciem CSS lub JS,
+%    \item requests the html, but not .css, .js or site furniture - it's probably a bot.
+    \item duża liczba zapytań HTTP z kodami odpowiedzi > 400.
+%    \item generates a large number of HTTP error codes > 400 (1.e 401, 403, 404 \& 500)- it's probably a bot.
+    \item pochodzą z mało prawdopodobnego źródła ruchu dla ludzi (np.  Amazon AWS),
+%    \item originates from an unlikely human traffic source (i.e Amazon AWS) - it's probably a bot.
+    \item nigdy nie posiadają nagłówka z adresem odsyłającym - \mintinline{text}{Referer},
+%    \item no referrer, ever - it's probably a bot.
+    \item sesje z dużą liczbą zapytań\cite{bot-buster}.
+%    \item sessions with a lot of hits. it's probably a bot.
+\end{itemize}

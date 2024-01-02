@@ -47,7 +47,8 @@
 \RequirePackage[            % Custom figure and table captions
     font=small,
     labelfont=bf,
-    labelsep=period
+    labelsep=period,
+    justification=centering
 ]{caption}
 \RequirePackage{chngcntr}   % Per-section counters
 \RequirePackage{enumitem}   % Itemize/enumrate

@@ -114,3 +114,118 @@ $ curl -G -d "id=prod_01HDFP2PJHJHZ6N1S2W0E3RXP9" \
 \end{listing}
 
 
+\subsection{Implementacja}\label{subsec:scraper-implementation}
+
+Po uzyskaniu odpowiedniej ilości danych w trakcie rekonesansu, rozpoczęto proces tworzenia scrapera.
+Wykorzystano język TypeScript (zob. \autoref{subsec:typescript}), środowisko uruchomieniowe Node.js (zob. \autoref{subsec:nodejs}) i bibliotekę got (zob. \autoref{subsec:got}).
+
+\noindent\textbf{Konfiguracja klienta HTTP}
+
+Skonfigurowano klienta HTTP \url{storeClient}, który wysyła żądania do serwera API z nagłówki typowymi dla przeglądarki internetowej.
+Działanie to miało na celu jak najwierniejsze odwzorowanie śladu i zachowań scrapera na wzór klienta przeglądarkowego, co zwiększa jego dyskrecję podczas działania.
+Ponadto dodano logowanie żądań i odpowiedzi, co znacząco ułatwia proces debugowania, monitorowania i identyfikacji potencjalnych błędów.
+Konfiguracja została przedstawiona na Listingu~\ref{lst:store-http-client-config}.
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+const storeClient: typeof got = got.extend({
+  prefixUrl: "https://api.tulski.com/",
+  hooks: {
+    beforeRequest: [requestLogger(logger)],
+    afterResponse: [responseLogger(logger)],
+  },
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
+    Accept: "*/*",
+    "Accept-Language": "en-US,en;q=0.7,pl;q=0.3",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Access-Control-Request-Method": "GET",
+    DNT: "1",
+    "Sec-GPC": "1",
+    Connection: "keep-alive",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-site",
+    Pragma: "no-cache",
+    "Cache-Control": "no-cache",
+  },
+});
+    \end{minted}
+    \caption{Konfiguracja klienta HTTP storeClient}
+    \label{lst:store-http-client-config}
+\end{listing}
+
+\noindent\textbf{Funkcja pobierająca listę produktów}
+
+Następnie, zaimplementowano funkcje \mintinline{text}{getProductsList} służącą do pobierania listy produktów (zob. Listing~\ref{lst:store-http-client-getProductsList}).
+Wykorzystano Pagination API biblioteki got\cite{got-paginate-docs}, które pozwala na iteracyjne pobieranie kolejnych pozycji z listy.
+Funkcja \mintinline{text}{transform} parsuje otrzymaną odpowiedź w formacie JSON do tablicy produktów.
+Następnie funkcja paginate, wylicza parametry dla kolejnych stron, wykorzystując aktualną długość listy produktów i parametr offset.
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+export const getProductsList = () => {
+  return storeClient.paginate({
+    url: "/store/products",
+    searchParams: {
+      currency_code: "eur",
+      is_giftcard: false,
+    },
+    pagination: {
+      transform: (response: Response<string>): ProductListing[] => {
+        return JSON.parse(response.body).products;
+      },
+      paginate: ({ response, currentItems }) => {
+        if (currentItems.length === 0) {
+          return false;
+        }
+        const searchParams = response.request.options
+          .searchParams as URLSearchParams;
+        const previousOffset = Number(searchParams?.get("offset") ?? 0);
+        return {
+          searchParams: {
+            offset: previousOffset + currentItems.length,
+          },
+        };
+      },
+      countLimit: 5000,
+      // Wait before making another request to prevent API rate limiting.
+      backoff: 500,
+      // It is a good practice to set an upper limit of how many requests can be made.
+      // This way we can avoid infinite loops.
+      requestLimit: 1000,
+      // In this case, we don't need to store all the items we receive.
+      // They are processed immediately.
+      stackAllItems: false,
+    },
+  });
+};
+    \end{minted}
+    \caption{Funkcja pobierająca listę produktów}
+    \label{lst:store-http-client-getProductsList}
+\end{listing}
+
+\noindent\textbf{Funkcja pobierająca szczegóły produktu}
+
+Kolejna funkcja, \mintinline{text}{getProductDetails}, służy do pobierania szczegółowych danych o konkretnym produkcie na podstawie jego identyfikatora.
+Wykorzystano metodę \mintinline{text}{get} biblioteki got.
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+export const getProductDetails = (
+  productId: string,
+): CancelableRequest<ProductResponse> => {
+  return storeClient
+    .get(`/store/products/${productId}`, {
+      searchParams: {
+        currency_code: "eur",
+      },
+    })
+    .json();
+};
+    \end{minted}
+    \caption{Funkcja pobierająca szczegóły produktu}
+    \label{lst:store-http-client-getProductDetails}
+\end{listing}
+
