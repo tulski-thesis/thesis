@@ -62,22 +62,22 @@ Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i 
     \label{fig:dns-tulski-com}
 \end{figure}
 
-\subsection{Monitoring}\label{subsec:monitoring}
-
-\todo{Observability Plane}
-
-\begin{listing}[H]
-    \begin{minted}[xleftmargin=10pt,linenos]{bash}
-helm install observability \
-    -f observability/values.yaml \
-    --set "grafana.adminPassword=<adminPassword>" \
-    -n observability \
-    --create-namespace \
-    prometheus-community/kube-prometheus-stack
-    \end{minted}
-    \caption{Polecenie instalujące pakiet prometheus-community/kube-prometheus-stack}
-    \label{lst:helm-install-observability}
-\end{listing}
+%\subsection{Monitoring}\label{subsec:monitoring}
+%
+%\todo{Observability Plane}
+%
+%\begin{listing}[H]
+%    \begin{minted}[xleftmargin=10pt,linenos]{bash}
+%helm install observability \
+%    -f observability/values.yaml \
+%    --set "grafana.adminPassword=<adminPassword>" \
+%    -n observability \
+%    --create-namespace \
+%    prometheus-community/kube-prometheus-stack
+%    \end{minted}
+%    \caption{Polecenie instalujące pakiet prometheus-community/kube-prometheus-stack}
+%    \label{lst:helm-install-observability}
+%\end{listing}
 
 %\begin{figure}[p]
 %    \begin{figure}[H]
@@ -113,11 +113,11 @@ helm install cert-manager \
     \label{lst:helm-install-cert-manager}
 \end{listing}
 
-\subsection{Docker Registry}\label{subsec:docker-registry}
+%\subsection{Docker Registry}\label{subsec:docker-registry}
+%
+%\todo{Docker Registry}
 
-\todo{Docker Registry}
-
-\subsection{Store}\label{subsec:store}
+\subsection{Przestrzeń Store}\label{subsec:store}
 
 \subsubsection{Przestrzeń nazw}
 
