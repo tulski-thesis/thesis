@@ -113,15 +113,15 @@ $ curl -G -d "id=prod_01HDFP2PJHJHZ6N1S2W0E3RXP9" \
     \label{lst:store-get-product-details-request}
 \end{listing}
 
-
 \subsection{Implementacja}\label{subsec:scraper-implementation}
 
-Po uzyskaniu odpowiedniej ilości danych w trakcie rekonesansu, rozpoczęto proces tworzenia scrapera.
-Wykorzystano język TypeScript (zob. \autoref{subsec:typescript}), środowisko uruchomieniowe Node.js (zob. \autoref{subsec:nodejs}) i bibliotekę got (zob. \autoref{subsec:got}).
+Po uzyskaniu odpowiedniej ilości informacji rozpoczęto proces tworzenia scrapera.
+Podczas rekonesansu ustalono, że strona jest renderowana dynamicznie i pobierane dane z końcówek API, które zwracają dane w formacie JSON, dlatego zdecydowano się na scraping API\@.
+Wykorzystano język programowania TypeScript, środowisko uruchomieniowe Node.js i bibliotekę got.
 
-\noindent\textbf{Konfiguracja klienta HTTP}
+\subsubsection{Konfiguracja klienta HTTP}
 
-Skonfigurowano klienta HTTP \url{storeClient}, który wysyła żądania do serwera API z nagłówki typowymi dla przeglądarki internetowej.
+Skonfigurowano klienta HTTP \texttt{storeClient}, który wysyła żądania do serwera API z nagłówki typowymi dla przeglądarki internetowej.
 Działanie to miało na celu jak najwierniejsze odwzorowanie śladu i zachowań scrapera na wzór klienta przeglądarkowego, co zwiększa jego dyskrecję podczas działania.
 Ponadto dodano logowanie żądań i odpowiedzi, co znacząco ułatwia proces debugowania, monitorowania i identyfikacji potencjalnych błędów.
 Konfiguracja została przedstawiona na Listingu~\ref{lst:store-http-client-config}.
@@ -156,21 +156,23 @@ const storeClient: typeof got = got.extend({
     \label{lst:store-http-client-config}
 \end{listing}
 
-\noindent\textbf{Funkcja pobierająca listę produktów}
+\subsubsection{Funkcja pobierająca listę produktów}
 
-Następnie, zaimplementowano funkcje \mintinline{text}{getProductsList} służącą do pobierania listy produktów (zob. Listing~\ref{lst:store-http-client-getProductsList}).
-Wykorzystano Pagination API biblioteki got\cite{got-paginate-docs}, które pozwala na iteracyjne pobieranie kolejnych pozycji z listy.
-Funkcja \mintinline{text}{transform} parsuje otrzymaną odpowiedź w formacie JSON do tablicy produktów.
-Następnie funkcja paginate, wylicza parametry dla kolejnych stron, wykorzystując aktualną długość listy produktów i parametr offset.
+Następnie, zaimplementowano funkcje \texttt{getProductsList} służącą do pobierania listy produktów (zob. Listing~\ref{lst:store-http-client-getProductsList}).
+Wykorzystano Pagination API biblioteki got\cite{got-paginate-docs}, które pozwala na iteracyjne pobieranie kolejnych pozycji z listy produktów.
+Lista 500 produktów jest zwracana w żądaniu \texttt{GET /store/products}.
+Funkcja \texttt{transform} parsuje otrzymaną odpowiedź (\texttt{Response}) do listy produktów.
+Funkcja \texttt{paginate} zwraca atrybuty wskazujące na następną stronę. Wylicza nową wartość parametru offset wykorzystując aktualną długość listy produktów i wartość offset.
 
-\begin{listing}[p]
+\begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
 export const getProductsList = () => {
   return storeClient.paginate({
-    url: "/store/products",
+    url: "store/products",
     searchParams: {
       currency_code: "eur",
       is_giftcard: false,
+      limit: 500
     },
     pagination: {
       transform: (response: Response<string>): ProductListing[] => {
@@ -190,13 +192,9 @@ export const getProductsList = () => {
         };
       },
       countLimit: 5000,
-      // Wait before making another request to prevent API rate limiting.
+      // Wait before making another request to prevent rate limiting
       backoff: 500,
-      // It is a good practice to set an upper limit of how many requests can be made.
-      // This way we can avoid infinite loops.
       requestLimit: 1000,
-      // In this case, we don't need to store all the items we receive.
-      // They are processed immediately.
       stackAllItems: false,
     },
   });
@@ -206,10 +204,11 @@ export const getProductsList = () => {
     \label{lst:store-http-client-getProductsList}
 \end{listing}
 
-\noindent\textbf{Funkcja pobierająca szczegóły produktu}
+\subsubsection{Funkcja pobierająca szczegóły produktu}
 
-Kolejna funkcja, \mintinline{text}{getProductDetails}, służy do pobierania szczegółowych danych o konkretnym produkcie na podstawie jego identyfikatora.
-Wykorzystano metodę \mintinline{text}{get} biblioteki got.
+Ostatnią zaimplementowaną funkcją wykorzystującą \texttt{storeClient} jest funkcja \texttt{get-\\ProductDetails} (zob. Listing~\ref{lst:store-http-client-getProductDetails}).
+Pobiera ona szczegółowe dane o produkcie z wskazanym w argumencie identyfikatorze.
+Wykorzystuje żądanie \texttt{GET /store/products/\\{{productId}}} odkryte podczas rekonesansu.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
@@ -217,7 +216,7 @@ export const getProductDetails = (
   productId: string,
 ): CancelableRequest<ProductResponse> => {
   return storeClient
-    .get(`/store/products/${productId}`, {
+    .get(`store/products/${productId}`, {
       searchParams: {
         currency_code: "eur",
       },
@@ -227,5 +226,174 @@ export const getProductDetails = (
     \end{minted}
     \caption{Funkcja pobierająca szczegóły produktu}
     \label{lst:store-http-client-getProductDetails}
+\end{listing}
+
+\subsubsection{Mechanizm kolejkujący zadania}
+
+Scraper wyposażono w mechanizm kolejkujący zadania.
+Jest to powszechnie znane i używane rozwiązanie w tego rodzaju oprogramowaniu.
+Należy pamiętać, że domeną scraperów jest bardzo duża ilość asynchronicznych procesów (m.in. zapytania HTTP).
+Wybranymi zaletami mechanizmów kolejkujących w scraperach są:
+\begin{itemize}
+    \item efektywne zarządzanie zasobami (np. karty sieciowej),
+    \item kontrola nad liczbą i częstotliwością zapytań do serwera docelowego, co jest istotne dla uniknięcia blokowania,
+    \item ułatwiona monitoring i obsługa błędów poprzez możliwość ponownego przetwarzania zadania,
+    \item skalowalność i elastyczność scrapera.
+\end{itemize}
+\noindent Listing~\ref{lst:queue-implementation} przedstawia implementację klasy \texttt{Queue} reprezentującej asynchroniczną kolejkę zadań.
+Wykorzystano zewnętrzną bibliotekę queue, która została dodatkowo przykryta własną warstwą abstrakcji, tak aby ułatwić jej dalsze wykorzystanie.
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+import { default as ExternalQueue } from "queue";
+
+export interface QueueOptions {
+  concurrency: number;
+}
+
+export class Queue<T> {
+  private readonly queue: ExternalQueue;
+
+  constructor(options: QueueOptions) {
+    this.queue = new ExternalQueue({
+      concurrency: options.concurrency,
+      autostart: true,
+      results: [],
+    });
+  }
+
+  get results() {
+    return (this.queue.results || []).filter((el) => el !== null);
+  }
+
+  get finishedJobsCount() {
+    return this.results.length;
+  }
+
+  get jobsCount() {
+    return this.queue.length;
+  }
+
+  set onSuccess(callback: () => void) {
+    this.queue.addEventListener("success", callback);
+  }
+
+  push(job: () => Promise<T>) {
+    this.queue.push(job);
+  }
+
+  async waitUntilEnd() {
+    await new Promise<void>((resolve, reject) => {
+      this.queue.addEventListener("end", () => {
+        resolve();
+      });
+    });
+  }
+}
+
+    \end{minted}
+    \caption{Implementacja klasy Queue}
+    \label{lst:queue-implementation}
+\end{listing}
+
+\subsubsection{Zapis danych}
+
+Pobrane dane należy zapisać.
+W tym celu zaimplementowano klasę \texttt{LocalDirectory-\\Bucket} (zob. Listing~\ref{lst:storage-save-product}).
+Jej metoda save zapisuje otrzymane dane w postaci tekstowej pod wskazaną ścieżką.
+Pliki są zapisywane w jednym katalogu w lokalnym systemie plików.
+
+Użycie powszechnie znanej koncepcji \texttt{Bucket} jako interfejsu pozostawia oprogramowanie otwarte na zmiany.
+Scraper może wykorzystywać dowolny system plików, na przykład Amazon S3 lub Google Cloud Storage.
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+import { writeFile, mkdir, access } from "fs/promises";
+import path from "node:path";
+
+export interface LocalDirectorBucketConfig {
+  directory: string;
+}
+
+export class LocalDirectoryBucket implements Bucket {
+  private directoryExists: undefined | true;
+
+  constructor(private readonly config: LocalDirectorBucketConfig) {}
+
+  async save(filepath: string, data: string | Record<any, any>) {
+    await this.ensureDirExists();
+    const stringifiedData =
+      typeof data === "string" ? data : JSON.stringify(data);
+    const fullPath = path.join(this.config.directory, filepath);
+    return writeFile(fullPath, stringifiedData);
+  }
+
+  private async ensureDirExists() {
+    if (this.directoryExists) {
+      return;
+    }
+    try {
+      await access(this.config.directory);
+    } catch (error: any) {
+      if (error.code === "ENOENT") {
+        await mkdir(this.config.directory, { recursive: true });
+      }
+    }
+    this.directoryExists = true;
+  }
+}
+    \end{minted}
+    \caption{Klasa LocalDirectoryBucket}
+    \label{lst:storage-save-product}
+\end{listing}
+
+\newpage
+
+\subsubsection{Punkt wejścia programu}
+
+Punktem wejścia programu jest samowywołująca się funkcja asynchroniczna (ang. \emph{Self-Invoking Function}) zarządzająca procesem scrapowania (zob. Listing~\ref{lst:scraper-main}).
+Opisywana funkcja kolejno:
+
+\begin{enumerate}
+    \item Tworzy zmienną \texttt{timestamp}, która przechowuje znacznik czasowy (ang. \emph{timestamp}) identyfikujący bieżące uruchomienie programu.
+    \item Tworzy zmienną \texttt{outDir}, która będzie ścieżką katalogu wyjściowego.
+    Składową \texttt{outDir} jest wcześniej stworzony identyfikator.
+    \item Inicjuje \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir}.
+    \item Inicjuje \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100.
+    \item Definuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan.
+    \item Dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
+    pobiera szczegóły produktu (\texttt{getProductDetails}) i zapisuje je do pliku JSON\@.
+\end{enumerate}
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+(async () => {
+  const timestamp = new Date();
+  const outDir = path.join(
+    "out",
+    timestamp.toISOString().replace(/\D/g, "_").slice(0, -1),
+  );
+  const bucket = new LocalDirectoryBucket({ directory: outDir });
+  const queue = new Queue({
+    concurrency: 100,
+  });
+  queue.onSuccess = () => {
+    logger.info(
+      "Jobs finished: %d, left in queue: %d",
+      queue.finishedJobsCount,
+      queue.jobsCount,
+    );
+  };
+  for await (const productListing of getProductsList()) {
+    queue.push(async () => {
+      const { product } = await getProductDetails(productListing.id);
+      await bucket.save(product.id + ".json", product);
+    });
+  }
+  await queue.waitUntilEnd();
+})();
+    \end{minted}
+    \caption{Punkt wejścia programu}
+    \label{lst:scraper-main}
 \end{listing}
 

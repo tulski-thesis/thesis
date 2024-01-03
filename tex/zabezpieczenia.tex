@@ -1,9 +1,112 @@
 \newpage
 
+
 \section{Wdrożenie wybranych metod detekcji}\label{sec:wdrozenie-metod-detekcji}
+
+\subsection{Web Application Firewall}
+
+\begin{figure*}[p]
+    \begin{listing}[H]
+        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{docker}
+FROM nginx:stable
+RUN apt-get -y update && apt-get -y install wget
+RUN wget https://raw.githubusercontent.com/mitchellkrogza/-
+    nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker
+RUN chmod +x /usr/local/sbin/install-ngxblocker
+WORKDIR /usr/local/sbin
+RUN ./install-ngxblocker -x
+WORKDIR /
+COPY nginx.conf /etc/nginx/
+EXPOSE 9090
+CMD ["nginx", "-g", "daemon off;"]
+        \end{minted}
+        \caption{\todo{TODO}}
+        \label{lst:nginx-bot-blocker-dockerfile}
+    \end{listing}
+
+    \begin{listing}[H]
+        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{nginx}
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    include /etc/nginx/conf.d/botblocker-nginx-settings.conf;
+    include /etc/nginx/conf.d/globalblacklist.conf;
+
+    server {
+	    listen  9090;
+	    listen  [::]:9090;
+
+	    include /etc/nginx/bots.d/ddos.conf;
+        include /etc/nginx/bots.d/blockbots.conf;
+
+	    location / {
+		    proxy_pass                  http://localhost:9000;
+		    proxy_pass_request_headers  on;
+		    proxy_buffering             off;
+	    }
+    }
+}
+        \end{minted}
+        \caption{\todo{TODO}}
+        \label{lst:nginx-bot-blocker-conf}
+    \end{listing}
+\end{figure*}
 
 \subsection{Rate Limiting}
 
-\subsection{Web Application Firewall}
+\begin{figure*}[p]
+    \begin{listing}[H]
+        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
+apiVersion: k8s.nginx.org/v1
+kind: Policy
+metadata:
+  name: store-api-rate-limit-policy
+  namespace: store
+spec:
+  rateLimit:
+    rate: 15r/m
+    key: ${binary_remote_addr}
+    burst: 50
+    zoneSize: 10M
+    rejectCode: 429
+        \end{minted}
+        \caption{\todo{TODO}}
+        \label{lst:rate-limiting-policy}
+    \end{listing}
+
+    \begin{listing}[H]
+        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: backend-vs
+  namespace: store
+spec:
+  ingressClassName: public
+  host: api.tulski.com
+# tls: ...
+  upstreams:
+    - name: bot-blocker-proxy
+      service: bot-blocker-proxy
+      port: 9090
+  routes:
+    - path: /
+      action:
+        pass: bot-blocker-proxy
+    - path: /store
+      policies:
+        - name: store-api-rate-limit-policy
+      action:
+        pass: bot-blocker-proxy
+        \end{minted}
+        \caption{\todo{TODO}}
+        \label{lst:rate-limiting-virtual-server}
+    \end{listing}
+\end{figure*}
+
 
 \subsection{Browser Fingerprinting}

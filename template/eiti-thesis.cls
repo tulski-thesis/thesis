@@ -59,7 +59,7 @@
 \RequirePackage{float}      % Improved float support
 \RequirePackage{lipsum}     % Lorem ipsum
 \RequirePackage[outputdir=out]{minted}   % Code listings
-\RequirePackage{csquotes}
+\RequirePackage[autostyle,german=guillemets]{csquotes}
 \RequirePackage{tcolorbox}
 \RequirePackage{etoolbox}
 \RequirePackage{xpatch}
