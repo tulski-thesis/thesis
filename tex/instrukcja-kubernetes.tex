@@ -5,7 +5,7 @@
 Ten załącznik stanowi instrukcję stworzenia klastra Kubernetes w chmurze obliczeniowej Oracle Cloud Infrastructure (OCI).
 Klaster składa się z czterech węzłów, każdy z nich posiada 1 procesor (Oracle CPU, OCPU) oraz 6 GB pamięci RAM\@.
 Zaproponowana infrastruktura obejmuje cztery maszyny wirtualne (c1, c2, c3, c4), load balancer (k8s) oraz sieć wirtualną (subnet-20230313-1902).
-Uproszczony i uporządkowany model infrastruktury przedstawiono na rysunku~\ref{fig:infrastructure}.
+Uproszczony i uporządkowany model infrastruktury przedstawiono na~\autoref{fig:infrastructure}.
 Wszystkie wymienione elementy zostały wdrożone w ramach darmowego planu \emph{Always Free}.
 
 Wykorzystanie czterech węzłów wraz z load balancerem, oraz odpowiednia konfiguracja, pozwala na zapewnienie wysokiej dostępności (ang. \emph{high availability}).
@@ -20,7 +20,7 @@ Wykorzystanie czterech węzłów wraz z load balancerem, oraz odpowiednia konfig
 \subsection{Maszyny wirtualne}
 
 Każdy węzeł klastra został uruchomiony na oddzielnej maszynie wirtualnej (ang. \emph{virtual machine, VM}).
-Wszystkie węzły, w formie tabelki, przedstawiono na rysunku~\ref{fig:oci-compute-instances}.
+Wszystkie węzły, w formie tabelki, przedstawiono na \autoref{fig:oci-compute-instances}.
 
 \begin{figure}[H]
     \centering
@@ -38,7 +38,7 @@ Wszystkie węzły, w formie tabelki, przedstawiono na rysunku~\ref{fig:oci-compu
     \item Obraz: Canonical Ubuntu 22.04 aarch64 2023.02.15-0
 \end{itemize}
 
-\noindent Szczegółową specyfikację jednej z maszyn wirtualnych przedstawiono na rysunku~\ref{fig:oci-instance-details}.
+\noindent Szczegółową specyfikację jednej z maszyn wirtualnych przedstawiono na \autoref{fig:oci-instance-details}.
 
 \begin{figure}[H]
     \centering
@@ -50,7 +50,7 @@ Wszystkie węzły, w formie tabelki, przedstawiono na rysunku~\ref{fig:oci-compu
 \subsection{Konfiguracja podsieci}
 
 Wszystkie zasoby znajdują się w jednej wirtualnej podsieci (ang. \emph{virtual cloud network}, VCN) subnet-20230313-1902, która stanowi bezpieczne i izolowane środowisko sieciowe.
-Informacje o podsieci przedstawiono na rysunku~\ref{fig:oci-subnet}.
+Informacje o podsieci przedstawiona \autoref{fig:oci-subnet}.
 
 \begin{figure}[H]
     \centering
@@ -74,7 +74,7 @@ Informacje o podsieci przedstawiono na rysunku~\ref{fig:oci-subnet}.
     \item Reguła pozwalająca na cały ruch z adresu IP administratora - wymagana do zdalnego zarządzania klastrem przez Kubernetes API (kubectl).
 \end{enumerate}
 
-\noindent Kompletna lista wszystkich reguł sieciowych dla stworzonej podsieci subnet-20230313-1902 została zaprezentowana na rysunku~\ref{fig:oci-subnet-ingress-rules}.
+\noindent Kompletna lista wszystkich reguł sieciowych dla stworzonej podsieci subnet-20230313-1902 została zaprezentowana na~\autoref{fig:oci-subnet-ingress-rules}.
 
 \begin{figure}[H]
     \centering
@@ -172,7 +172,7 @@ Ostatni Backend Set, czyli  k8s-api, polega na wysłaniu zapytania protokołem H
 \subsection{Instalacja Kubernetes}
 
 Klaster wykorzystuje dystrybucję MicroK8s (zob. \autoref{subsec:microk8s}) w wersji 1.23.
-Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem~\autoref{lst:microk8s-install}.
+Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem \autoref{lst:microk8s-install}.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos]{bash}
@@ -189,7 +189,7 @@ Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem~\
 Kubernetes API stanowi kluczowy element systemu z perspektywy cyberbezpieczeństwa.
 Jednym z sposobów jego zabezpieczenia jest wymóg szyfrowanej komunikacji HTTPS, opartej na zweryfikowanym certyfikacie.
 Domyślne generowane przez MicroK8s certyfikaty pozwalają na połączenia z lokalnych adresów IP (zwykle adresów LAN) oraz komunikację z adresami mDNS (komunikacja w obrębie klastra, z adresów takich jak kubernetes.default lub kubernetes.default.svc.cluster.local).
-Aby umożliwić zdalne połączenie z Kubernetes API z internetu, niezbędna jest modyfikacja sekcji alt\_name pliku szablonu Certificate Signing Request (CSR) znajdującego się pod ścieżką \url{ /var/snap/microk8s/current/certs/csr.conf.template}.
+Aby umożliwić zdalne połączenie z Kubernetes API z internetu, niezbędna jest modyfikacja sekcji alt\_name pliku szablonu Certificate Signing Request (CSR) znajdującego się pod ścieżką \url{/var/snap/microk8s/current/certs/csr.conf.template}.
 Modyfikacja musi zostać wykonana na każdej z maszyn wirtualnych.
 
 \noindent Modyfikacja polega na dodaniu do sekcji alt\_names:

@@ -5,7 +5,7 @@
 Niniejszy rozdział poświęcony jest projektowi i wykonaniu sklepu internetowego tulski.com.
 Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne, które razem tworzą kompletny system e-commerce.
 
-Jak przedstawiono na~\nameref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \url{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
+Jak przedstawiono na~\autoref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \texttt{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
 
 Szczegółowy opis i konfiguracja poszczególnych komponentów została przedstawiona w dalszej części rozdziału.
 
@@ -21,12 +21,12 @@ Szczegółowy opis i konfiguracja poszczególnych komponentów została przedsta
 Platformą wdrożeniową dla projektu jest infrastruktura w postaci klastra Kubernetes uruchomionego w chmurze Oracle Cloud Infrastructure.
 Klaster składa się z czterech węzłów, każdy wyposażony w 1 procesor Oracle CPU oraz 6 GB pamięci RAM\@.
 W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowego pomiędzy węzłami klastra.
-Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w załączniku~\ref{sec:instrukcja-stworzenia-klastra-kubernetes}.
+Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w \autoref{sec:instrukcja-stworzenia-klastra-kubernetes}.
 
 \subsection{Ingress Controller}\label{subsec:ingress-controller}
 
 Zastosowano NGNIX Ingress Controller, czyli jedną z najpopularniejszych implementacji interfejsu Ingress w środowisku Kubernetes.
-Przy użyciu polecenia Helm (zob. listing~\ref{lst:helm-install-ingress-controller}) zainstalowano pakiet \url{oci://ghcr.io/nginxinc/charts/nginx-ingress} w wersji 1.0.2.
+Przy użyciu polecenia Helm (zob. \autoref{lst:helm-install-ingress-controller}) zainstalowano pakiet \texttt{oci://ghcr.io/nginxinc/charts/nginx-ingress} w wersji 1.0.2.
 NGINX Ingress Controller działa jako DaemonSet, co oznacza uruchomienie jednej instancji na każdym z węzłów klastra.
 Dodano integrację z cert-manager do zarządzania certyfikatami TLS\@.
 
@@ -52,7 +52,7 @@ helm install ingress-nginx \
 \subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
 
 Do konfiguracji DNS domeny tulski.com użyto usług Cloudflare.
-Dodano pięć rekordów typu A: admin, api, monitoring, registry i store (zob. rysunek~\ref{fig:dns-tulski-com}).
+Dodano pięć rekordów typu A: admin, api, monitoring, registry i store (zob. \autoref{fig:dns-tulski-com}).
 Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i korzysta z funkcji Cloudflare Proxy.
 
 \begin{figure}[H]
@@ -98,7 +98,7 @@ Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i 
 \subsection{Cert-Manager}\label{subsec:cert-manager-impl}
 
 Wdrożenie cert-manager zostało zrealizowane przy użyciu narzędzia Helm.
-Wykorzystano pakiet \url{jetstack/cert-manager} w wersji 1.13.1 (zob. listing~\ref{lst:helm-install-cert-manager}).
+Wykorzystano pakiet \texttt{jetstack/cert-manager} w wersji 1.13.1 (zob. \autoref{lst:helm-install-cert-manager}).
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos]{bash}
@@ -126,8 +126,8 @@ Ich stosowanie umożliwia lepszą organizację i izolację zasobów, co przyczyn
 W środowisku Kubernetes przestrzenie nazw umożliwiają segmentację jednego klastra na mniejsze, logicznie wyizolowane jednostki.
 Przestrzenie nazw mogą reprezentować środowiska różnych klientów (\emph{tenants}) lub środowiska na różnych poziomach (np. testowe i produkcyjne).
 
-Opisywana platforma posiada przestrzeń nazw o nazwie \url{store}, która zawiera wszystkie elementy niezbędne do działania sklepu internetowego \url{store.tulski.com}.
-Przestrzeń \url{store} została stworzona poprzez zaaplikowanie manifestu (zob. listing~\ref{lst:store-namespace}).
+Opisywana platforma posiada przestrzeń nazw o nazwie \texttt{store}, która zawiera wszystkie elementy niezbędne do działania sklepu internetowego \url{store.tulski.com}.
+Przestrzeń \texttt{store} została stworzona poprzez zaaplikowanie manifestu (zob. \autoref{lst:store-namespace}).
 
 \begin{listing}[H]
     \inputminted[xleftmargin=20pt,linenos]{yaml}{code/store-namespace.yaml}
@@ -138,7 +138,7 @@ Przestrzeń \url{store} została stworzona poprzez zaaplikowanie manifestu (zob.
 \subsubsection{Baza danych}\label{subsubsec:baza-danych}
 
 Dane sklepu internetowego są fizycznie przechowywane na dyskach maszyn wirtualnych.
-W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. listing~\ref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
+W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. \autoref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos]{bash}
@@ -149,7 +149,7 @@ microk8s enable hostpath-storage
 \end{listing}
 
 \noindent Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm.
-Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \url{bitnamicharts/postgresql} w przestrzeni \url{store}.
+Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \texttt{bitnamicharts/postgresql} w przestrzeni \texttt{store}.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos]{bash}
@@ -193,9 +193,9 @@ const plugins = [
 
 Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie było jego skonteneryzowania.
 Proces ten został zrealizowany przy użyciu narzędzia Docker.
-W tym celu stworzono plik Dockerfile (zob. listing~\ref{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
-Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \url{node:18-alpine}.
-Następnie, w kolejnych etapach \url{deps}, \url{builder} i \url{runner}, są kolejno instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
+W tym celu stworzono plik Dockerfile (zob. \texttt{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
+Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \texttt{node:18-alpine}.
+Następnie, w kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner}, są kolejno instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
 
 \begin{listing}[H]
     \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.backend}
@@ -204,11 +204,11 @@ Następnie, w kolejnych etapach \url{deps}, \url{builder} i \url{runner}, są ko
 \end{listing}
 
 Backend został zainstalowany i skonfigurowany w środowisku Kubernetes.
-Wszystkie komponenty i mechanizmy, które składają się na to wdrożenie, zostały przedstawione na rysunku~\ref{fig:kubernetes-backend}.
+Wszystkie komponenty i mechanizmy, które składają się na to wdrożenie, zostały przedstawione na~\autoref{fig:kubernetes-backend}.
 Wdrożenie odbywa się przez Deployment, co umożliwia automatyzację i skalowanie aplikacji.
 Komunikacja z serwisem odbywa się poprzez NGINX Virtual Server, który szyfruje dane za pomocą certyfikatu TLS wygenerowanego przez Cert-Manager.
 Backend korzysta z bazy danych PostgresSQL (zob. \autoref{subsubsec:baza-danych}).
-Obserwowalność działania aplikacji zapewnia Prometheus Service Monitor.
+Monitoring działania aplikacji zapewnia Prometheus Service Monitor.
 Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes Secrets.
 
 \begin{figure}[H]
@@ -223,7 +223,7 @@ Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes
 Panel administratora to kolejny element rozbudowanego ekosystemu Medusa, który jest dostarczany w formie wtyczki (ang. \emph{plugin}).
 Panel stanowi graficzny interfejs dla Admin REST API. Jego zastosowanie umożliwia łatwe zarządzanie produktami, zamówieniami oraz ustawieniami sklepu.
 
-Wtyczka panelu administratora, skonfigurowana w plikach serwera backend (zob. listing~\ref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
+Wtyczka panelu administratora, skonfigurowana w plikach serwera backend (zob. \autoref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
 Zdecydowano się na drugą opcję, ponieważ pozwala ona na niezależne skalowanie obu aplikacji.
 
 \begin{listing}[H]
@@ -240,7 +240,7 @@ const plugins = [
     \label{lst:medusajs-admin-plugin}
 \end{listing}
 
-Panel administratora jest budowany do postaci statycznych plików HTML, CSS i JavaScript, które następnie są hostowane przez serwer NGINX (zob. listing~\ref{lst:medusajs-admin-dockerfile}).
+Panel administratora jest budowany do postaci statycznych plików HTML, CSS i JavaScript, które następnie są hostowane przez serwer NGINX (zob. \autoref{lst:medusajs-admin-dockerfile}).
 
 \begin{listing}[H]
     \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.admin}
@@ -250,7 +250,7 @@ Panel administratora jest budowany do postaci statycznych plików HTML, CSS i Ja
 
 Panel administratora w środowisku Kubernetes funkcjonuje jako osobna jednostka wdrożeniowa, niezależna od backendu.
 Wykorzystuje NGINX Virtual Server z szyfrowaniem TLS. Certyfikat jest generowany przez Cert-Manager.
-Architektura obejmuje service oraz deployment z jednym podem, co przedstawiano na rysunku~\ref{fig:kubernetes-admin}.
+Architektura obejmuje service oraz deployment z jednym podem, co przedstawiano na \autoref{fig:kubernetes-admin}.
 
 \begin{figure}[H]
     \centering
@@ -266,7 +266,7 @@ Główny zadaniem tej witryny jest prezentacja oferowanych produktów oraz umoż
 Projekt Medusa dostarcza szablon witryny sklepu internetowego w formie osobnego projektu o nazwie Storefront.
 Storefront, jako graficzny interfejs dla Store REST API, stanowi integralną część reszty systemu Medusa.
 
-Witryna internetowa, analogicznie do części serwerowej oraz panelu administratora, została zintegrowana w strukturze całej platformy poprzez proces skonteneryzowania i wdrożenia w środowisku Kubernetes (zob. rysunek~\ref{fig:kubernetes-storefront}).
+Witryna internetowa, analogicznie do części serwerowej oraz panelu administratora, została zintegrowana w strukturze całej platformy poprzez proces skonteneryzowania i wdrożenia w środowisku Kubernetes (zob.~\autoref{fig:kubernetes-storefront}).
 
 \begin{figure}[H]
     \centering
@@ -275,8 +275,8 @@ Witryna internetowa, analogicznie do części serwerowej oraz panelu administrat
     \label{fig:kubernetes-storefront}
 \end{figure}
 
-Rysunek~\ref{fig:storefront-homepage} przedstawia stronę domową sklepu, akcentując powód jego powstania, czyli niniejszą pracę dyplomową.
-Natomiast rysunek~\ref{fig:storefront-products} ilustruje stronę z produktami, ukazując sposób prezentacji asortymentu.
+\autoref{fig:storefront-homepage} przedstawia stronę domową sklepu, akcentując powód jego powstania, czyli niniejszą pracę dyplomową.
+\autoref{fig:storefront-products} ilustruje stronę z produktami, ukazując sposób prezentacji asortymentu.
 Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfejsie użytkownika sklepu internetowego.
 
 \begin{figure}[p]
@@ -297,7 +297,7 @@ Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfej
 
 \subsubsection{Populacja danych}
 
-Zaimportowano 11440 przykładowych produktów (zob. Listing~\ref{lst:store-count-products}).
+Zaimportowano 11440 przykładowych produktów (zob. \autoref{lst:store-count-products}).
 Dane pozyskano z zbioru~\citetitle*{fashion-dataset}\cite{fashion-dataset} udostępnionego przez~\citeauthor*{fashion-dataset} na platformie Kaggle.
 
 \begin{listing}[H]
