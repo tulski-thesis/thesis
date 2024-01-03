@@ -2,10 +2,10 @@
 
 \section{Projekt i wykonanie sklepu internetowego}\label{sec:projekt-platformy}
 
-Niniejszy rozdział poświęcony jest platformie sklepu internetowego tulski.com.
+Niniejszy rozdział poświęcony jest projektowi i wykonaniu sklepu internetowego tulski.com.
 Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne, które razem tworzą kompletny system e-commerce.
 
-Jak przedstawiono na rysunku~\ref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \url{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
+Jak przedstawiono na~\nameref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \url{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
 
 Szczegółowy opis i konfiguracja poszczególnych komponentów została przedstawiona w dalszej części rozdziału.
 
@@ -295,9 +295,10 @@ Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfej
     \end{figure}
 \end{figure}
 
-\subsubsection{Import produktów}
+\subsubsection{Populacja danych}
 
-Sklep internetowy uzupełniono 11440 przykładowymi produktami (zob. listing~\ref{lst:store-count-products}), które pozyskano z zbioru danych~\citetitle*{fashion-dataset}\cite{fashion-dataset} udostępnionego przez~\citeauthor*{fashion-dataset} na platformie Kaggle.
+Zaimportowano 11440 przykładowych produktów (zob. Listing~\ref{lst:store-count-products}).
+Dane pozyskano z zbioru~\citetitle*{fashion-dataset}\cite{fashion-dataset} udostępnionego przez~\citeauthor*{fashion-dataset} na platformie Kaggle.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos]{sql}

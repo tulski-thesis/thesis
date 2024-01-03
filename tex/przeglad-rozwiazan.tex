@@ -1,13 +1,22 @@
 \newpage
 
 
-\section{Przegląd istniejących rozwiązań}\label{sec:przeglad-rozwiazan}
+\section{Przegląd metod detekcji}\label{sec:przeglad-rozwiazan}
 
 \subsection{Rate Limiting}\label{subsec:rate-limiting}
 
-Jak wskazuje \emph{OWASP API Security Top 10} w punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}:
+Rate Limiting to technika kontrolująca tempo, w jakim klienci mogą wysyłać żądania do serwera API\@.
+W tym celu zlicza się liczbę żądań w określonym oknie czasowym, a następnie ustala, czy ich częstotliwość nie przekracza maksymalnego dopuszczalnego progu~\cite{api-rate-limit-adoption}.
+
+Rozwiązanie zazwyczaj polega na liczeniu czasu między każdym żądaniem z każdego adresu IP\@.
+W przypadku, kiedy liczba żądań z danego adresu IP przekroczy ustalony limit w danym oknie czasowym, żądanie kończy się odpowiednim błędem.
+Adres IP, w tym przypadku, służy jako identyfikator klienta~\cite{cloudflare-what-is-rate-limiting}.
+Jednak, dopuszcza się również inne identyfikatory.
+
+Brak rate limitingu API jest, według \emph{OWASP API Security Top 10}, uznawany za podatność.
+W punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}, autorzy wskazują, że:\@
 \begin{displayquote}[\citetitle*{owasp-api-security-top-10}~\cite{owasp-api-security-top-10}, tłum. własne]
-    Żądania API zużywają zasoby takie jak sieć, CPU, pamięć i miejsce na dysku.
+    ``Żądania API zużywają zasoby takie jak sieć, CPU, pamięć i miejsce na dysku.
     Ilość zasobów potrzebnych do zaspokojenia żądania w dużej mierze zależy od danych wejściowych użytkownika i logiki biznesowej koncówki.
     Należy również wziąć pod uwagę fakt, że żądania od wielu klientów API konkurują o te same zasoby.
     API jest podatne na problemy, jeśli brakuje przynajmniej jednego z następujących limitów lub są one ustawione nieodpowiednio (np. zbyt niskie/wysokie):
@@ -19,17 +28,17 @@ Jak wskazuje \emph{OWASP API Security Top 10} w punkcie \emph{API4:2019 Lack of 
         \item Liczba procesów
         \item Rozmiar ładunku żądania (np. przesyłane pliki)
         \item Liczba żądań na klienta/zasób
-        \item Liczba rekordów na stronę zwracanych w pojedynczej odpowiedzi na żądanie
+        \item Liczba rekordów na stronę zwracanych w pojedynczej odpowiedzi na żądanie''
     \end{itemize}
 \end{displayquote}
 
-\noindent
+Rate Limiting stosuje się do ochrony ograniczonych zasobów, obrony przed atakami typu odmowa dostępu (ang. \emph{DoS, Denial of Service})
+oraz blokowania aktywności botów generujących duże nadużycia API\@.
 
-\todo{Rate Limiting}
+\newpage
+\subsection{Systemy blokowania botów}\label{subsec:waf}
 
-\subsection{Web Application Firewall}\label{subsec:waf}
-
-\todo{WAF}
+\todo{Systemy blokowania botów}
 
 \subsection{Browser Fingerprinting}\label{subsec:browser-fingerprinting}
 
