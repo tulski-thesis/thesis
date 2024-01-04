@@ -1,6 +1,5 @@
 \newpage
 
-
 \section{Web Scraping}\label{sec:teoria}
 
 Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów WWW (World Wide Web)\cite{Zhao2017}.
@@ -23,7 +22,7 @@ Zatem, w obliczu powyższych wyzwań, niezbędna stała się technika web scrapi
 
 \subsection{Proces Web Scrapingu}\label{subsec:web-scraping-process}
 
-Proces Web Scrapingu, jak przedstawia \autoref{fig:scraping-process}, można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i prezentacja informacji\cite{persson}.
+Proces Web Scrapingu, jak przedstawiono na \autoref{fig:scraping-process}, można podzielić na trzy główne etapy: pobieranie danych, konwersja i przetwarzanie oraz zapis i prezentacja informacji\cite{persson}.
 
 \todo{Popraw ten rysunek}
 \begin{figure}[H]
@@ -135,7 +134,7 @@ Automatyzacja tego procesu umożliwia szybką reakcję, co jest niezwykle ważne
 Naukowcy i inżynierowie wykorzystują web scraping do pozyskiwania danych, które są niezbędne do trenowania i modeli sztucznej inteligencji\cite{openai-data-collection}.
 Dane te wykorzystywane są w różnych celach, od automatycznego rozpoznawania obrazu po analizę języka naturalnego.
 
-\subsection{Scraper}
+\subsection{Scraper}\label{subsec:scraper}
 
 Web Scraper, w uproszczeniu scraper, to specjalny rodzaj bota przeprowadzający zautomatyzowany proces web scrapingu.
 
@@ -144,7 +143,7 @@ jest jedynym momentem w którym możliwa jest jego identyfikacja i zablokowanie.
 Wybrane cechy ruchu sieciowego wykonywanego przez tego typu boty kluczowe w ich detekcji to:
 
 \begin{itemize}
-    \item nagłówek \mintinline{text}{User-Agent} wskazuje na narzędzie programistyczne - wget, curl, Postman, Axios itd.
+    \item nagłówek \mintinline{text}{User-Agent} wskazuje na narzędzie programistyczne - wget, curl, Postman, axios, got itd,
 %    \item declares its user-agent as being wget, curl, webcopier etc - it's probably a bot.
     \item nie posiadają nagłówka \mintinline{text}{User-Agent},
 %    \item no user-agent (or matching a pattern of known bad ones) - it's probably a bot.
@@ -154,9 +153,9 @@ Wybrane cechy ruchu sieciowego wykonywanego przez tego typu boty kluczowe w ich 
 %    \item requests details -> details -> details -> details ad nauseum - it's probably a bot.
     \item zapytania jedynie zawartość HTML z ominięciem CSS lub JS,
 %    \item requests the html, but not .css, .js or site furniture - it's probably a bot.
-    \item duża liczba zapytań HTTP z kodami odpowiedzi > 400.
+    \item duża liczba zapytań HTTP z kodami odpowiedzi > 400,
 %    \item generates a large number of HTTP error codes > 400 (1.e 401, 403, 404 \& 500)- it's probably a bot.
-    \item pochodzą z mało prawdopodobnego źródła ruchu dla ludzi (np.  Amazon AWS),
+    \item pochodzą z mało prawdopodobnego źródła ruchu dla ludzi (np\. Amazon AWS),
 %    \item originates from an unlikely human traffic source (i.e Amazon AWS) - it's probably a bot.
     \item nigdy nie posiadają nagłówka z adresem odsyłającym - \mintinline{text}{Referer},
 %    \item no referrer, ever - it's probably a bot.
