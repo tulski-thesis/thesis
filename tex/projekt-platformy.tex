@@ -1,5 +1,6 @@
 \newpage
 
+
 \section{Projekt i wykonanie sklepu internetowego}\label{sec:projekt-platformy}
 
 Niniejszy rozdział poświęcony jest projektowi i wykonaniu sklepu internetowego tulski.com.
@@ -23,7 +24,7 @@ Klaster składa się z czterech węzłów, każdy wyposażony w 1 procesor Oracl
 W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowego pomiędzy węzłami klastra.
 Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w \autoref{sec:instrukcja-stworzenia-klastra-kubernetes}.
 
-\subsection{Ingress Controller}\label{subsec:ingress-controller}
+\subsubsection{Ingress Controller}\label{subsubsec:ingress-controller}
 
 Zastosowano NGNIX Ingress Controller, czyli jedną z najpopularniejszych implementacji interfejsu Ingress w środowisku Kubernetes.
 Przy użyciu polecenia Helm (zob. \autoref{lst:helm-install-ingress-controller}) zainstalowano pakiet \texttt{oci://ghcr.io/nginxinc/charts/nginx-ingress} w wersji 1.0.2.
@@ -49,7 +50,7 @@ helm install ingress-nginx \
 
 \newpage
 
-\subsection{Konfiguracja DNS}\label{subsec:konfiguracja-dns}
+\subsubsection{Konfiguracja DNS}\label{subsubsec:konfiguracja-dns}
 
 Do konfiguracji DNS domeny tulski.com użyto usług Cloudflare.
 Dodano pięć rekordów typu A: admin, api, monitoring, registry i store (zob. \autoref{fig:dns-tulski-com}).
@@ -95,7 +96,7 @@ Każdy z wymienionych rekordów wskazuje na publiczny adres IP Load Balancera i 
 %    \end{figure}
 %\end{figure}
 
-\subsection{Cert-Manager}\label{subsec:cert-manager-impl}
+\subsubsection{Cert-Manager}\label{subsubsec:cert-manager-impl}
 
 Wdrożenie cert-manager zostało zrealizowane przy użyciu narzędzia Helm.
 Wykorzystano pakiet \texttt{jetstack/cert-manager} w wersji 1.13.1 (zob. \autoref{lst:helm-install-cert-manager}).
@@ -117,7 +118,9 @@ helm install cert-manager \
 %
 %\todo{Docker Registry}
 
-\subsection{Przestrzeń Store}\label{subsec:store}
+\newpage
+
+\subsection{Część aplikacyjna}\label{subsec:store}
 
 \subsubsection{Przestrzeń nazw}
 
@@ -176,7 +179,7 @@ To warstwa stanowiąca zaplecze technologiczne, która w oparciu na zdefiniowany
 
 Serwer dostarczany przez projekt Medusa nie wymagał żadnych modyfikacji.
 Jedynym wymogiem do jego uruchomienia było wybranie i dołączenie odpowiednich wtyczek (ang. \emph{plugins}) odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
-W tym celu zastosowano odpowiednio medusa-fulfillment-manual  i medusa-payment-manual (zob. \autoref{lst:medusa-config-fulfillment-payment}).
+W tym celu zastosowano odpowiednio medusa-fulfillment-manual i medusa-payment-manual (zob. \autoref{lst:medusa-config-fulfillment-payment}).
 Obie te wtyczki można postrzegać jako atrapy (ang. \emph{mocks}), które umożliwiają funkcjonowanie serwera bez konieczności integracji z rzeczywistymi serwisami, takimi jak Stripe czy PayPal.
 
 \begin{listing}[H]
@@ -227,7 +230,7 @@ Wtyczka panelu administratora, skonfigurowana w plikach serwera backend (zob. \a
 Zdecydowano się na drugą opcję, ponieważ pozwala ona na niezależne skalowanie obu aplikacji.
 
 \begin{listing}[H]
-        \begin{minted}[xleftmargin=20pt,linenos]{js}
+    \begin{minted}[xleftmargin=20pt,linenos]{js}
 const plugins = [
     {
         resolve: "@medusajs/admin",
@@ -235,7 +238,7 @@ const plugins = [
     },
     // ...
 ];
-        \end{minted}
+    \end{minted}
     \caption{Dołączenie wtyczki @medusajs/admin}
     \label{lst:medusajs-admin-plugin}
 \end{listing}
