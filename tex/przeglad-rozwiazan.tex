@@ -1,7 +1,7 @@
 \newpage
 
 
-\section{Przegląd metod detekcji}\label{sec:przeglad-rozwiazan}
+\section{Przegląd metod detekcji web scrapingu}\label{sec:przeglad-rozwiazan}
 
 \subsection{Rate Limiting}\label{subsec:rate-limiting}
 
@@ -33,7 +33,9 @@ W punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}, autorzy wskazują
 \end{displayquote}
 
 Rate Limiting stosuje się do ochrony ograniczonych zasobów, obrony przed atakami typu odmowa dostępu (ang. \emph{DoS, Denial of Service})
-oraz blokowania aktywności botów generujących duże nadużycia API\@.
+oraz blokowania aktywności botów generujących duże nadużycia\@.
+Scrapery, będąc automatycznym oprogramowaniem, często generują dużą liczbę zapytań w krótkim czasie, znacznie większą niż człowiek podczas korzystania z serwisu.
+Istotne jest zatem takie skonfigurowanie reguł rate limitingu, aby zablokować zautomatyzowane pobieranie danych, prz tym nie ograniczając dostępu prawdziwym użytkownikom.
 
 \newpage
 
@@ -63,10 +65,7 @@ Na podstawie każdego z punktów w wspomnianym \autoref{subsec:scraper} można s
 
 \subsection{Browser Fingerprinting}\label{subsec:browser-fingerprinting}
 
-\todo{Browser Fingerprinting}
+Browser Fingerprint (odcisk przeglądarki) to zestaw informacji związanych z środowiskiem użytkownika przeglądarki internetowej, od fizycznego sprzętu, poprzez system operacyjny, aż do oprogramowania i jego konfiguracji~\cite{browser-fingerprinting-a-survey}.
 
-\newpage
+Browser Fingerprinting to proces zbierania informacji, tworzących odcisk przeglądarki, realizowany poprzez skrypt uruchomiony bezpośrednio w kontekście przeglądarki internetowej.
 
-\subsection{Bot Detection as a Service}
-
-\todo{Bot Detection as a Service}
