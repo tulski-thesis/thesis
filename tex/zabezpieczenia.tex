@@ -3,31 +3,40 @@
 
 \section{Wdrożenie wybranych metod detekcji}\label{sec:wdrozenie-metod-detekcji}
 
-\subsection{Reverse Proxy}
+\subsection{Reverse Proxy --- Bot Blocker}\label{subsec:reverse-proxy-impl}
 
-\todo{Web Application Firewall}
+W infrastrukturze sklepu internetowego wdrożono serwer typu reverse proxy zlokalizowany przed backendem (zob. \autoref{fig:backend-reverse-proxy}).
 
-\begin{figure*}[p]
-    \begin{listing}[H]
-        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{docker}
-FROM nginx:stable
-RUN apt-get -y update && apt-get -y install wget
-RUN wget https://raw.githubusercontent.com/mitchellkrogza/-
-    nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker
-RUN chmod +x /usr/local/sbin/install-ngxblocker
-WORKDIR /usr/local/sbin
-RUN ./install-ngxblocker -x
-WORKDIR /
-COPY nginx.conf /etc/nginx/
-EXPOSE 9090
-CMD ["nginx", "-g", "daemon off;"]
-        \end{minted}
-        \caption{\todo{TODO}}
-        \label{lst:nginx-bot-blocker-dockerfile}
-    \end{listing}
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.8\linewidth}
+    \includegraphics[width=\textwidth]{img/backend-reverse-proxy}
+    \caption{Lokalizacja Reverse Proxy w infrastrukturze sklepu}
+    \label{fig:backend-reverse-proxy}
+\end{figure}
 
-    \begin{listing}[H]
-        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{nginx}
+Serwer wykorzystuje oprogramowanie Nginx, które zostało rozszerzone o narzędzie Nginx Ultimate Bad Bot Blocker.
+Zgodnie z opisem autorów, Ngnix Ultimate Bad Bot Blocker służące do obrony przed:
+złośliwymi botami i złośliwymi agentami (\texttt{User-Agent}),
+techniką Clickjacking, techniką Click Re-Directing,
+Spam Referrer, Adware, Malware, Ransomware,
+złośliwymi adresami IP z systemami anty-DDoS,
+techniką wykrywania motywów Wordpress
+oraz organizacjami SEO~\cite{nginx-ultimate-bad-bot-blocker}.
+
+\autoref{lst:nginx-bot-blocker-conf} przedstawia konfigurację serwera.
+Instrukcje \texttt{include} ładują konfiguracje dostarczane z Nginx Ultimate Bad Bot Blocker.
+Serwer nasłuchuje na port 9090 i przekierowuje żądania na port 9000.
+Żądania są przekazywane wraz z wszystkimi nagłówkami.
+Dodatkowo, w celu monitoringu i zapewnienia audytowalności, włączono logowanie zdarzeń w niestandardowym formacie
+
+Wdrożenie w środowisku Kubernetes wymagało konteneryzacji omawianego rozwiązania.
+\autoref{lst:nginx-bot-blocker-dockerfile} przedstawia plik Dockerfile zawierający instrukcje budujące obraz \texttt{Bot Blocker Proxy}.
+Jako bazę wykorzystano obraz \texttt{ngnix:stable}.
+Instalacja Nginx Ultimate Bad Bot Blocker jest realizowana przez skrypt dostarczany przez twórców.
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{nginx}
 http {
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
@@ -52,21 +61,58 @@ http {
 	    }
     }
 }
-        \end{minted}
-        \caption{\todo{TODO}}
-        \label{lst:nginx-bot-blocker-conf}
-    \end{listing}
-\end{figure*}
+    \end{minted}
+    \caption{Plik konfiguracyjny serwera reverse proxy}
+    \label{lst:nginx-bot-blocker-conf}
+\end{listing}
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{docker}
+FROM nginx:stable
+RUN apt-get -y update && apt-get -y install wget
+RUN wget https://raw.githubusercontent.com/mitchellkrogza/-
+    nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker
+RUN chmod +x /usr/local/sbin/install-ngxblocker
+WORKDIR /usr/local/sbin
+RUN ./install-ngxblocker -x
+WORKDIR /
+COPY nginx.conf /etc/nginx/
+EXPOSE 9090
+CMD ["nginx", "-g", "daemon off;"]
+    \end{minted}
+    \caption{Instrukcje budujące obraz reverse proxy}
+    \label{lst:nginx-bot-blocker-dockerfile}
+\end{listing}
 
 \newpage
 
-\subsection{Rate Limiting}
+\subsection{Rate Limiting}\label{subsec:rate-limiting-impl}
 
-\todo{Rate Limiting}
+Kolejnym wdrożonym zabezpieczeniem przed web scrapingiem był API Rate Limiting.
+Wykorzystano możliwość uruchomionego wcześniej (zob. \autoref{subsubsec:ingress-controller}) Ngnix Ingress Controller
+do tworzenia zasobów polityk (ang. \emph{Policy Resource}) dla zasobów typu \texttt{VirtualServer} i \texttt{VirtualServerRoute}.
+Polityki te pozwalają na kontrolę dostępu (ang. \emph{access control}) i rate limiting~\cite{nginx-ingress-controller-policy-resource}.
 
-\begin{figure*}[p]
-    \begin{listing}[H]
-        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
+Wdrożono politykę \emph{store-api-rate-limit-policy} ograniczającą liczbę żądań do 15 na minutę
+dla jednego adresu IP (\texttt{binary\_remote\_addr}), z możliwością przekroczenia limitu o 20 (\texttt{burst}).
+Pełną konfigurację \emph{store-api-rate-limit-policy} przedstawia \autoref{lst:rate-limiting-policy}.
+
+Polityka została zaaplikowana do VirtualServer, który zarządza komunikacją z backendem (zob. \autoref{fig:backend-rate-limiting}).
+Szczegółowa konfiguracja VirtualServer \texttt{backend-vs}, w tym wykorzystanie polityki \texttt{store-api-rate-limit-policy}, zostało przedstawione na \autoref{lst:rate-limiting-virtual-server}.
+Widoczne tam sekcje \texttt{action.pass} mówią o tym, co ma się stać z ruchem pasującym do określonej ścieżki (\texttt{path}).
+Rate limiting został zaaplikowany dla ścieżek z prefiksem \texttt{/store} (linia 18, \texttt{path: /store}), zatem dla Store API z pominięciem Admin API wykorzystywanym do zarządzania sklepem.
+
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.8\linewidth}
+    \includegraphics[width=\textwidth]{img/backend-rate-limiting}
+    \caption{Polityka Rate Limiting w infrastrukturze sklepu}
+    \label{fig:backend-rate-limiting}
+\end{figure}
+
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
@@ -76,16 +122,16 @@ spec:
   rateLimit:
     rate: 15r/m
     key: ${binary_remote_addr}
-    burst: 50
+    burst: 20
     zoneSize: 10M
     rejectCode: 429
-        \end{minted}
-        \caption{\todo{TODO}}
-        \label{lst:rate-limiting-policy}
-    \end{listing}
+    \end{minted}
+    \caption{Manifest \texttt{store-api-rate-limit-policy}}
+    \label{lst:rate-limiting-policy}
+\end{listing}
 
-    \begin{listing}[H]
-        \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
+\begin{listing}[p]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{yaml}
 apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
@@ -108,11 +154,10 @@ spec:
         - name: store-api-rate-limit-policy
       action:
         pass: bot-blocker-proxy
-        \end{minted}
-        \caption{\todo{TODO}}
-        \label{lst:rate-limiting-virtual-server}
-    \end{listing}
-\end{figure*}
+    \end{minted}
+    \caption{Szczegółowa konfiguracja VirtualServer \texttt{backend-vs}}
+    \label{lst:rate-limiting-virtual-server}
+\end{listing}
 
 \newpage
 
