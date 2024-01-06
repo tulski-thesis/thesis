@@ -65,7 +65,86 @@ Na podstawie każdego z punktów w wspomnianym \autoref{subsec:scraper} można s
 
 \subsection{Browser Fingerprinting}\label{subsec:browser-fingerprinting}
 
-Browser Fingerprint (odcisk przeglądarki) to zestaw informacji związanych z środowiskiem użytkownika przeglądarki internetowej, od fizycznego sprzętu, poprzez system operacyjny, aż do oprogramowania i jego konfiguracji~\cite{browser-fingerprinting-a-survey}.
+Browser Fingerprint --- odcisk przeglądarki --- to zestaw informacji związanych z środowiskiem przeglądarki internetowej użytkownika, od fizycznego sprzętu, poprzez system operacyjny, aż do oprogramowania i jego konfiguracji~\cite{browser-fingerprinting-a-survey}.
+Browser Fingerprinting to proces zbierania i analizy informacji tworzących odcisk przeglądarki.
+Proces ten wykorzystuje się w celu identyfikacji i śledzenia użytkowników.
+Dąż się do zgromadzenia możliwie wielu rekordów, które połączone razem tworzą unikalną kombinację jednoznacznie identyfikującą użytkownika~\cite{fingerprint-browser-fingerprinting}.
+Informacje te najczęściej pochodzą z nagłówków HTTP oraz skryptów uruchamianych bezpośrednio w kontekście przeglądarki internetowej użytkownika.
+Zebrane informacje mogą zawierać m.in.:
+\begin{itemize}
+    \item specyfikacje sprzętową: wersja urządzenia, rozdzielczość ekranu, poziom baterii, pamięć urządzenia, informacje nt. procesora (CPU) i karty graficznej (GPU),
+    \item informacje o systemie operacyjnym i przeglądarce: typ i wersja systemu operacyjnego, typ i wersja przeglądarki internetowej, wtyczki zainstalowane w przeglądarce internetowej, obecność blokera reklam, wykorzystywany układ klawiatury, ustawienia przeglądarki (preferowany język, opcje śledzenia, wspieranie ciasteczek), ustawienia systemowe (strefa czasowa, zainstalowane czcionki), parametry WebGL (Web Graphics Library)
+    \item informacje sieciowe: adres IP, szczegóły sesji TSL~\cite{browser-fingerprinting-a-survey,zitadel-browser-fingerprinting,zenrows-browser-fingerprinting,fingerprint-browser-fingerprinting}.
+\end{itemize}
+\noindent Przykładowy odcisk przeglądarki został przedstawiony w \autoref{tab:http-js-attributes}.
 
-Browser Fingerprinting to proces zbierania informacji, tworzących odcisk przeglądarki, realizowany poprzez skrypt uruchomiony bezpośrednio w kontekście przeglądarki internetowej.
+Browser Fingerprinting znajduje zastosowanie jako metoda detekcji web scrapingu.
+Poprzez zbieranie odcisku przeglądarki i tworzeniu dla niego identyfikatora, możemy wymagać jego podania, tym samym blokując API web scraping.
+Istnieją określone elementy odcisku sugerujące użycie metod automatyzacji~\cite{zenrows-browser-fingerprinting}.
+Przykładowo, przeglądarki uruchomione przez biblioteki opisywane w \autoref{subsubsec:browser-scraping-theory} charakteryzują się:
+ekranem o rozdzielczości 0x0 (Headless Browser),
+WebGL z dostawcą \texttt{Brian Paul} lub \texttt{Mesa OffScreen} (Headless Chrome),
+User-Agentem zawierającym \texttt{"PhantomJS"}, \texttt{"Headless"}, \texttt{"Electron"} lub \texttt{"slimerjs"},
+brakiem zainstalowanych wtyczek, brakiem wspieranych kodeków wideo itd.
+Ponadto, scrapery często są uruchomione w chmurach obliczeniowych bez urządzeń peryferyjnych lub środowiska graficznego.
 
+\begin{table}[p]
+    \small
+    \centering
+    \begin{tabular}{|p{0.35\linewidth} | p{0.6\linewidth}|}
+        \hline
+        \textbf{Atrybut}             & \textbf{Wartość}                                                                                                                                                                                                                                                                                                                                                                                                                              \\ \hline
+        User Agent                   & Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0                                                                                                                                                                                                                                                                                                                                                          \\ \hline
+        Platforma                    & MacIntel                                                                                                                                                                                                                                                                                                                                                                                                                                      \\ \hline
+        Strefa czasowa               & UTC+01:00 (-60)                                                                                                                                                                                                                                                                                                                                                                                                                               \\ \hline
+        Język                        & en-US,en,pl                                                                                                                                                                                                                                                                                                                                                                                                                                   \\ \hline
+        Szczegóły ekranu             & szerokość: 1680, wysokość: 1050, depth: 24, dostępna wysokość: 1050, dostępna szerokość: 1680 i inne                                                                                                                                                                                                                                                                                                                                          \\ \hline
+        Canvas                       & \includegraphics[width=0.9\linewidth]{img/fingerprint-cavas}                                                                                                                                                                                                                                                                                                                                                                                  \\ \hline
+        Dostawca WebGL               & Apple                                                                                                                                                                                                                                                                                                                                                                                                                                         \\ \hline
+        Renderujący WebGL            & Apple M1                                                                                                                                                                                                                                                                                                                                                                                                                                      \\ \hline
+        Dane WebGL                   & \includegraphics[width=0.6\linewidth]{img/fingerprint-webgl}                                                                                                                                                                                                                                                                                                                                                                                  \\ \hline
+        Parametry WebGL              & Wykryto 26 różnych rozszerzeń. Przeanalizowano 25 różnych parametrów ogólnych i 36 różnych precyzji shaderów                                                                                                                                                                                                                                                                                                                                  \\ \hline
+        Lista fontów (JS)            & Al Bayan, Al Nile, Al Tarikh, American Typewriter, Andale Mono i 181 innych                                                                                                                                                                                                                                                                                                                                                                   \\ \hline
+        Wtyczki &
+        --- PDF Viewer; Portable Document Format; internal-pdf-viewer\newline
+        --- Chrome PDF Viewer; Portable Document Format; internal-pdf-viewer.\newline
+        oraz 3 inne \\ \hline
+        Wykorzystanie AdBlock        & Tak                                                                                                                                                                                                                                                                                                                                                                                                                                           \\ \hline
+        Do Not Track                 & Tak                                                                                                                                                                                                                                                                                                                                                                                                                                           \\ \hline
+        Atrybuty Navigator           & Wykryto 45 obiektów                                                                                                                                                                                                                                                                                                                                                                                                                           \\ \hline
+        Urządzenia multimedialne     & 2 wejścia audio, 1 wejście video                                                                                                                                                                                                                                                                                                                                                                                                              \\ \hline
+        Kontekst audio               & częstotliwość próbkowania: 48000, stan: wstrzymano                                                                                                                                                                                                                                                                                                                                                                                            \\ \hline
+        Wspierane rozszerzenia audio & audio/aac : możliwe, audio/flac : możliwe, audio/mpeg : możliwe, audio/ogg; codecs=\("\)flac\("\)  : prawdopodobnie, audio/ogg; codecs=\("\)vorbis\("\) : prawdopodobnie, audio/ogg; codecs=\("\)opus\("\) : prawdopodobnie, audio/wav; codecs=\("\)1\("\) : prawdopodobnie, audio/webm; codecs=\("\)vorbis\("\) : prawdopodobnie, audio/webm; codecs=\("\)opus\("\) : prawdopodobnie, audio/mp4; codecs=\("\)mp4a\_40\_2\("\) : prawdopodobnie \\ \hline
+        Wspierane rozszerzenia video & video/mp4; codecs=\("\)flac\("\) : prawdopodobnie, video/ogg; codecs=\("\)theora\("\) : prawdopodobnie, video/ogg; codecs=\("\)opus\("\) : prawdopodobnie, video/webm; codecs=\("\)vp9, opus\("\) : prawdopodobnie, video/webm; codecs=\("\)vp8, vorbis\("\) : prawdopodobnie,                                                                                                                                                                \\ \hline
+        Dostępne elementy            & Location Bar, Menu Bar, Personal Bar, Status Bar, Tool Bar, Local Storage, Session Storage, IndexedDB, Ciasteczka                                                                                                                                                                                                                                                                                                                             \\ \hline
+    \end{tabular}
+    \caption{Wybrane atrybuty odcisku przeglądarki autora pracy\newline \todo{Tabela postała w oparciu o odcisk ...}}
+    \label{tab:http-js-attributes}
+\end{table}
+
+%\begin{enumerate}
+%    \item specyfikacje sprzętową:
+%    \begin{itemize}
+%        \item wersja urządzenia,
+%        \item rozdzielczość ekranu,
+%        \item poziom baterii,
+%        \item pamięć urządzenia,
+%        \item informacje nt. procesora (CPU),
+%        \item informacje nt. karty graficznej (GPU),
+%    \end{itemize}
+%    \item informacje o systemie operacyjnym i przeglądarce:
+%    \begin{itemize}
+%        \item typ i wersja systemu operacyjnego,
+%        \item typ i wersja przeglądarki internetowej,
+%        \item wtyczki zainstalowane w przeglądarce internetowej (w tym obecność blokera reklam),
+%        \item wykorzystywany układ klawiatury,
+%        \item ustawienia przeglądarki (preferowany język, opcje śledzenia, wspieranie ciasteczek),
+%        \item ustawienia systemowe (strefa czasowa, zainstalowane czcionki),
+%        \item parametry WebGL (Web Graphics Library)
+%    \end{itemize}
+%    \item informacje sieciowe:
+%    \begin{itemize}
+%        \item adres IP,
+%        \item szczegóły sesji TSL~\cite{browser-fingerprinting-a-survey,zitadel-browser-fingerprinting,zenrows-browser-fingerprinting,fingerprint-browser-fingerprinting}.
+%    \end{itemize}
+%\end{enumerate}
