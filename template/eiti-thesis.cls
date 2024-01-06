@@ -240,18 +240,6 @@
 \newcommand{\keywords}{\vspace{0.5cm}\par\noindent \textbf{Keywords: \xspace}}
 
 %--------------------------------
-% Oświadczenie o autorstwie
-%--------------------------------
-\newcommand{\makeauthorship}{
-    \includepdf[
-        pages=1,
-        trim=0 55pt 0 0,
-        clip,
-        pagecommand={\thispagestyle{plain}}
-    ]{template/oswiadczenie_autora_pracy}
-}
-
-%--------------------------------
 % Strona tytułowa - makra
 %--------------------------------
 \newcommand{\instytut}[1]{
