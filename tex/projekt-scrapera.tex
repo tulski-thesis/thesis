@@ -116,7 +116,7 @@ Po uzyskaniu odpowiedniej ilości informacji rozpoczęto proces tworzenia scrape
 Podczas rekonesansu ustalono, że strona jest renderowana dynamicznie i pobierane dane z końcówek API, które zwracają dane w formacie JSON, dlatego zdecydowano się na scraping API\@.
 Wykorzystano język programowania TypeScript, środowisko uruchomieniowe Node.js i bibliotekę got.
 
-\subsubsection{Konfiguracja klienta HTTP}
+\subsubsection{Konfiguracja klienta HTTP}\label{subsubsec:storeclient}
 
 Skonfigurowano klienta HTTP \texttt{storeClient}, który wysyła żądania do serwera API z nagłówki typowymi dla przeglądarki internetowej.
 Działanie to miało na celu jak najwierniejsze odwzorowanie śladu i zachowań scrapera na wzór klienta przeglądarkowego, co zwiększa jego dyskrecję podczas działania.
