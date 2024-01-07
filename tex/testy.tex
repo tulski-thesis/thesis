@@ -6,6 +6,23 @@
 
 \subsection{Rate Limiting}
 
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{bash}
+#!/bin/bash
+
+while :;
+do
+  curl -X GET 'https://api.tulski.com/store/products?limit=1' \
+        -s \
+        -o /dev/null \
+        -w "$(date "+%H:%M:%S") Response GET /store/products?limit=1 %{http_code}\n" &
+  sleep 0.2
+done
+    \end{minted}
+\end{listing}
+
+Wyłączono logowanie żądań, zostawiono logowanie odpowiedzi.
+
 \subsection{Web Application Firewall}
 
 \subsection{Browser Fingerprinting}
