@@ -93,8 +93,8 @@ Wykorzystano możliwość uruchomionego wcześniej (zob. \autoref{subsubsec:ingr
 do tworzenia zasobów polityk (ang. \emph{Policy Resource}) dla zasobów typu \texttt{VirtualServer} i \texttt{VirtualServerRoute}.
 Polityki te pozwalają na kontrolę dostępu (ang. \emph{access control}) i rate limiting~\cite{nginx-ingress-controller-policy-resource}.
 
-Wdrożono politykę \emph{store-api-rate-limit-policy} ograniczającą liczbę żądań do 15 na minutę
-dla jednego adresu IP (\texttt{binary\_remote\_addr}), z możliwością przekroczenia limitu o 20 (\texttt{burst}).
+Wdrożono politykę \emph{store-api-rate-limit-policy} ograniczającą liczbę żądań do 40 na minutę
+dla jednego adresu IP (\texttt{binary\_remote\_addr}), z możliwością przekroczenia limitu o 5 (\texttt{burst}).
 Pełną konfigurację \emph{store-api-rate-limit-policy} przedstawia \autoref{lst:rate-limiting-policy}.
 
 Polityka została zaaplikowana do VirtualServer, który zarządza komunikacją z backendem (zob. \autoref{fig:backend-rate-limiting}).
@@ -120,9 +120,9 @@ metadata:
   namespace: store
 spec:
   rateLimit:
-    rate: 15r/m
+    rate: 40r/m
     key: ${binary_remote_addr}
-    burst: 20
+    burst: 5
     zoneSize: 10M
     rejectCode: 429
     \end{minted}
@@ -161,8 +161,100 @@ spec:
 
 \newpage
 
-\subsection{Browser Fingerprinting}
+\subsection{Browser Fingerprinting}\label{subsec:browser-fingerprinting-impl}
 
-\todo{Browser Fingerprinting}
+Opracowano i wdrożono rozwiązanie korzystające z procesu browser fingerprintingu mające na celu identyfikację i blokowanie nieautoryzowanego dostępu do zasobów sklepu internetowego tulski przez scrapery.
+Zasadę działania systemu przedstawia \autoref{fig:bot-detection-sequence}.
 
-\newpage
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.95\textwidth]{img/bot-detection-sequence}
+    \caption{Diagram sekwencji rozwiązania wykorzystującego browser fingerprinting}
+    \label{fig:bot-detection-sequence}
+\end{figure}
+
+Stworzono nową aplikację \texttt{Bot API} wraz z dedykowanym dla niej klientem \texttt{@tulski/\\bot-client}.
+Dodatkowo, zmodyfikowano istniejącą witrynę internetową i backend.
+
+\subsubsection{Bot API}
+
+\texttt{Bot API} to aplikacja webowa napisana w języku TypeScript z wykorzystaniem platformy Express.js.
+Środowiskiem uruchomieniowym aplikacji jest Node.js.
+Do analizy odcisku przeglądarki wykorzystano bibliotekę \texttt{fpscanner}~\cite{github-fpscanner}.
+Browser fingerprint jest poddawany 21 testom (zob. \autoref{lst:fpscanner-tests}), z których każdy
+może zwrócić 3 wartości: \texttt{Consistent}, \texttt{Unsure} i \texttt{Inconsistent}.
+Odcisk jest klasyfikowany jako pochodzący od złośliwego bota (\texttt{"bad\_bot"}) jeżeli:
+\begin{itemize}
+    \item więcej niż jeden test zwraca wartość \texttt{Inconsistent},
+    \item przynajmniej jeden test zwraca wartość \texttt{Inconsistent} i przynajmniej jeden test zwraca wartość \texttt{Unsure}.
+\end{itemize}
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{text}
+[
+  "PHANTOM_UA", "PHANTOM_PROPERTIES", "PHANTOM_ETSL", "PHANTOM_LANGUAGE", "PHANTOM_WEBSOCKET", "MQ_SCREEN", "PHANTOM_OVERFLOW", "PHANTOM_WINDOW_HEIGHT", "HEADCHR_UA", "WEBDRIVER", "HEADCHR_CHROME_OBJ", "HEADCHR_PERMISSIONS", "HEADCHR_PLUGINS", "HEADCHR_IFRAME", "CHR_DEBUG_TOOLS", "SELENIUM_DRIVER", "CHR_BATTERY", "CHR_MEMORY", "TRANSPARENT_PIXEL", "SEQUENTUM", "VIDEO_CODECS"
+]
+    \end{minted}
+    \caption{Tablica testów na obecność śladu złośliwego bota}
+    \label{lst:fpscanner-tests}
+\end{listing}
+
+
+API udostępnia trzy końcówki.
+\begin{enumerate}
+    \item \texttt{GET /health} służący do monitorowania stanu aplikacji.\ Wykorzystywany przed Kubernetes w mechanizmie \texttt{Liveness Probe}.
+    \item \texttt{POST /api/v1/analyze} przyjmujący na wejściu browser fingerprint, który jest poddawany analizie.
+    Zwraca unikalny identyfikator przeprowadzonej analizy.
+    \item \texttt{GET /api/v1/verify/:id} dający dostęp do wyniku analizy z wskazanym identyfikatorem (\texttt{id}).
+    Zwraca obiekt JSON, który zawiera atrybut \texttt{result} przyjmujący wartość \texttt{"not\_detected"} lub \texttt{"bad\_bot"}.
+
+\end{enumerate}
+\noindent Aplikacja została wyposażona w podstawową walidację danych wejściowych.
+
+\subsubsection{@tulski/bot-client}
+
+\texttt{@tulski/bot-client} to biblioteka będąca dedykowanym klientem \texttt{Bot API}.
+Biblioteka jest dostępna publicznie jako paczka w NPM Registry pod adresem: \url{https://www.npmjs.com/package/@tulski/bot-client}.
+Jej Wykorzystanie polega na stworzeniu instancji klasy \texttt{BotClient}, a następnie wywołaniu metody \texttt{analyze()} zwracającej wynik analizy odcisku przeglądarki.
+\texttt{@tulski/bot-client} zbiera browser fingerprint przy pomocy biblioteki \texttt{fp-collect}~\cite{github-fp-collect}.
+Interfejs biblioteki przedstawia \autoref{lst:bot-client-types}.
+
+\begin{listing}[H]
+    \begin{minted}[xleftmargin=10pt,linenos,breaklines]{typescript}
+export declare class BotClient {
+    static load(baseUrl: string): Promise<BotClient>;
+    constructor(baseUrl: string);
+    analyze(): Promise<BotAnalysisResult>;
+}
+export interface BotAnalysisResult {
+    id: string;
+    created_at: Date;
+    bot: "not_detected" | "bad_bot" | "good_bot";
+}
+    \end{minted}
+    \caption{Definicja typów biblioteki \texttt{@tulski/bot-client}}
+    \label{lst:bot-client-types}
+\end{listing}
+
+\subsubsection{Witryna internetowa}
+
+W witrynie internetowej zaimplementowano \texttt{BotDetectionProvider}, wykorzystując powszechnie znany wśród specjalistów React wzorzec \texttt{Provider}.
+\texttt{BotDetectionProvider} podczas wejścia na stronę:
+\begin{enumerate}
+    \item pobiera wynik analizy odcisku przeglądarki z lokalnego magazynu (ang. \emph{local storage}),
+    \item dołącza identyfikator wyniku analizy jako nagłówek \texttt{x-bot-api} do żądań Store API\@.
+\end{enumerate}
+Gdy local storage nie zawiera wyniku analizy (na przykład przy pierwszym wejściu na stronę), \texttt{Provider} tworzy go wykorzystując bibliotekę \texttt{@tulski/bot-client} i zapisuje w magazynie.
+
+\subsubsection{Backend}
+
+Zmian wymagał również backend sklepu internetowego tulski.
+Zaimplementowano interceptor działający dla końcówek \texttt{Store API}, który kolejno:
+\begin{enumerate}
+    \item weryfikuje obecność identyfikatora analizy odcisku palca w nagłówku \texttt{x-bot-api},
+    \item pobiera ten identyfikator,
+    \item komunikuję się z \texttt{Bot API} w celu pobrania pełnego wyniku analizy,
+    \item weryfikuje czy odcisk przeglądarki wskazuje na złośliwego bota.
+\end{enumerate}
+W przypadku braku nagłówka \texttt{x-bot-api} w żądaniu, serwer zwróci błąd z kodem 403.
+Jeśli analiza wykryje złośliwego bota, serwer odpowie kodem błędu 500.

@@ -350,15 +350,14 @@ export class LocalDirectoryBucket implements Bucket {
 
 Punktem wejścia programu jest samowywołująca się funkcja asynchroniczna (ang. \emph{Self-Invoking Function}) zarządzająca procesem scrapowania (zob. \autoref{lst:scraper-main}).
 Opisywana funkcja kolejno:
-
 \begin{enumerate}
-    \item Tworzy zmienną \texttt{timestamp}, która przechowuje znacznik czasowy (ang. \emph{timestamp}) identyfikujący bieżące uruchomienie programu.
-    \item Tworzy zmienną \texttt{outDir}, która będzie ścieżką katalogu wyjściowego.
-    Składową \texttt{outDir} jest wcześniej stworzony identyfikator.
-    \item Inicjuje \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir}.
-    \item Inicjuje \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100.
-    \item Definuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan.
-    \item Dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
+    \item tworzy zmienną \texttt{timestamp}, która przechowuje znacznik czasowy (ang. \emph{timestamp}) identyfikujący bieżące uruchomienie programu;
+    \item tworzy zmienną \texttt{outDir}, która będzie ścieżką katalogu wyjściowego;
+    Składową \texttt{outDir} jest wcześniej stworzony identyfikator;
+    \item inicjuje \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir};
+    \item inicjuje \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100;
+    \item definuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan;
+    \item dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
     pobiera szczegóły produktu (\texttt{getProductDetails}) i zapisuje je do pliku JSON\@.
 \end{enumerate}
 
