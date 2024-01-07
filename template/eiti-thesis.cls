@@ -75,7 +75,6 @@
 \RequirePackage[page,header]{appendix}
 \RequirePackage{titletoc}  % Custom table of contents ex. appendices
 
-
 %--------------------------------
 % Produce clickable hyperlinks
 % in ToC, LoF and LoT
