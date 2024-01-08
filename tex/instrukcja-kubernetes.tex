@@ -50,7 +50,7 @@ Wszystkie węzły, w formie tabelki, przedstawiono na \autoref{fig:oci-compute-i
 \subsection{Konfiguracja podsieci}
 
 Wszystkie zasoby znajdują się w jednej wirtualnej podsieci (ang. \emph{virtual cloud network}, VCN) subnet-20230313-1902, która stanowi bezpieczne i izolowane środowisko sieciowe.
-Informacje o podsieci przedstawiona \autoref{fig:oci-subnet}.
+Informacje o podsieci przedstawia \autoref{fig:oci-subnet}.
 
 \begin{figure}[H]
     \centering
@@ -63,7 +63,7 @@ Informacje o podsieci przedstawiona \autoref{fig:oci-subnet}.
 \begin{enumerate}
     \item ruch TCP na porcie usługi SSH (22) z autoryzowanych adresów IP\@,
     \item ruch ICMP typu 3 o kodzie 4 (ang. \emph{Fragmentation Needed and Don't Fragment was Set}) z dowolnego adresu IP,
-    \item ruch ICMP typu 3 z wszystkich hostów znajdujących się w danej podsieci,
+    \item ruch ICMP typu 3 ze wszystkich hostów znajdujących się w danej podsieci,
     \item ruch wychodzący.
 \end{enumerate}
 
@@ -101,15 +101,15 @@ Aby osiągnąć oczekiwany rezultat konieczna jest modyfikacja pliku \texttt{/et
 \subsection{Network Load Balancer}
 
 Load Balancer (LB) to technologia, która, podobnie do reverse proxy, ma na celu kierowanie żądań użytkowników do odpowiednich serwerów.
-Każdy LB implementuje pewien zestaw reguł i algorytmów, który równomiernie rozkładają ruch na wszystkie serwery w grupie mogące go obsłużyć, tak aby sprostować aktualnemu obciążeniowi.
+Każdy LB implementuje pewien zestaw reguł i algorytmów, które równomiernie rozkładają ruch na wszystkie serwery w grupie mogące go obsłużyć, tak aby sprostować aktualnemu obciążeniu.
 Dzięki temu zapewnia pryncypium wysokiej dostępności (high availability), niezawodności i skalowalność systemu.
-W związku z tym, że Load Balancer ciągle monitoruje aktywność węzłów, jest w stanie szybko wykryć ewentualną awarię i automatycznie przekierować ruch do pozostałych, sprawnych węzłów.
+W związku z tym, że Load Balancer nieustannie monitoruje aktywność węzłów, jest w stanie szybko wykryć ewentualną awarię i automatycznie przekierować ruch do pozostałych, sprawnych węzłów.
 Prostą analogią dla Load Balancera jest policjant stojący na skrzyżowaniu.
 
-Dodatkową zaletą LB jest uproszczenie konfiguracji DNS - wystarczy dodanie jednego rekord typu A z publicznym adresem IP wskazującym na LB\@.
+Dodatkową zaletą LB jest uproszczenie konfiguracji DNS --- wystarczy dodanie jednego rekordu typu A z publicznym adresem IP wskazującym na LB\@.
 Eliminuje to potrzebę tworzenia osobnych wpisów dla każdego węzła, co komplikowałoby konfigurację i utrudniałoby jej utrzymanie.
 
-Z powodu zapewnienia wysokiej dostępności, równomiernego rozłożenia ruchu, skalowalności i uproszczeniu konfiguracji DNS, jak i wielu innych niewspomnianych korzyści, LB jest kluczowym elementem wielu rozbudowanych systemów.
+Z powodu zapewnienia wysokiej dostępności, równomiernego rozłożenia ruchu, skalowalności i uproszczenia konfiguracji DNS, jak i wielu innych niewspomnianych korzyści, LB jest kluczowym elementem licznych rozbudowanych systemów.
 
 Jednym z rodzajów Load Balancera jest Network Load Balancer (NLB), który działa na warstwie 3 i 4 modelu OSI wykorzystując protokoły TCP, UDP i ICMP\@.
 NLB przekazuje pakiety do i z serwera nadrzędnego na podstawie informacji na poziomie IP, portu i protokołu bez sprawdzania pakietów.
@@ -125,7 +125,7 @@ Utworzony Network Load Balancer k8s znajduje się w wcześniej stworzonej podsie
     \label{fig:oci-network-load-balancer-k8s}
 \end{figure}
 
-NLB k8s został skonfigurowany tak aby działał dla ruchu HTTP (port 80), HTTPS (port 443) oraz Kubernetes API (port 16443).
+NLB k8s został skonfigurowany, tak aby działał dla ruchu HTTP (port 80), HTTPS (port 443) oraz Kubernetes API (port 16443).
 Dla każdego z rodzajów ruchu został utworzony Backend Set (zob. \autoref{fig:oci-network-load-balancer-k8s-backend-sets}) oraz Listener (zob. \autoref{fig:oci-network-load-balancer-k8s-listeners}).
 
 \begin{figure}[H]
@@ -187,8 +187,8 @@ Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem \
 \subsection{Konfiguracja certyfikatów Kubernetes API}
 
 Kubernetes API stanowi kluczowy element systemu z perspektywy cyberbezpieczeństwa.
-Jednym z sposobów jego zabezpieczenia jest wymóg szyfrowanej komunikacji HTTPS, opartej na zweryfikowanym certyfikacie.
-Domyślne generowane przez MicroK8s certyfikaty pozwalają na połączenia z lokalnych adresów IP (zwykle adresów LAN) oraz komunikację z adresami mDNS (komunikacja w obrębie klastra, z adresów takich jak kubernetes.default lub kubernetes.default.svc.cluster.local).
+Jednym ze sposobów jego zabezpieczenia jest wymóg szyfrowanej komunikacji HTTPS, opartej na zweryfikowanym certyfikacie.
+Domyślnie generowane przez MicroK8s certyfikaty pozwalają na połączenia z lokalnych adresów IP (zwykle adresów LAN) oraz komunikację z adresami mDNS (komunikacja w obrębie klastra z adresów takich jak kubernetes.default lub kubernetes.default.svc.cluster.local).
 Aby umożliwić zdalne połączenie z Kubernetes API z internetu, niezbędna jest modyfikacja sekcji alt\_name pliku szablonu Certificate Signing Request (CSR) znajdującego się pod ścieżką \url{/var/snap/microk8s/current/certs/csr.conf.template}.
 Modyfikacja musi zostać wykonana na każdej z maszyn wirtualnych.
 

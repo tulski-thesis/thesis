@@ -3,9 +3,9 @@
 
 \section{Projekt i wykonanie scrapera}\label{sec:projekt-scrapera}
 
-Niniejszy rozdział poświęcono projektowi i wykonaniu scrapera - narzędzia służącego do automatycznego zbierania danych z sklepu internetowego tulski, omówionego w \autoref{sec:projekt-platformy}.
+Niniejszy rozdział poświęcono projektowi i wykonaniu scrapera - narzędzia służącego do automatycznego zbierania danych ze sklepu internetowego tulski, omówionego w \autoref{sec:projekt-platformy}.
 Założono, że celem scrapera jest zgromadzenie informacji o wszystkich produktach dostępnych w sklepie internetowym, które mogą zostać wykorzystane do analizy asortymentu i cen produktów.
-Kolejnym, istotnym założeniem rozdziału jest podejście typu czarnej skrzynki (ang. \emph{black-box})\cite{sekurak-testy-penetracyjne}.
+Kolejnym istotnym założeniem rozdziału jest podejście typu czarnej skrzynki (ang. \emph{black-box})\cite{sekurak-testy-penetracyjne}.
 Brak początkowej wiedzy na temat struktury i mechanizmów scrapowanego serwisu, jakim jest sklep internetowy tulski, nadaje realizm opisanym działaniom, odzwierciedlając warunki, w jakich najczęściej pracują osoby specjalizujące się w web scrapingu.
 Poniższa część pracy jest zatem nie tylko technicznym studium przypadku, ale również wglądem w procesy myślowe i metody, które są wykorzystywane w realnych warunkach.
 
@@ -18,10 +18,10 @@ Rekonesans jest kluczowym etapem w tworzeniu scrapera, ponieważ od niego zależ
 Przykładowo, jeśli podczas rekonesansu uda się znaleźć żądania API, które zwracają dane w formacie JSON, narzędzie będzie potencjalnie szybsze i bardziej odporne na zmiany.
 Wynika to z faktu, że kontakt API zmienia się z reguły rzadziej niż interfejs graniczny użytkownika.
 
-Kluczowym elementem rekonesansu była analiza ruchu sieciowego za pomocą narzędzi programistycznych wbudowanych w przeglądarkę internetową Firefox.
-Po pierwsze, ustalono, że strona korzysta korzysta z proxy Cloudflare, co wskazuje nagłówek \emph{server} (zob. \autoref{lst:rekonesans-get-homepage}).
-Po drugie, odkryto, że strona została zbudowana z wykorzystaniem frameworka Next, co wskazuje nagłówek \emph{x-powered-by} (zob. \autoref{lst:rekonesans-get-homepage}).
-Wykorzystanie Next oznacza wykorzystanie React, co może sugerować dynamiczne renderowanie treści.
+Znamiennym elementem rekonesansu była analiza ruchu sieciowego za pomocą narzędzi programistycznych wbudowanych w przeglądarkę internetową Firefox.
+Po pierwsze, ustalono, że strona korzysta z proxy Cloudflare, co wskazuje nagłówek \emph{server} (zob. \autoref{lst:rekonesans-get-homepage}).
+Po drugie, nagłówek \emph{x-powered-by} manifestuje użycie frameworka Next (zob. \autoref{lst:rekonesans-get-homepage}).
+Wykorzystanie Next implikuje wykorzystanie biblioteki React, co sugeruje dynamiczne renderowanie treści.
 
 \begin{listing}[H]
     \begin{minted}[xleftmargin=10pt,linenos,breaklines]{bash}
@@ -52,7 +52,7 @@ W żądaniu rozmiar strony jest określany parametrem \emph{limit}, a pozycję s
 
 Przeprowadzono testy metodą prób i błędów, aby określić maksymalną liczbę produktów, jaką może zwrócić API w jednej odpowiedzi.
 Ustalono, że parametr \emph{limit} nie posiada ścisłej walidacji, co umożliwia pobranie znacznie większej ilości danych niż to, co zwykle pobiera klient aplikacji internetowej.
-Jednakże, zauważono, że ograniczeniem podczas pobierania dużej liczby rekordów jest czas otwarcia połączenia.
+Zauważono natomiast, że ograniczeniem podczas pobierania dużej liczby rekordów jest czas otwarcia połączenia.
 W przypadkach, gdy próbowano pobrać bardzo dużą liczbę rekordów, na przykład 8500 (zob.~\autoref{lst:store-get-products-list-8500}), serwer odpowiedział statusem \emph{504 Gateway Timeout}, wskazując na przekroczenie maksymalnego dopuszczalnego czasu przetwarzania żadania.
 Maksymalną liczbą rekordów jaką udało się pobrać bez błędów było 8000 (zob.~\autoref{lst:store-get-products-list-8000}).
 
@@ -113,12 +113,13 @@ $ curl -G -d "id=prod_01HDFP2PJHJHZ6N1S2W0E3RXP9" \
 \subsection{Implementacja}\label{subsec:scraper-implementation}
 
 Po uzyskaniu odpowiedniej ilości informacji rozpoczęto proces tworzenia scrapera.
-Podczas rekonesansu ustalono, że strona jest renderowana dynamicznie i pobierane dane z końcówek API, które zwracają dane w formacie JSON, dlatego zdecydowano się na scraping API\@.
+Podczas rekonesansu ustalono, że strona jest renderowana dynamicznie i pobiera dane, w formacie JSON, z końcówek API\@.
+Stąd też zdecydowano się na API scraping.
 Wykorzystano język programowania TypeScript, środowisko uruchomieniowe Node.js i bibliotekę got.
 
 \subsubsection{Konfiguracja klienta HTTP}\label{subsubsec:storeclient}
 
-Skonfigurowano klienta HTTP \texttt{storeClient}, który wysyła żądania do serwera API z nagłówki typowymi dla przeglądarki internetowej.
+Skonfigurowano klienta HTTP \texttt{storeClient}, który wysyła żądania do serwera API z nagłówkami typowymi dla przeglądarki internetowej.
 Działanie to miało na celu jak najwierniejsze odwzorowanie śladu i zachowań scrapera na wzór klienta przeglądarkowego, co zwiększa jego dyskrecję podczas działania.
 Ponadto dodano logowanie żądań i odpowiedzi, co znacząco ułatwia proces debugowania, monitorowania i identyfikacji potencjalnych błędów.
 Konfiguracja została przedstawiona na \autoref{lst:store-http-client-config}.
@@ -356,7 +357,7 @@ Opisywana funkcja kolejno:
     Składową \texttt{outDir} jest wcześniej stworzony identyfikator;
     \item inicjuje \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir};
     \item inicjuje \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100;
-    \item definuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan;
+    \item definiuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan;
     \item dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
     pobiera szczegóły produktu (\texttt{getProductDetails}) i zapisuje je do pliku JSON\@.
 \end{enumerate}

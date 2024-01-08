@@ -27,8 +27,8 @@ oraz organizacjami SEO~\cite{nginx-ultimate-bad-bot-blocker}.
 \autoref{lst:nginx-bot-blocker-conf} przedstawia konfigurację serwera.
 Instrukcje \texttt{include} ładują konfiguracje dostarczane z Nginx Ultimate Bad Bot Blocker.
 Serwer nasłuchuje na port 9090 i przekierowuje żądania na port 9000.
-Żądania są przekazywane wraz z wszystkimi nagłówkami.
-Dodatkowo, w celu monitoringu i zapewnienia audytowalności, włączono logowanie zdarzeń w niestandardowym formacie
+Żądania są przekazywane wraz ze wszystkimi nagłówkami.
+Dodatkowo, w celu monitoringu i zapewnienia audytowalności, włączono logowanie zdarzeń w niestandardowym formacie.
 
 Wdrożenie w środowisku Kubernetes wymagało konteneryzacji omawianego rozwiązania.
 \autoref{lst:nginx-bot-blocker-dockerfile} przedstawia plik Dockerfile zawierający instrukcje budujące obraz \texttt{Bot Blocker Proxy}.

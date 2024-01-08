@@ -4,11 +4,11 @@
 \section{Projekt i wykonanie sklepu internetowego}\label{sec:projekt-platformy}
 
 Niniejszy rozdział poświęcony jest projektowi i wykonaniu sklepu internetowego tulski.com.
-Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne, które razem tworzą kompletny system e-commerce.
+Przedmiotem analizy są zarówno komponenty aplikacyjne, jak i infrastrukturalne składające się na kompletny system e-commerce.
 
-Jak przedstawiono na~\autoref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów, oraz przestrzeń \texttt{store}, która obejmuje bazę danych, backend, panel administratora oraz witrynę internetową.
+Jak przedstawiono na~\autoref{fig:platform-model}, platforma zawiera moduły do monitoringu, zarządzania certyfikatami, repozytorium obrazów kontenerów oraz przestrzeń \texttt{store}, która obejmuje bazę danych, backend, panel administratora, a także witrynę internetową.
 
-Szczegółowy opis i konfiguracja poszczególnych komponentów została przedstawiona w dalszej części rozdziału.
+Szczegółowy opis i konfiguracja poszczególnych komponentów została przedstawiona w dalszej części niniejszego rozdziału.
 
 \begin{figure}[p]
     \centering
@@ -20,8 +20,8 @@ Szczegółowy opis i konfiguracja poszczególnych komponentów została przedsta
 \subsection{Platforma wdrożeniowa}\label{subsec:platforma-wdrozeniowa-kubernetes}
 
 Platformą wdrożeniową dla projektu jest infrastruktura w postaci klastra Kubernetes uruchomionego w chmurze Oracle Cloud Infrastructure.
-Klaster składa się z czterech węzłów, każdy wyposażony w 1 procesor Oracle CPU oraz 6 GB pamięci RAM\@.
-W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowego pomiędzy węzłami klastra.
+Klaster ten składa się z czterech węzłów, spośród których każdy wyposażony w 1 procesor Oracle CPU oraz 6 GB pamięci RAM\@.
+W skład infrastruktury wchodzi również Network Load Balancer, który dystrybuuje ruch sieciowy pomiędzy węzłami klastra.
 Wszystkie elementy infrastruktury zostały zaprojektowanie i wdrożone zgodnie z instrukcjami zawartymi w \autoref{sec:instrukcja-stworzenia-klastra-kubernetes}.
 
 \subsubsection{Ingress Controller}\label{subsubsec:ingress-controller}
@@ -124,8 +124,8 @@ helm install cert-manager \
 
 \subsubsection{Przestrzeń nazw}
 
-Przestrzenią nazw (ang. \emph{namespace}) nazywamy zbiór znaków (nazw) należących do jednego kontekstu.
-Ich stosowanie umożliwia lepszą organizację i izolację zasobów, co przyczynia się do podniesienia bezpieczeństwa.
+Przestrzenią nazw (ang. \emph{namespace}) określa się zbiór znaków (nazw) należących do jednego kontekstu.
+Ich stosowanie toruje drogę ku lepszej organizacji i izolacji zasobów, co przyczynia się do podniesienia bezpieczeństwa.
 W środowisku Kubernetes przestrzenie nazw umożliwiają segmentację jednego klastra na mniejsze, logicznie wyizolowane jednostki.
 Przestrzenie nazw mogą reprezentować środowiska różnych klientów (\emph{tenants}) lub środowiska na różnych poziomach (np. testowe i produkcyjne).
 
@@ -174,8 +174,8 @@ helm install store-db \
 
 \subsubsection{Backend}
 
-Backend, w rozumieniu architektury wielowarstwowej, pełni kluczowy element systemu informatycznego.
-To warstwa stanowiąca zaplecze technologiczne, która w oparciu na zdefiniowanych regułach biznesowych, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
+Backend, w rozumieniu architektury wielowarstwowej, pełni rolę kluczowego elementu systemu informatycznego.
+To warstwa stanowiąca zaplecze technologiczne, która w oparciu o zdefiniowane reguły biznesowe, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
 
 Serwer dostarczany przez projekt Medusa nie wymagał żadnych modyfikacji.
 Jedynym wymogiem do jego uruchomienia było wybranie i dołączenie odpowiednich wtyczek (ang. \emph{plugins}) odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
@@ -198,7 +198,7 @@ Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie był
 Proces ten został zrealizowany przy użyciu narzędzia Docker.
 W tym celu stworzono plik Dockerfile (zob. \texttt{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
 Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \texttt{node:18-alpine}.
-Następnie, w kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner}, są kolejno instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
+W kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner} są instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
 
 \begin{listing}[H]
     \inputminted[xleftmargin=20pt,linenos]{docker}{code/Dockerfile.backend}
@@ -207,7 +207,7 @@ Następnie, w kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner
 \end{listing}
 
 Backend został zainstalowany i skonfigurowany w środowisku Kubernetes.
-Wszystkie komponenty i mechanizmy, które składają się na to wdrożenie, zostały przedstawione na~\autoref{fig:kubernetes-backend}.
+Wszystkie komponenty i mechanizmy składające się na to wdrożenie zostały przedstawione na~\autoref{fig:kubernetes-backend}.
 Wdrożenie odbywa się przez Deployment, co umożliwia automatyzację i skalowanie aplikacji.
 Komunikacja z serwisem odbywa się poprzez NGINX Virtual Server, który szyfruje dane za pomocą certyfikatu TLS wygenerowanego przez Cert-Manager.
 Backend korzysta z bazy danych PostgresSQL (zob. \autoref{subsubsec:baza-danych}).
@@ -226,7 +226,7 @@ Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes
 Panel administratora to kolejny element rozbudowanego ekosystemu Medusa, który jest dostarczany w formie wtyczki (ang. \emph{plugin}).
 Panel stanowi graficzny interfejs dla Admin REST API. Jego zastosowanie umożliwia łatwe zarządzanie produktami, zamówieniami oraz ustawieniami sklepu.
 
-Wtyczka panelu administratora, skonfigurowana w plikach serwera backend (zob. \autoref{lst:medusajs-admin-plugin}), może być uruchomiona równolegle z backendem, lub jako niezależny serwer.
+Wtyczka panelu administratora skonfigurowana w plikach serwera backend (zob. \autoref{lst:medusajs-admin-plugin}) może być uruchomiona równolegle z backendem lub jako niezależny serwer.
 Zdecydowano się na drugą opcję, ponieważ pozwala ona na niezależne skalowanie obu aplikacji.
 
 \begin{listing}[H]
@@ -278,7 +278,7 @@ Witryna internetowa, analogicznie do części serwerowej oraz panelu administrat
     \label{fig:kubernetes-storefront}
 \end{figure}
 
-\autoref{fig:storefront-homepage} przedstawia stronę domową sklepu, akcentując powód jego powstania, czyli niniejszą pracę dyplomową.
+\autoref{fig:storefront-homepage} przedstawia stronę domową sklepu ze szczególnym zwróceniem uwagi na powód jego powstania, czyli niniejszą pracę dyplomową.
 \autoref{fig:storefront-products} ilustruje stronę z produktami, ukazując sposób prezentacji asortymentu.
 Obie strony razem podkreślają znaczenie estetyki i funkcjonalności w interfejsie użytkownika sklepu internetowego.
 
