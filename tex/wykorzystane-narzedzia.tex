@@ -9,13 +9,13 @@ W tym rozdziale przedstawiono technologie i oprogramowanie, które stanowiły po
 Docker to otwarte oprogramowanie do tworzenia, dostarczania i uruchamiania aplikacji\cite{docker-overview}.
 Docker umożliwia uruchamianie aplikacji w izolowanym środowisku, które nazywane jest kontenerem.
 Kontenery zapewniają izolację, bezpieczeństwo, spójność działania w różnych środowiskach oraz ułatwiają rozwój, testowanie i wdrażanie aplikacji.
-Część praktyczna pracy wykorzystuje technologię konteneryzacji oferowaną przez platformę Docker.
+Technologię konteneryzacji oferowaną przez Docker wykorzystują wszystkie elementy wdrożone w \autoref{sec:projekt-platformy} i \autoref{sec:wdrozenie-metod-detekcji}.
 
 \subsection{Kubernetes}\label{subsec:kubernetes}
 
 Kubernetes to przenośna, rozszerzalna, otwarto-źródłowa platforma do zarządzania skonteneryzowanymi jednostkami obciążeniowymi (ang. \emph{workloads}) i usługami, która ułatwia zarówno deklaratywne konfigurowanie, jak i automatyzację\cite{kubernetes-overview}.
 Platforma Kubernetes oferuje wiele funkcji, w tym deklaratywne zarządzanie elementami infrastruktury, usługi sieciowe, skalowanie oraz automatyzację wdrażania aplikacji, zapewniając tym samym niezbędne narzędzia potrzebne do budowy infrastruktury systemów informatycznych.
-\todo{PO CO?}
+Posłużył on za platformę wdrożeniową dla sklepu internetowego (zob. \autoref{subsec:platforma-wdrozeniowa-kubernetes}).
 
 \subsection{MicroK8s}\label{subsec:microk8s}
 
@@ -36,23 +36,30 @@ Niniejsza praca wykorzystuje dystrybucję MicroK8s\cite{microk8s-docs-home} ze w
 
 Helm to menadżer pakietów w środowisku Kubernetes, który pozwala definiować, instalować i aktualizować najbardziej skomplikowane aplikacje Kubernetes~\cite{helm-home}.
 Narzędzie to jest szczególnie przydatne w przypadku aplikacji, które wymagają skomplikowanej konfiguracji i/lub składają się z wielu elementów.
-\todo{PO CO?}
+Wykorzystanie Helm uprościło konfigurację aplikacji i usług składowych sklepu internetowego.
 
 \subsection{PostgreSQL}\label{subsec:postgresql}
 
 PostgreSQL, nazywany także Postgres, to, według twórców, najbardziej zaawansowany otwarto-źródłowy system relacyjnych baz danych\cite{postgresql-home}.
-\todo{PO CO?}
+Stanowił on zaplecze bazodanowe dla sklepu internetowego tulski.
+Wybrano bazę Postgres ze względu na jej kompatybilność z ekosystemem Medusa.
 
 \subsection{NGINX}\label{subsec:nginx}
 
-\todo{NGINX} \todo{PO CO?}
+NGINX --- wysokowydajny serwer HTTP, który może być wykorzystywany jako load balancer, reverse proxy, mail proxy i http cache.
+Znalazł zastosowanie jako serwer panelu administracyjnego i reverse proxy bot blocker.
+Ponadto, jego implementacja interfejsu Ingress w Kubernetes, czyli NGINX Ingress Controller, pozwoliła na skuteczne zarządzanie ruchem sieciowym oraz zapewnienie efektywnego dostępu do zasobów klastra.
+
+\subsubsection{NGINX Ultimate Bot Blocker}
+
+NGINX Ultimate Bot Blocker to narzędzie będące rozszerzeniem dla NGINX służące do obrony przed złośliwą aktywnością botów.
+Jego szerszy opis znajduje się w rozdziale dotyczącym jego implementacji (zob. \autoref{subsec:reverse-proxy-impl}).
 
 \subsection{Cert-Manager}\label{subsec:cert-manager}
 
 Cert-Manager to otwarto-źródłowy orkiestrator certyfikatów X.509 w środowiskach Kubernetes i OpenShift\cite{cert-manager-home}.
 Manualny proces tworzenia certyfikatów w środowisku Kubernetes, zaprezentowany w dokumentacji\cite{kubernetes-generate-certificates-manually}, jest skomplikowany i czasochłonny.
-Rozwiązaniem tego problemu jest narzędzie Cert-Manager, które go upraszcza, automatyzując proces tworzenia, zarządzania i odnawiania certyfikatów.
-\todo{PO CO?}
+Rozwiązaniem tego problemu było wykorzystanie narzędzia Cert-Manager, które go upraszcza, automatyzując proces tworzenia, zarządzania i odnawiania certyfikatów.
 
 %\subsection{Registry}\label{subsec:distribution}
 %
@@ -80,20 +87,26 @@ Modularna architektura \emph{Software Development Kit (SDK)} projektu Medusa zaw
 
 \subsection{TypeScript}\label{subsec:typescript}
 
-\todo{TypeScript} \todo{PO CO?}
+TypeScript to silnie typowany język programowania będący nadzbiorem języka JavaScript.
+Napisano w nim witrynę internetową, backend i scraper.
 
 \subsection{Node.js}\label{subsec:nodejs}
 
-\todo{Node.js} \todo{PO CO?}
+Node.js --- środowisko uruchomieniowe zbudowane na silniku V8 przeglądarki Chrome dla aplikacji typu server-side napisanych w języku JavaScript.
 
 \subsection{Got}\label{subsec:got}
 
-\todo{Got} \todo{PO CO?}
+Got to biblioteka HTTP dla Node.js, która znalazła swoje zastosowanie w scaperze (zob. \autoref{subsec:scraper}).
+Wybrano ją ze względu na wbudoway mechanizm powtarzania błędów oraz Pagination API\@.
+Biblioteka ta jest powszechnie używana w tego typu oprogramowaniu.
 
-\subsection{Express.js}\label{subsec:express.js}
+\subsection{Express}\label{subsec:express}
 
-\todo{Express.js} \todo{PO CO?} Stanowi platformę dla aplikacji \texttt{Bot API}.
+Express to minimalistyczny i elastyczny framework sieciowy dla aplikacji w Node.js.
+Stanowił podstawę dla \texttt{Bot API} (zob. \autoref{subsec:browser-fingerprinting-impl}).
 
-\subsection{Fp-scanner}\label{subsec:fp-scanner}
-autor: Antoine Vastel Head of research at Datadome
-datadome: DataDome Ranks \#1 in G2 Grid® Report for Bot Detection and Mitigation
+\subsection{Fp-Collect i Fp-Scanner}\label{subsec:fp-scanner}
+
+Fp-Collect oraz Fp-Scanner to biblioteki dla JavaScript, które są odpowiedzialne odpowiednio za zbieranie odcisku przeglądarki oraz jego analizę.
+Autorem obu bibliotek jest Antoine Vastel pełniący funkcję Head of Research w firmie Datadome specjalizującej się w usługach detekcji i mitygacji botów.
+Zostały one wykorzystane do implementacji metody detekcji web scrapingu opartej na browser fingerprintingu (zob. \autoref{subsec:browser-fingerprinting-impl}).
