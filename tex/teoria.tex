@@ -3,23 +3,9 @@
 
 \section{Web Scraping}\label{sec:teoria}
 
-Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów WWW (World Wide Web)\cite{Zhao2017}.
+Web Scraping, znany również jako Web Data Extraction, Web Data Scraping, Web Harvesting i Screen scraping, to technika pozyskiwania informacji z zasobów WWW~\cite{Zhao2017}.
 Proces ten najczęściej wykorzystuje automatyzację za pomocą dedykowanego oprogramowania, choć niektóre źródła dopuszczają stosowanie metod manualnych\cite{applications-and-tools}
 Zautomatyzowanie web scrapingu, z wykorzystaniem takich narzędzi, umożliwia efektywne i szybkie pozyskiwanie ogromnych ilości danych, liczących setki tysięcy, miliony, a nawet miliardy rekordów.
-
-Sieć WWW jest największym źródłem wiedzy i danych w historii ludzkości.
-W swoim pierwotnym założeniu została zaprojektowana z myślą o odczycie przez ludzi.
-Od momentu powstania gwałtownie się rozrastała i tendencja ta wciąż się utrzymuje (zob. \autoref{fig:statista-data-volume-in-exabytes-per-month}).
-Zważając na jej obecnie ogromny wolumen danych, ograniczone zasoby ludzkie pozwalają na przetworzenie jedynie niewielkiego ich ułamka.
-W obliczu powyższych wyzwań niezbędna stała się więc technika web scrapingu polegająca na zbieraniu, ustrukturyzowaniu i przetworzeniu danych, tak aby umożliwić maszynom ich analizę.
-
-\begin{figure}[H]
-    \centering
-    \captionsetup{width=.8\linewidth}
-    \includegraphics[width=\textwidth]{img/statista-data-volume-in-exabytes-per-month}
-    \caption{Wolumen danych w globalnym konsumenckim ruchu IP\newline w latach 2017–2022 (w eksabajtach na miesiąc)\newlineŹródło: \citetitle*{statista-data-volume}~\cite{statista-data-volume}}
-    \label{fig:statista-data-volume-in-exabytes-per-month}
-\end{figure}
 
 \subsection{Proces Web Scrapingu}\label{subsec:web-scraping-process}
 
@@ -66,6 +52,35 @@ Kluczowe jest, aby dane były zapisywane w formatach umożliwiających łatwe pr
 Prezentacja danych to proces konwersji zebranych informacji do formy tekstowej lub wizualnej, dostosowanej do łatwego zrozumienia i interpretacji przez użytkowników.
 Ten krok może obejmować tworzenie wykresów, tabel, raportów, interfejsów użytkownika oraz innych wizualizacji, które umożliwiają szybką analizę i wnioskowanie na podstawie dostępnych danych.
 Celem jest przedstawienie informacji w klarowny, przystępny sposób dostarczający odpowiedzi na pytania odbiorców.
+
+\subsection{Scraper}\label{subsec:scraper}
+
+Web Scraper, w uproszczeniu scraper, to specjalny rodzaj bota przeprowadzający zautomatyzowany proces web scrapingu.
+
+Jak wspomniano w \autoref{subsec:web-scraping-process} pobieranie danych, czyli etap bezpośredniej interakcji scrapera ze scrapowaną infrastrukturą,
+jest jedynym momentem w którym możliwa jest jego identyfikacja i zablokowanie.
+Wybrane cechy ruchu sieciowego wykonywanego przez tego typu boty kluczowe w ich detekcji to:
+
+\begin{itemize}
+    \item nagłówek \mintinline{text}{User-Agent} wskazujący na narzędzie programistyczne --- wget, curl, Postman, axios, got itd,
+%    \item declares its user-agent as being wget, curl, webcopier etc - it's probably a bot.
+    \item nie posiadają nagłówka \mintinline{text}{User-Agent},
+%    \item no user-agent (or matching a pattern of known bad ones) - it's probably a bot.
+    \item nie posiadają ciasteczek ignorując je,
+%    \item no cookie, and wont honor a set cookie - it's probably a bot.
+    \item rekurencyjne zapytania o coraz bardziej szczegółowe dane,
+%    \item requests details -> details -> details -> details ad nauseum - it's probably a bot.
+    \item zapytania jedynie zawartość HTML z ominięciem CSS lub JS,
+%    \item requests the html, but not .css, .js or site furniture - it's probably a bot.
+    \item duża liczba zapytań HTTP z kodami odpowiedzi > 400,
+%    \item generates a large number of HTTP error codes > 400 (1.e 401, 403, 404 \& 500)- it's probably a bot.
+    \item pochodzą z mało prawdopodobnego źródła ruchu dla ludzi (np\. Amazon AWS),
+%    \item originates from an unlikely human traffic source (i.e Amazon AWS) - it's probably a bot.
+    \item nigdy nie posiadają nagłówka z adresem odsyłającym - \mintinline{text}{Referer},
+%    \item no referrer, ever - it's probably a bot.
+    \item sesje z dużą liczbą zapytań\cite{bot-buster}.
+%    \item sessions with a lot of hits. it's probably a bot.
+\end{itemize}
 
 \subsection{Wybrane metody Web Scrapingu}\label{subsec:web-scraping-methods}
 
@@ -135,32 +150,3 @@ Automatyzacja tego procesu daje sposobność do szybkiej reakcji, co jest niezwy
 
 Naukowcy i inżynierowie wykorzystują web scraping do pozyskiwania danych niezbędnych do trenowania i modeli sztucznej inteligencji.
 Dane te wykorzystywane są w różnych celach, poczynając od automatycznego rozpoznawania obrazu, na analizie języka naturalnego kończąc~\cite{openai-data-collection}.
-
-\subsection{Scraper}\label{subsec:scraper}
-
-Web Scraper, w uproszczeniu scraper, to specjalny rodzaj bota przeprowadzający zautomatyzowany proces web scrapingu.
-
-Jak wspomniano w \autoref{subsec:web-scraping-process} pobieranie danych, czyli etap bezpośredniej interakcji scrapera ze scrapowaną infrastrukturą,
-jest jedynym momentem w którym możliwa jest jego identyfikacja i zablokowanie.
-Wybrane cechy ruchu sieciowego wykonywanego przez tego typu boty kluczowe w ich detekcji to:
-
-\begin{itemize}
-    \item nagłówek \mintinline{text}{User-Agent} wskazujący na narzędzie programistyczne --- wget, curl, Postman, axios, got itd,
-%    \item declares its user-agent as being wget, curl, webcopier etc - it's probably a bot.
-    \item nie posiadają nagłówka \mintinline{text}{User-Agent},
-%    \item no user-agent (or matching a pattern of known bad ones) - it's probably a bot.
-    \item nie posiadają ciasteczek ignorując je,
-%    \item no cookie, and wont honor a set cookie - it's probably a bot.
-    \item rekurencyjne zapytania o coraz bardziej szczegółowe dane,
-%    \item requests details -> details -> details -> details ad nauseum - it's probably a bot.
-    \item zapytania jedynie zawartość HTML z ominięciem CSS lub JS,
-%    \item requests the html, but not .css, .js or site furniture - it's probably a bot.
-    \item duża liczba zapytań HTTP z kodami odpowiedzi > 400,
-%    \item generates a large number of HTTP error codes > 400 (1.e 401, 403, 404 \& 500)- it's probably a bot.
-    \item pochodzą z mało prawdopodobnego źródła ruchu dla ludzi (np\. Amazon AWS),
-%    \item originates from an unlikely human traffic source (i.e Amazon AWS) - it's probably a bot.
-    \item nigdy nie posiadają nagłówka z adresem odsyłającym - \mintinline{text}{Referer},
-%    \item no referrer, ever - it's probably a bot.
-    \item sesje z dużą liczbą zapytań\cite{bot-buster}.
-%    \item sessions with a lot of hits. it's probably a bot.
-\end{itemize}
