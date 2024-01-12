@@ -6,11 +6,11 @@
 Praca ta rzuca światło na kwestię web scrapingu pozostawiając kilka istotnych wniosków w kontekście cyberbezpieczeństwa.
 Web scraping jawi się jako atrakcyjne i efektywne narzędzie do zbierania danych.
 
-Rekonesans okrył fakt dynamicznego renderowania treści z danymi pochodzącymi z publicznie dostępnego API\@, co pozwoliło na API web scraping.
+Rekonesans ujawnił fakt dynamicznego renderowania treści z danymi pochodzącymi z publicznie dostępnego API\@, co pozwoliło na API web scraping.
 Scraper okazał się relatywnie łatwy i szybki w implementacji.
 Wywnioskowano, że takie witryny są szczególnie narażone na scraping.
 
-Opisane i wdrożone łącznie metody detekcji web scrapingu okazały się skutecznie zablokować stworzony scraper.
+Opisane i wdrożone symultanicznie metody detekcji web scrapingu skutecznie zablokowały stworzony scraper.
 Niemniej jednak, tylko dwa spośród trzech zabezpieczeń są w stanie to zrobić w pojedynkę.
 Pewnym rozczarowaniem okazało się blokowanie regułowe.
 Ukazano jego słabe strony i uznano, że metoda ta służy głównie do detekcji prostych i powszechnie znanych botów.
@@ -24,10 +24,10 @@ W rezultacie, proporcja kosztu do zysku może skutecznie do tego zniechęcać.
 Projekt posiada potencjał do dalszego rozwoju w zakresie detekcji web scrapingu.
 Dla blokowania regułowego kluczowe jest stałe utrzymywanie i dostosowywanie reguł do zmieniających się okoliczności.
 Wykorzystany NGINX Ultimate Bot Blocker posiada skrypt, który pozwala na jego automatyczne aktualizacje.
-Taki skrypt mógłby być uruchamiany w ustalonym interwale np.~w procesie \texttt{cron}.
+Skrypt ten mógłby być uruchamiany w ustalonym interwale np.~w procesie \texttt{cron}.
 W aspekcie metody ograniczającej tempo żądań, NGNIX Ingress Controller daje możliwość granularnego dostosowania i zróżnicowania reguł dla różnych końcówek API\@.
-Przykładowo, końcówka z paginacją produktów mogłaby mieć inne ograniczenie niż końcówka z szczegółami produktu.
-To utrudniłoby szybką enumerację po wszystkich stronach.
+Przykładowo, końcówka z paginacją produktów mogłaby mieć inne ograniczenie niż końcówka ze szczegółami produktu.
+To utrudniłoby szybką enumerację wszystkich stron.
 Ponadto, istnieje możliwość wprowadzenia kilku ograniczeń tempa żądań działających jednocześnie.
 Powstały \texttt{Bot API} można wzbogacić o analizę nagłówków HTTP i SSL fingerprinting.
 Ponadto, identyfikator \texttt{x-bot-id} powinien posiadać swoją ważność.
