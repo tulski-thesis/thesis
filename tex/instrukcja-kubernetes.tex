@@ -189,7 +189,7 @@ Instalację MicroK8s przeprowadzono na każdej z maszyn wirtualnych poleceniem \
 Kubernetes API stanowi kluczowy element systemu z perspektywy cyberbezpieczeństwa.
 Jednym ze sposobów jego zabezpieczenia jest wymóg szyfrowanej komunikacji HTTPS, opartej na zweryfikowanym certyfikacie.
 Domyślnie generowane przez MicroK8s certyfikaty pozwalają na połączenia z lokalnych adresów IP (zwykle adresów LAN) oraz komunikację z adresami mDNS (komunikacja w obrębie klastra z adresów takich jak kubernetes.default lub kubernetes.default.svc.cluster.local).
-Aby umożliwić zdalne połączenie z Kubernetes API z internetu, niezbędna jest modyfikacja sekcji alt\_name pliku szablonu Certificate Signing Request (CSR) znajdującego się pod ścieżką \url{/var/snap/microk8s/current/certs/csr.conf.template}.
+Aby umożliwić zdalne połączenie z Kubernetes API z Internetu, niezbędna jest modyfikacja sekcji alt\_name pliku szablonu Certificate Signing Request (CSR) znajdującego się pod ścieżką \url{/var/snap/microk8s/current/certs/csr.conf.template}.
 Modyfikacja musi zostać wykonana na każdej z maszyn wirtualnych.
 
 \noindent Modyfikacja polega na dodaniu do sekcji alt\_names:
