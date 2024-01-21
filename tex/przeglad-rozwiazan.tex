@@ -14,22 +14,11 @@ W tym przypadku adres IP służy jako identyfikator klienta~\cite{cloudflare-wha
 Nie jest to jednak jedyne rozwiązanie, jako że dopuszcza się również identyfikatory innego rodzaju.
 
 Brak rate limitingu API jest, według \emph{OWASP API Security Top 10}, uznawany za podatność.
-W punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}, autorzy wskazują, że:\@
-\begin{displayquote}[\citetitle*{owasp-api-security-top-10}~\cite{owasp-api-security-top-10}, tłum. własne]
-    ``Żądania API zużywają zasoby takie jak sieć, CPU, pamięć i miejsce na dysku.
-    Ilość zasobów potrzebnych do zaspokojenia żądania w dużej mierze zależy od danych wejściowych użytkownika i logiki biznesowej koncówki.
-    Należy również wziąć pod uwagę fakt, że żądania od wielu klientów API konkurują o te same zasoby.
-    API jest podatne na problemy, jeśli brakuje przynajmniej jednego z następujących limitów lub są one ustawione nieodpowiednio (np.\ zbyt niskie/wysokie):
-    \begin{itemize}
-        \item limit czasu wykonania,
-        \item maksymalna alokowana pamięć,
-        \item liczba deskryptorów plików,
-        \item liczba procesów,
-        \item rozmiar ładunku żądania (np.\ przesyłane pliki),
-        \item liczba żądań na klienta/zasób,
-        \item liczba rekordów na stronę zwracanych w pojedynczej odpowiedzi na żądanie.''
-    \end{itemize}
-\end{displayquote}
+W punkcie \emph{API4:2019 Lack of Resources \& Rate Limiting}, autorzy wskazują, że
+żądania API zużywają zasoby takie jak CPU, pamięć i miejsce na dysku.
+Ilość zasobów potrzebnych do obsługi żądania zależy w dużej mierze od danych wejściowych i logiki biznesowej kryjącej się za końcówką.
+Żądania od wielu klientów API rywalizują o te same zasoby.
+Brak ograniczeń wykorzystania zasobów lub ich nieodpowiednie ustawienie może prowadzić do błędów z API~\cite{owasp-api-security-top-10}.
 
 Rate Limiting stosuje się do ochrony ograniczonych zasobów, obrony przed atakami typu odmowa dostępu (ang. \emph{DoS, Denial of Service})
 oraz blokowania aktywności botów generujących duże nadużycia.
@@ -67,13 +56,13 @@ Na podstawie każdego z punktów w wspomnianym \autoref{subsec:scraper} można s
 Browser Fingerprint --- odcisk przeglądarki --- to zestaw informacji związanych z środowiskiem przeglądarki internetowej użytkownika, od fizycznego sprzętu, poprzez system operacyjny, aż do oprogramowania i jego konfiguracji~\cite{browser-fingerprinting-a-survey}.
 Browser Fingerprinting to proces zbierania i analizy informacji tworzących odcisk przeglądarki.
 Proces ten wykorzystuje się w celu identyfikacji i śledzenia użytkowników.
-Dąż się do zgromadzenia możliwie wielu rekordów, które połączone razem tworzą unikalną kombinację jednoznacznie identyfikującą użytkownika~\cite{fingerprint-browser-fingerprinting}.
+Dąży się do zgromadzenia możliwie wielu rekordów, które połączone razem tworzą unikalną kombinację jednoznacznie identyfikującą użytkownika~\cite{fingerprint-browser-fingerprinting}.
 Informacje te najczęściej pochodzą z nagłówków HTTP oraz skryptów uruchamianych bezpośrednio w kontekście przeglądarki internetowej użytkownika.
 Zebrane informacje mogą zawierać m.in.:
 \begin{itemize}
-    \item specyfikacje sprzętową: wersja urządzenia, rozdzielczość ekranu, poziom baterii, pamięć urządzenia, informacje nt. procesora (CPU) i karty graficznej (GPU),
+    \item specyfikacje sprzętową: wersja urządzenia, rozdzielczość ekranu, poziom baterii, pamięć urządzenia, informacje nt.~procesora (CPU) i karty graficznej (GPU),
     \item informacje o systemie operacyjnym i przeglądarce: typ i wersja systemu operacyjnego, typ i wersja przeglądarki internetowej, wtyczki zainstalowane w przeglądarce internetowej, obecność blokera reklam, wykorzystywany układ klawiatury, ustawienia przeglądarki (preferowany język, opcje śledzenia, wspieranie ciasteczek), ustawienia systemowe (strefa czasowa, zainstalowane czcionki), parametry WebGL (Web Graphics Library)
-    \item informacje sieciowe: adres IP, szczegóły sesji TSL~\cite{browser-fingerprinting-a-survey,zitadel-browser-fingerprinting,zenrows-browser-fingerprinting,fingerprint-browser-fingerprinting}.
+    \item informacje sieciowe: adres IP, szczegóły sesji TLS~\cite{browser-fingerprinting-a-survey,zitadel-browser-fingerprinting,zenrows-browser-fingerprinting,fingerprint-browser-fingerprinting}.
 \end{itemize}
 \noindent Przykładowy odcisk przeglądarki został przedstawiony w \autoref{tab:http-js-attributes}.
 
@@ -90,6 +79,9 @@ Ponadto, scrapery często są uruchomione w chmurach obliczeniowych bez urządze
 \begin{table}[p]
     \small
     \centering
+    \caption
+        [Wybrane atrybuty odcisku przeglądarki autora pracy]
+        {Wybrane atrybuty odcisku przeglądarki autora pracy\\Tabela powstała na podstawie serwisu AM I UNIQUE?\cite{am-i-unique}}
     \begin{tabular}{|p{0.35\linewidth} | p{0.6\linewidth}|}
         \hline
         \textbf{Atrybut}             & \textbf{Wartość}                                                                                                                                                                                                                                                                                                                                                                                                                              \\ \hline
@@ -117,7 +109,6 @@ Ponadto, scrapery często są uruchomione w chmurach obliczeniowych bez urządze
         Wspierane rozszerzenia video & video/mp4; codecs=\("\)flac\("\) : prawdopodobnie, video/ogg; codecs=\("\)theora\("\) : prawdopodobnie, video/ogg; codecs=\("\)opus\("\) : prawdopodobnie, video/webm; codecs=\("\)vp9, opus\("\) : prawdopodobnie, video/webm; codecs=\("\)vp8, vorbis\("\) : prawdopodobnie,                                                                                                                                                                \\ \hline
         Dostępne elementy            & Location Bar, Menu Bar, Personal Bar, Status Bar, Tool Bar, Local Storage, Session Storage, IndexedDB, Ciasteczka                                                                                                                                                                                                                                                                                                                             \\ \hline
     \end{tabular}
-    \caption{Wybrane atrybuty odcisku przeglądarki autora pracy\\Tabela powstała przy pomocy serwisu AM I UNIQUE?\\(\url{https://amiunique.org/})}
     \label{tab:http-js-attributes}
 \end{table}
 

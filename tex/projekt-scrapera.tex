@@ -11,12 +11,11 @@ Poniższa część pracy jest zatem nie tylko technicznym studium przypadku, ale
 
 \subsection{Rekonesans}\label{subsec:rekonesans}
 
-Rekonesans rozpoczął proces tworzenia scrapera, skupiając się na zrozumieniu celu, jakim jest sklep internetowy tulski.
 Głównym zadaniem rekonesansu było zidentyfikowanie metod dających efektywny dostęp do interesujących danych.
 Skupiono się na zrozumieniu mechanizmu ładowania i renderowania treści, strukturze zasobów oraz wykryciu potencjalnych wyzwań, które mogłyby wpłynąć na proces scrapowania.
 Rekonesans jest kluczowym etapem w tworzeniu scrapera, ponieważ od niego zależą efektywność, awaryjność i stabilność narzędzia.
 Przykładowo, jeśli podczas rekonesansu uda się znaleźć żądania API, które zwracają dane w formacie JSON, narzędzie będzie potencjalnie szybsze i bardziej odporne na zmiany.
-Wynika to z faktu, że kontakt API zmienia się z reguły rzadziej niż interfejs graniczny użytkownika.
+Wynika to z faktu, że kontrakt API zmienia się z reguły rzadziej niż interfejs graniczny użytkownika.
 
 Znamiennym elementem rekonesansu była analiza ruchu sieciowego za pomocą narzędzi programistycznych wbudowanych w przeglądarkę internetową Firefox.
 Po pierwsze, ustalono, że strona korzysta z proxy Cloudflare, co wskazuje nagłówek \emph{server} (zob. \autoref{lst:rekonesans-get-homepage}).
@@ -230,7 +229,7 @@ export const getProductDetails = (
 
 Scraper wyposażono w mechanizm kolejkujący zadania.
 Jest to powszechnie znane i używane rozwiązanie w tego rodzaju oprogramowaniu.
-Należy pamiętać, że domeną scraperów jest bardzo duża ilość asynchronicznych procesów (m.in. zapytania HTTP).
+Należy pamiętać, że domeną scraperów jest bardzo duża liczba asynchronicznych procesów (m.in.~zapytania HTTP).
 Wybranymi zaletami mechanizmów kolejkujących w scraperach są:
 \begin{itemize}
     \item efektywne zarządzanie zasobami (np. karty sieciowej),
@@ -352,13 +351,13 @@ export class LocalDirectoryBucket implements Bucket {
 Punktem wejścia programu jest samowywołująca się funkcja asynchroniczna (ang. \emph{Self-Invoking Function}) zarządzająca procesem scrapowania (zob. \autoref{lst:scraper-main}).
 Opisywana funkcja kolejno:
 \begin{enumerate}
-    \item tworzy zmienną \texttt{timestamp}, która przechowuje znacznik czasowy (ang. \emph{timestamp}) identyfikujący bieżące uruchomienie programu;
-    \item tworzy zmienną \texttt{outDir}, która będzie ścieżką katalogu wyjściowego;
-    Składową \texttt{outDir} jest wcześniej stworzony identyfikator;
-    \item inicjuje \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir};
-    \item inicjuje \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100;
-    \item definiuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan;
-    \item dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
+    \item Tworzy zmienną \texttt{timestamp}, która przechowuje znacznik czasowy (ang. \emph{timestamp}) identyfikujący bieżące uruchomienie programu.
+    \item Tworzy zmienną \texttt{outDir}, która będzie ścieżką katalogu wyjściowego;
+    składową \texttt{outDir} jest wcześniej stworzony identyfikator.
+    \item Inicjuje zmienną \texttt{bucket} jako instancję klasy \texttt{LocalDirectoryBucket} z ścieżką \texttt{outDir}.
+    \item Inicjuje zmienną \texttt{queue} jako instancję klasy \texttt{Queue} z ograniczeniem równolegle wykonywanych zadań do 100.
+    \item Definiuje akcję wykonywaną po każdym skończonym zadaniu w kolejce, która loguje jej aktualny stan;
+    \item Dla każdego produktu z listy produktów (\texttt{getProductsList}) dodaje do kolejki zadanie, które
     pobiera szczegóły produktu (\texttt{getProductDetails}) i zapisuje je do pliku JSON\@.
 \end{enumerate}
 

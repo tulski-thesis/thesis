@@ -120,33 +120,6 @@
 \raggedbottom
 
 %--------------------------------
-% Table of Contents setup
-%--------------------------------
-\setlength{\cftbeforesecskip}{2pt}
-\renewcommand{\cftsecfont}{\bf\normalsize}
-\renewcommand{\cftsecpagefont}{\normalfont}
-\renewcommand{\cftsecleader}{\cftdotfill{\cftsecdotsep}}
-\renewcommand{\cftsecdotsep}{\cftdotsep}
-
-%--------------------------------
-% List of Figures setup
-%--------------------------------
-\renewcommand*\l@figure{\@dottedtocline{1}{0.5em}{2.25em}}
-\newcommand{\listoffigurestoc}{
-    \listoffigures
-    \addcontentsline{toc}{section}{\listfigurename}
-}
-
-%--------------------------------
-% List of Tables setup
-%--------------------------------
-\renewcommand*\l@table{\@dottedtocline{1}{0.5em}{2.25em}}
-\newcommand{\listoftablestoc}{
-    \listoftables
-    \addcontentsline{toc}{section}{\listtablename}
-}
-
-%--------------------------------
 % Header & footer
 %--------------------------------
 \SetSectionFormatting{section}{0.5cm}{\FormatHangHeading{\Large}}{0.5cm}
@@ -192,12 +165,7 @@
 % Język pracy
 %--------------------------------
 
-\newtheorem{theorem}{Twierdzenie}
-\newtheorem{lemma}{Lemat}
-\newtheorem{corollary}{Wniosek}
-\newtheorem{definition}{Definicja}
-\newtheorem{axiom}{Aksjomat}
-\newtheorem{assumption}{Założenie}
+\renewcommand{\tablename}{Tabela}
 \renewcommand{\figureautorefname}{Rysunek}
 \renewcommand{\tableautorefname}{Tabela}
 \renewcommand{\equationautorefname}{Równanie}
@@ -207,14 +175,9 @@
 \renewcommand{\subsectionautorefname}{Podrozdział}
 \renewcommand{\subsubsectionautorefname}{Podrozdział}
 \providecommand*{\listingautorefname}{Listing}
-\renewcommand{\appendixtocname}{Spis załączników}
-\renewcommand{\appendixpagename}{Spis załączników}
-
-\AtBeginDocument{
-    \renewcommand{\listfigurename}{Spis rysunków}
-    \renewcommand{\listtablename}{Spis tabel}
-    \renewcommand{\tablename}{Tabela}
-}
+\renewcommand{\appendixtocname}{Wykaz załączników}
+\renewcommand{\appendixpagename}{\appendixtocname}
+\renewcommand{\listoflistingscaption}{Wykaz listingów}
 
 \newcommand\todo[1]{\textcolor{red}{\textbf{TODO}: #1}}
 
@@ -314,9 +277,7 @@
 %--------------------------------
 % Skrót (akronim) - makro
 %--------------------------------
-\newcommand{\acronymlist}{
-    \section*{Wykaz symboli i skrótów}
-}
+
 \newcommand{\acronym}[2]{
     \par\noindent\hspace{0.4em}
     {\textbf{#1} -- #2}
