@@ -141,17 +141,8 @@ Przestrzeń \texttt{store} została stworzona poprzez zaaplikowanie manifestu (z
 \subsubsection{Baza danych}\label{subsubsec:baza-danych}
 
 Dane sklepu internetowego są fizycznie przechowywane na dyskach maszyn wirtualnych.
-W CLI MicroK8s aktywowano dodatek Hostpath-Storage (zob. \autoref{lst:enable-hostpath-storage}), który udostępnia katalog hosta woluminom Kubernetes tj. PersistentVolumes.
-
-\begin{listing}[H]
-    \begin{minted}[xleftmargin=10pt,linenos]{bash}
-microk8s enable hostpath-storage
-    \end{minted}
-    \caption{Polecenie aktywujące dodatek Hostpath-Storage}
-    \label{lst:enable-hostpath-storage}
-\end{listing}
-
-\noindent Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm.
+Poleceniem \mintinline{text}{microk8s enable hostpath-storage} aktywowano dodatek Hostpath-Storage, który udostępnia katalog hosta woluminom Kubernetes tj.~PersistentVolumes.
+Bazą danych jest PostgreSQL zainstalowany przy użyciu menadżera pakietów Helm.
 Poleceniem \autoref{lst:helm-install-store-db} zainstalowano pakiet \texttt{bitnamicharts/postgresql} w przestrzeni \texttt{store}.
 
 \begin{listing}[H]
@@ -175,7 +166,7 @@ helm install store-db \
 \subsubsection{Backend}
 
 Backend, w rozumieniu architektury wielowarstwowej, pełni rolę kluczowego elementu systemu informatycznego.
-To warstwa stanowiąca zaplecze technologiczne, która w oparciu o zdefiniowane reguły biznesowe, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
+To warstwa stanowiąca zaplecze technologiczne, która na podstawie zdefiniowanych reguł biznesowych, odpowiada za obsługę żądań klientów oraz przetwarza dane w sposób zapewniający ich spójność.
 
 Serwer dostarczany przez projekt Medusa nie wymagał żadnych modyfikacji.
 Jedynym wymogiem do jego uruchomienia było wybranie i dołączenie odpowiednich wtyczek (ang. \emph{plugins}) odpowiedzialnych za zarządzanie zamówieniami oraz obsługę płatności.
@@ -190,13 +181,15 @@ const plugins = [
     // ...
 ];
     \end{minted}
-    \caption{Konfiguracja pluginów medusa-fulfillment-manual i medusa-payment-manual}
+    \caption
+        [Konfiguracja medusa-fulfillment-manual i medusa-payment-manual]
+        {Konfiguracja pluginów medusa-fulfillment-manual i medusa-payment-manual}
     \label{lst:medusa-config-fulfillment-payment}
 \end{listing}
 
-Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie było jego skonteneryzowania.
+Aby backend mógł zostać uruchomiony w środowisku Kubernetes, koniecznie było jego skonteneryzowanie.
 Proces ten został zrealizowany przy użyciu narzędzia Docker.
-W tym celu stworzono plik Dockerfile (zob. \texttt{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
+W tym celu stworzono plik Dockerfile (zob. \autoref{lst:code-dockerfile-backend}), który definiuje wszystkie kroki budowania obrazu kontenera.
 Plik Dockerfile rozpoczyna się od określenia obrazu bazowego, czyli \texttt{node:18-alpine}.
 W kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner} są instalowane zależności NPM, budowany jest kod aplikacji oraz przygotowywane jest środowisko uruchomieniowe serwera.
 
@@ -208,10 +201,10 @@ W kolejnych etapach \texttt{deps}, \texttt{builder} i \texttt{runner} są instal
 
 Backend został zainstalowany i skonfigurowany w środowisku Kubernetes.
 Wszystkie komponenty i mechanizmy składające się na to wdrożenie zostały przedstawione na~\autoref{fig:kubernetes-backend}.
-Wdrożenie odbywa się przez Deployment, co umożliwia automatyzację i skalowanie aplikacji.
+Wdrożenie odbywa się przez zasób \emph{Deployment}, co umożliwia automatyzację i skalowanie aplikacji.
 Komunikacja z serwisem odbywa się poprzez NGINX Virtual Server, który szyfruje dane za pomocą certyfikatu TLS wygenerowanego przez Cert-Manager.
 Backend korzysta z bazy danych PostgresSQL (zob. \autoref{subsubsec:baza-danych}).
-Monitoring działania aplikacji zapewnia Prometheus Service Monitor.
+Monitoring działania aplikacji zapewnia zasób \texttt{Prometheus Service Monitor}.
 Sekrety aplikacji są bezpiecznie zarządzane za pomocą mechanizmów Kubernetes Secrets.
 
 \begin{figure}[H]
@@ -253,7 +246,7 @@ Panel administratora jest budowany do postaci statycznych plików HTML, CSS i Ja
 
 Panel administratora w środowisku Kubernetes funkcjonuje jako osobna jednostka wdrożeniowa, niezależna od backendu.
 Wykorzystuje NGINX Virtual Server z szyfrowaniem TLS. Certyfikat jest generowany przez Cert-Manager.
-Architektura obejmuje service oraz deployment z jednym podem, co przedstawiano na \autoref{fig:kubernetes-admin}.
+Architektura obejmuje zasoby \emph{Service} oraz \emph{Deployment}, co przedstawiano na \autoref{fig:kubernetes-admin}.
 
 \begin{figure}[H]
     \centering

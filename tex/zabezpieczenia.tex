@@ -3,6 +3,8 @@
 
 \section{Wdrożenie wybranych metod detekcji}\label{sec:wdrozenie-metod-detekcji}
 
+W infrastrukturze sklepu internetowego wdrożono trzy metod detekcji web scrapingu: Bot Blocker Reverse Proxy, Rate Limiting oraz rozwiązanie bazujące na procesie browser fingerprintingu.
+
 \subsection{Bot Blocker Reverse Proxy}\label{subsec:reverse-proxy-impl}
 
 W infrastrukturze sklepu internetowego wdrożono serwer typu reverse proxy zlokalizowany przed backendem (zob. \autoref{fig:backend-reverse-proxy}).
@@ -173,7 +175,7 @@ Zasadę działania systemu przedstawia \autoref{fig:bot-detection-sequence}.
     \label{fig:bot-detection-sequence}
 \end{figure}
 
-Stworzono nową aplikację \texttt{Bot API} wraz z dedykowanym dla niej klientem \texttt{@tulski/\\bot-client}.
+Stworzono nową aplikację \texttt{Bot API} oraz bibliotekę \texttt{@tulski/\\bot-client}.
 Dodatkowo, zmodyfikowano istniejącą witrynę internetową i backend.
 
 \subsubsection{Bot API}
@@ -200,7 +202,7 @@ Odcisk jest klasyfikowany jako pochodzący od złośliwego bota (\texttt{"bad\_b
 \end{listing}
 
 
-API udostępnia trzy końcówki.
+\noindent API udostępnia trzy końcówki.
 \begin{enumerate}
     \item \texttt{GET /health} służący do monitorowania stanu aplikacji.\ Wykorzystywany przed Kubernetes w mechanizmie \texttt{Liveness Probe}.
     \item \texttt{POST /api/v1/analyze} przyjmujący na wejściu browser fingerprint, który jest poddawany analizie.
@@ -213,7 +215,7 @@ API udostępnia trzy końcówki.
 
 \subsubsection{@tulski/bot-client}
 
-\texttt{@tulski/bot-client} to biblioteka będąca dedykowanym klientem \texttt{Bot API}.
+\texttt{@tulski/bot-client} to biblioteka będąca klientem \texttt{Bot API}.
 Biblioteka jest dostępna publicznie jako paczka w NPM Registry pod adresem: \url{https://www.npmjs.com/package/@tulski/bot-client}.
 Jej Wykorzystanie polega na stworzeniu instancji klasy \texttt{BotClient}, a następnie wywołaniu metody \texttt{analyze()} zwracającej wynik analizy odcisku przeglądarki.
 \texttt{@tulski/bot-client} zbiera browser fingerprint przy pomocy biblioteki \texttt{fp-collect}~\cite{github-fp-collect}.
@@ -241,8 +243,8 @@ export interface BotAnalysisResult {
 W witrynie internetowej zaimplementowano \texttt{BotDetectionProvider}, wykorzystując powszechnie znany wśród specjalistów React wzorzec \texttt{Provider}.
 \texttt{BotDetectionProvider} podczas wejścia na stronę:
 \begin{enumerate}
-    \item pobiera wynik analizy odcisku przeglądarki z lokalnego magazynu (ang. \emph{local storage}),
-    \item dołącza identyfikator wyniku analizy jako nagłówek \texttt{x-bot-api} do żądań Store API\@.
+    \item Pobiera wynik analizy odcisku przeglądarki z lokalnego magazynu (ang. \emph{local storage}).
+    \item Dołącza identyfikator wyniku analizy jako nagłówek \texttt{x-bot-api} do żądań Store API\@.
 \end{enumerate}
 Gdy local storage nie zawiera wyniku analizy (na przykład przy pierwszym wejściu na stronę), \texttt{Provider} tworzy go wykorzystując bibliotekę \texttt{@tulski/bot-client} i zapisuje w magazynie.
 
@@ -251,10 +253,10 @@ Gdy local storage nie zawiera wyniku analizy (na przykład przy pierwszym wejśc
 Zmian wymagał również backend sklepu internetowego tulski.
 Zaimplementowano interceptor działający dla końcówek \texttt{Store API}, który kolejno:
 \begin{enumerate}
-    \item weryfikuje obecność identyfikatora analizy odcisku palca w nagłówku \texttt{x-bot-api},
-    \item pobiera ten identyfikator,
-    \item komunikuję się z \texttt{Bot API} w celu pobrania pełnego wyniku analizy,
-    \item weryfikuje czy odcisk przeglądarki wskazuje na złośliwego bota.
+    \item Weryfikuje obecność identyfikatora analizy odcisku palca w nagłówku \texttt{x-bot-api}.
+    \item Pobiera ten identyfikator.
+    \item Komunikuję się z \texttt{Bot API} w celu pobrania pełnego wyniku analizy.
+    \item Weryfikuje czy odcisk przeglądarki wskazuje na złośliwego bota.
 \end{enumerate}
 W przypadku braku nagłówka \texttt{x-bot-api} w żądaniu, serwer zwróci błąd z kodem 403.
 Jeśli analiza wykryje złośliwego bota, serwer odpowie kodem błędu 500.

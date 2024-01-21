@@ -3,7 +3,9 @@
 
 \section{Wstęp}\label{sec:wstep}
 
-W swoim pierwotnym założeniu została zaprojektowana z myślą o odczycie przez ludzi.
+\subsection{Motywacja}\label{subsec:motywacja}
+
+Sieć WWW (World Wide Web) w swoim pierwotnym założeniu została zaprojektowana z myślą o odczycie przez ludzi.
 Od momentu powstania gwałtownie się rozrastała i tendencja ta wciąż się utrzymuje (zob. \autoref{fig:statista-data-volume-in-exabytes-per-month}).
 Zważając na jej obecnie ogromny wolumen danych, ograniczone zasoby ludzkie pozwalają na przetworzenie jedynie niewielkiego ich ułamka.
 W obliczu powyższych wyzwań niezbędna stała się więc technika web scrapingu polegająca na zbieraniu, ustrukturyzowaniu i przetworzeniu danych, tak aby umożliwić maszynom ich analizę.
@@ -12,7 +14,9 @@ W obliczu powyższych wyzwań niezbędna stała się więc technika web scraping
     \centering
     \captionsetup{width=.8\linewidth}
     \includegraphics[width=\textwidth]{img/statista-data-volume-in-exabytes-per-month}
-    \caption{Wolumen danych w globalnym konsumenckim ruchu IP\\ w latach 2017–2022 (w eksabajtach na miesiąc)\\Źródło: \citetitle*{statista-data-volume}~\cite{statista-data-volume}}
+    \caption
+        [Wolumen danych w globalnym konsumenckim ruchu IP w latach 2017–2022]
+        {Wolumen danych w globalnym konsumenckim ruchu IP\\ w latach 2017–2022 (w eksabajtach na miesiąc)\\Źródło: \citetitle*{statista-data-volume}~\cite{statista-data-volume}}
     \label{fig:statista-data-volume-in-exabytes-per-month}
 \end{figure}
 
@@ -27,8 +31,10 @@ Przy tak znacznej obecności botów, web scraping nie jest już tylko opcją, al
 \begin{figure}[H]
     \centering
     \captionsetup{width=.8\linewidth}
-    \includegraphics[width=.8\textwidth]{img/bot-traffic}
-    \caption{Procentowy rozkład ruchu generowany w internecie przez:\\ złe boty, dobre boty i ludzi w roku 2019\\Źródło: \citetitle*{bot-traffic}~\cite{bot-traffic}}
+    \includegraphics[width=\textwidth]{img/bot-traffic}
+    \caption
+        [Procentowy rozkład ruchu generowany w internecie przez: złe boty, dobre boty i ludzi w roku 2019]
+        {Procentowy rozkład ruchu generowany w internecie przez:\\ złe boty, dobre boty i ludzi w roku 2019\\Źródło: \citetitle*{bot-traffic}~\cite{bot-traffic}}
     \label{fig:bot-traffic}
 \end{figure}
 
@@ -36,10 +42,21 @@ Choć zastosowanie web scrapingu ma wiele zalet to wiąże się również z pewn
 Firmy wykorzystują go do budowania przewagi konkurencyjnej, równocześnie dążąc do ochrony własnych danych przed podobnymi działaniami ze strony konkurencji.
 W związku z tym, równolegle do rozwoju technik scrapingu rozwijane są metody jego detekcji i zapobiegania.
 
+\subsection{Cel pracy}\label{subsec:cel-pracy}
+
+Niniejsza praca posiada dwa główne cele.
+Pierwszym jest analiza i praktyczne wykorzystanie web scrapingu.
+Praca dąży do przedstawienia, zbudowania i przetestowania scrapera.
+Drugim celem jest opracowanie i wdrożenie kilku różnych metod skutecznie blokujących web scraping.
+Oba te cele mają pokazać zarówno perspektywę aktora przeprowadzającego scraping, jak i broniącego się przed nim.
+
+\clearpage
+
+\subsection{Struktura pracy}\label{subsec:struktura-pracy}
+
 Praca ma charakter praktyczny i traktuje web scraping z dwóch perspektyw tj.~jego przeprowadzania oraz zabezpieczania się przed nim.
-Autor, praktyk posiadający trzyletnie doświadczenie zawodowe w dziedzinie web scrapingu, wzbogaca treść o własne doświadczenia i spostrzeżenia.
 Składa się z 8 rozdziałów.
-\begin{enumerate}[label={Rozdział \arabic*},labelindent=\parindent, leftmargin=*]
+\begin{enumerate}[label={\textbf{Rozdział \arabic*}},labelindent=\parindent, leftmargin=*]
     \item \nameref{sec:teoria} stanowi teoretyczny wstęp do tematyki pracy.
     \item \nameref{sec:przeglad-rozwiazan} zawiera opis wybranych metod detekcji web scrapingu.
     \item \nameref{sec:projekt-platformy} koncentruje się na wdrożeniu sklepu internetowego tulski, który posłużył jako platforma do badań i testowania.

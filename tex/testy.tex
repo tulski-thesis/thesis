@@ -5,7 +5,7 @@
 
 Przeprowadzono serię testów manualnych mających na celu weryfikację poprawności działania scrapera i sklepu internetowego z uwzględnieniem wdrożonych metod detekcji web scrapingu.
 Testy obejmowały 5 różnych scenariuszy tj.:
-\begin{enumerate}[label={scenariusz \arabic*:},labelindent=\parindent, leftmargin=*]
+\begin{enumerate}[label={\large$\bullet$ scenariusz \arabic*:},labelindent=\parindent, leftmargin=*]
     \item bez zabezpieczeń,
     \item tylko Bot Blocker Reverse Proxy,
     \item tylko rate limiting,
@@ -28,7 +28,7 @@ Korzystanie z serwisu przekładało się na płynne i komfortowe doświadczenia 
 
 \subsection{Scenariusz 2: Włączone zabezpieczenie Bot Blocker Reverse Proxy}\label{subsec:scenariusz-3:-waczone-zabezpieczenie-reverse-proxy-bot-blocker}
 
-Scenariusz 2 zakłada włączenie metody detekcji web scrapingu opisywanej w \autoref{subsec:reverse-proxy-impl}.
+Scenariusz 2 zakłada włączenie metody detekcji web scrapingu opartej na regułach (zob. \autoref{subsec:reverse-proxy-impl}).
 Przetestowano scraper i aplikacje sklepu internetowego wraz z zabezpieczeniem Bot Blocker Reverse Proxy.
 
 Funkcjonowanie sklepu internetowego z perspektywy użytkownika końcowego nie uległo zmianie względem scenariusza 1.
@@ -179,7 +179,7 @@ Wymagałoby to zmodyfikowania obecnego scrapera, tak aby spowolnił tempo wysył
 
 \subsection{Scenariusz 4: Włączone zabezpieczenie oparte na browser fingerprintingu}\label{subsec:scenariusz-3:-waczone-zabezpieczenie-oparte-na-browser-fingerprintingu}
 
-W ramach scenariusza 4 skupiono się na metodzie detekcji web scrapingu opisanej w \autoref{subsec:browser-fingerprinting-impl}.
+W ramach scenariusza 4 skupiono się na metodzie detekcji web scrapingu opartej na technice browser fingerprintingu.
 
 Wdrożenie i uruchomienie zabezpieczenia nie wpłynęło na doświadczenia użytkowników końcowych.
 Standardowa aktywność w przeglądarce, jak przeglądanie sklepu, przebiegała płynnie i bez zakłóceń.
@@ -204,7 +204,9 @@ oraz przeglądarki Chromium uruchomionej przez Puppeteer (zob. \autoref{fig:bad-
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{img/bot-protection-bad-bot}
-        \caption{Wynik analizy odcisku przeglądarki Chromium uruchomionej przez pupeteer}
+        \caption
+            [Wynik analizy odcisku przeglądarki Chromium]
+            {Wynik analizy odcisku przeglądarki Chromium uruchomionej przez pupeteer}
         \label{fig:bad-bot-detected}
     \end{figure}
 \end{multicols}

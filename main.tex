@@ -53,6 +53,8 @@
 \section*{\contentsname}
 
 \startcontents[mainsections]
+\startlist[figures]{lof}
+\startlist[tables]{lot}
 \printcontents[mainsections]{l}{1}{\setcounter{tocdepth}{3}}
 
 %--------------------------------------
@@ -82,26 +84,35 @@
 \newpage
 \pagestyle{plain}
 
-% Wykaz symboli i skrótów.
-% Pamiętaj, żeby posortować symbole alfabetycznie
-\vspace{0.8cm}
-\acronymlist
+\section*{Wykaz symboli i skrótów}
 \acronym{API}{Application Programming Interface}
 \acronym{CLI}{Command Line Interface}
+\acronym{CPU}{Central Processing Unit}
+\acronym{CSV}{Comma-Separated Values}
 \acronym{DoS}{Denial Of Service}
-\acronym{OCPU}{The Oracle CPU}
-\acronym{OCI}{Oracle Cloud Infrastructure}
+\acronym{GPU}{Graphics Processing Unit}
+\acronym{HTML}{Hypertext Markup Language}
+\acronym{HTTP}{Hypertext Transfer Protocol}
+\acronym{JSON}{JavaScript Object Notation}
 \acronym{LB}{Load Balancer}
 \acronym{NLB}{Network Load Balancer}
+\acronym{OCI}{Oracle Cloud Infrastructure}
+\acronym{OCPU}{The Oracle CPU}
 \acronym{WWW}{World Wide Web}
-\acronym{HTTP}{Hypertext Transfer Protocol}
-\acronym{HTML}{Hypertext Markup Language}
-\acronym{XML}{Extensible Markup Language}
-\acronym{JSON}{JavaScript Object Notation}
-\acronym{CSV}{Comma-Separated Values}
 \acronym{XLSX}{Microsoft Excel Open XML Spreadsheet}
-\acronym{CPU}{Central Processing Unit}
-\acronym{GPU}{Graphics Processing Unit}
+\acronym{XML}{Extensible Markup Language}
+
+\vspace{0.8cm}          % vertical space
+\section*{Wykaz rysunków}
+\printlist[figures]{lof}{1}{\setcounter{tocdepth}{3}}
+
+\vspace{0.8cm}          % vertical space
+\listoflistings
+\captionsetup[listing]{list=no} % exclude appendices listings
+
+\vspace{0.8cm}          % vertical space
+\section*{Wykaz tabel}
+\printlist[tables]{lot}{1}{\setcounter{tocdepth}{3}}
 
 \newpage
 \appendix
@@ -109,6 +120,9 @@
 \addappheadtotoc
 
 \stopcontents[mainsections]
+\stoplist[figures]{lof}
+\stoplist[tables]{lot}
+
 \startcontents[appendices]
 \printcontents[appendices]{l}{1}{\setcounter{tocdepth}{3}}
 
